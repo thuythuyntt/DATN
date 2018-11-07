@@ -12,6 +12,7 @@ import firebasedb.FirebaseHelper;
 import java.awt.Adjustable;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
@@ -171,6 +172,7 @@ public class JFTrangChu extends JFrameBase {
 
     private void addMessageToScrollPane(Message m) {
         JTextArea textArea = new JTextArea(m.getText());
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 11));
         int height = Util.getContentHeight(width, m.getText());
         textArea.setEditable(false);
         textArea.setLineWrap(true);
@@ -267,7 +269,7 @@ public class JFTrangChu extends JFrameBase {
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(13, 71, 161), 2, true));
         jPanel1.setPreferredSize(new java.awt.Dimension(200, 670));
 
-        lbTenGV.setFont(new java.awt.Font("Cambria Math", 0, 14)); // NOI18N
+        lbTenGV.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         lbTenGV.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTenGV.setText("Nguyễn Trọng Khánh");
         lbTenGV.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -295,6 +297,7 @@ public class JFTrangChu extends JFrameBase {
         jTabbedPane2.setFont(new java.awt.Font("Cambria Math", 0, 12)); // NOI18N
         jTabbedPane2.setPreferredSize(new java.awt.Dimension(170, 400));
 
+        tblDSSVOnline.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         tblDSSVOnline.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
