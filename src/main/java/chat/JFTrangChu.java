@@ -110,7 +110,6 @@ public class JFTrangChu extends JFrameBase {
             model.addRow(row);
         }
 
-        if (user.getRole().equals(Constants.ROLE_TEACHER)) {
             tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -119,13 +118,14 @@ public class JFTrangChu extends JFrameBase {
                     setupPosIndex();
                     lbTenCuocTroChuyen.setText(list.get(row).getFullname());
                     if (row == 0) {
+                        System.out.println("listenGroupChatEvent");
                         listenGroupChatEvent();
                     } else {
+                        System.out.println("listenSingleChatEvent");
                         listenSingleChatEvent();
                     }
                 }
             });
-        }
     }
 
     private void setupPosIndex() {
