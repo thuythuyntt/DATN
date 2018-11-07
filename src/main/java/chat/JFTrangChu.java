@@ -86,7 +86,7 @@ public class JFTrangChu extends JFrameBase {
 
     private void setupInfo() {
         user = FirebaseHelper.getInstance().getAuthUser();
-        lbTenGV.setText(user.getUsername());
+        lbTenGV.setText(user.getFullname());
         lbTenCuocTroChuyen.setText("ALL");
     }
 
