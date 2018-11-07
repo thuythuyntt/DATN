@@ -172,7 +172,7 @@ public class JFTrangChu extends JFrameBase {
 
     private void addMessageToScrollPane(Message m) {
         JTextArea textArea = new JTextArea(m.getText());
-        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 13));
         int height = Util.getContentHeight(width, m.getText());
         textArea.setEditable(false);
         textArea.setLineWrap(true);
@@ -260,7 +260,7 @@ public class JFTrangChu extends JFrameBase {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTabbedPane1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jTabbedPane1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(1000, 700));
 
         panelHome.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -297,7 +297,7 @@ public class JFTrangChu extends JFrameBase {
         jTabbedPane2.setFont(new java.awt.Font("Cambria Math", 0, 12)); // NOI18N
         jTabbedPane2.setPreferredSize(new java.awt.Dimension(170, 400));
 
-        tblDSSVOnline.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tblDSSVOnline.setFont(new java.awt.Font("Times New Roman", 0, 13)); // NOI18N
         tblDSSVOnline.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -586,7 +586,7 @@ public class JFTrangChu extends JFrameBase {
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 682, Short.MAX_VALUE)
+            .addGap(0, 674, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Thống kê và tổng hợp", panelStatistics);
