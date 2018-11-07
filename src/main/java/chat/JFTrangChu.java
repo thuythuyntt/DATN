@@ -172,7 +172,7 @@ public class JFTrangChu extends JFrameBase {
 
     private void addMessageToScrollPane(Message m) {
         JTextArea textArea = new JTextArea(m.getText());
-        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 11));
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 12));
         int height = Util.getContentHeight(width, m.getText());
         textArea.setEditable(false);
         textArea.setLineWrap(true);
@@ -297,7 +297,7 @@ public class JFTrangChu extends JFrameBase {
         jTabbedPane2.setFont(new java.awt.Font("Cambria Math", 0, 12)); // NOI18N
         jTabbedPane2.setPreferredSize(new java.awt.Dimension(170, 400));
 
-        tblDSSVOnline.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        tblDSSVOnline.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tblDSSVOnline.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
