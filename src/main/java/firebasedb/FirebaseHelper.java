@@ -290,7 +290,8 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        listener.onEvent(listenerEvent(snapshots));
+                        list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(list);
                     }
                 });
         db.collection("chat").whereEqualTo("fromUserId", toUserId)
@@ -304,7 +305,8 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        listener.onEvent(listenerEvent(snapshots));
+                        list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(list);
                     }
                 });
     }
