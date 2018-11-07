@@ -11,7 +11,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
  *
  * @author thuy
  */
-public class Message extends ModelBase{
+public class Message extends ModelBase implements Comparable<Message>{
 
     private String fromUserId;
     private String toUserId;
@@ -61,4 +61,11 @@ public class Message extends ModelBase{
     public String toString() {
         return "fromUserId: " + fromUserId + ", text: " + text + ", datetime: " + datetime; //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public int compareTo(Message o) {
+        return this.datetime.compareTo(o.datetime);
+    }
+    
+    
 }

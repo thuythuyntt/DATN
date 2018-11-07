@@ -47,7 +47,7 @@ public final class FirebaseHelper {
     }
 
     private Firestore db = null;
-    private Bucket bucket = null;
+//    private Bucket bucket = null;
     private User authUser;
 
     private FirebaseHelper() {
@@ -66,7 +66,7 @@ public final class FirebaseHelper {
     public User getAuthUser() {
         return authUser;
     }
-    
+
     private void initFirebase() {
         FileInputStream serviceAccount = null;
         try {
@@ -78,7 +78,7 @@ public final class FirebaseHelper {
                     .build();
             FirebaseApp.initializeApp(options);
             db = FirestoreClient.getFirestore();
-            bucket = StorageClient.getInstance().bucket();
+//            bucket = StorageClient.getInstance().bucket();
             System.out.println("FirebaseApp.initializeApp success");
         } catch (Exception ex) {
             System.out.println("FirebaseApp.initializeApp error");
@@ -191,7 +191,7 @@ public final class FirebaseHelper {
         }
         return false;
     }
-    
+
     public void updatePersonInformation(String code,
             String dob,
             String faculty,
@@ -261,33 +261,70 @@ public final class FirebaseHelper {
         }
     }
 
-    public void listenerRoomMessagesEvent(String toUserId, RoomMessageChangeListener listener) {
-        db.collection("chat").whereEqualTo("toUserId", toUserId).orderBy("datetime", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots,
-                    @Nullable FirestoreException e) {
-                if (e != null) {
-                    System.err.println("Listen failed:" + e);
-                    return;
-                }
-
-                List<Message> list = new ArrayList<>();
-
-                for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                    switch (dc.getType()) {
-                        case ADDED:
-                            Message m = new Message();
-                            m.fromQueryDocument(dc.getDocument());
-                            list.add(m);
-                            System.out.println("New message: " + dc.getDocument().getData());
-                            break;
-
-                        default:
-                            break;
+    public void listenerGroupChatEvent(String toUserId, RoomMessageChangeListener listener) {
+        db.collection("chat").whereEqualTo("toUserId", toUserId)
+                .orderBy("datetime", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                            @Nullable FirestoreException e) {
+                        if (e != null) {
+                            System.err.println("Listen failed:" + e);
+                            return;
+                        }
+                        listener.onEvent(listenerEvent(snapshots));
                     }
-                }
-                listener.onEvent(list);
+                });
+    }
+
+    public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
+        List<Message> list = new ArrayList<>();
+        db.collection("chat").whereEqualTo("fromUserId", authUser.getId())
+                .whereEqualTo("toUserId", toUserId)
+                //                .orderBy("datetime", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                            @Nullable FirestoreException e) {
+                        if (e != null) {
+                            System.err.println("Listen failed:" + e);
+                            return;
+                        }
+                        listener.onEvent(listenerEvent(snapshots));
+                    }
+                });
+        db.collection("chat").whereEqualTo("fromUserId", toUserId)
+                .whereEqualTo("toUserId", authUser.getId())
+                //                .orderBy("datetime", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                            @Nullable FirestoreException e) {
+                        if (e != null) {
+                            System.err.println("Listen failed:" + e);
+                            return;
+                        }
+                        listener.onEvent(listenerEvent(snapshots));
+                    }
+                });
+    }
+
+    public List<Message> listenerEvent(@Nullable QuerySnapshot snapshots) {
+        List<Message> list = new ArrayList<>();
+
+        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+            switch (dc.getType()) {
+                case ADDED:
+                    Message m = new Message();
+                    m.fromQueryDocument(dc.getDocument());
+                    list.add(m);
+                    System.out.println("New message: " + dc.getDocument().getData());
+                    break;
+
+                default:
+                    break;
             }
-        });
+        }
+        return list;
     }
 }

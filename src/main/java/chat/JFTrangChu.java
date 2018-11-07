@@ -23,6 +23,7 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -80,7 +81,7 @@ public class JFTrangChu extends JFrameBase {
         setupInfo();
         setupDSBanBe();
         setupPosIndex();
-        listenMessageEvent();
+        listenGroupChatEvent();
 
     }
 
@@ -102,7 +103,7 @@ public class JFTrangChu extends JFrameBase {
         list.add(all);
         list.addAll(FirebaseHelper.getInstance().getListFriends());
         DefaultTableModel model = (DefaultTableModel) tblDSSVOnline.getModel();
-        
+
         Object[] row = new Object[1];
         for (int i = 0; i < list.size(); i++) {
             row[0] = list.get(i).getFullname();
@@ -117,7 +118,11 @@ public class JFTrangChu extends JFrameBase {
                     toUserId = list.get(row).getId();
                     setupPosIndex();
                     lbTenCuocTroChuyen.setText(list.get(row).getFullname());
-                    listenMessageEvent();
+                    if (row == 0) {
+                        listenGroupChatEvent();
+                    } else {
+                        listenSingleChatEvent();
+                    }
                 }
             });
         }
@@ -130,10 +135,20 @@ public class JFTrangChu extends JFrameBase {
         margin = 8;
     }
 
-    private void listenMessageEvent() {
-        FirebaseHelper.getInstance().listenerRoomMessagesEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
+    private void listenGroupChatEvent() {
+        FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(List<Message> list) {
+                setupMessage(list);
+            }
+        });
+    }
+    
+    private void listenSingleChatEvent(){
+        FirebaseHelper.getInstance().listenerSingleChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
+            @Override
+            public void onEvent(List<Message> list) {
+                Collections.sort(list);
                 setupMessage(list);
             }
         });
