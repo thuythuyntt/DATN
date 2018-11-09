@@ -174,6 +174,17 @@ public final class FirebaseHelper {
         }
         return listFriend;
     }
+    
+    public List<User> getAllStudent() {
+        List<User> listFriend = new ArrayList<User>();
+        List<User> list = getListUsers();
+        for (User u : list) {
+            if (!u.getRole().equals(Constants.ROLE_TEACHER)) {
+                listFriend.add(u);
+            }
+        }
+        return listFriend;
+    }
 
     public boolean sendMessage(Message message) {
         try {

@@ -83,7 +83,47 @@ public class JFTrangChu extends JFrameBase {
         setupDSBanBe();
         setupPosIndex();
         listenGroupChatEvent();
+        
+        setupDSSinhVien();
 
+    }
+    
+    private void setupDSSinhVien(){
+        tblDSSV.removeAll();
+        tblDSSV.revalidate();
+        tblDSSV.repaint();
+
+        List<User> list = new ArrayList<User>();
+        list.addAll(FirebaseHelper.getInstance().getAllStudent());
+        DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
+
+        Object[] row = new Object[6];
+        for (int i = 0; i < list.size(); i++) {
+            row[0] = (i+1);
+            row[1] = list.get(i).getFullname();
+            row[2] = list.get(i).getCode();
+            row[3] = "PC";
+            row[4] = "time";
+            row[5] = true;
+            model.addRow(row);
+        }
+
+            tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
+                    toUserId = list.get(row).getId();
+                    setupPosIndex();
+                    lbTenCuocTroChuyen.setText(list.get(row).getFullname());
+                    if (row == 0) {
+                        System.out.println("listenGroupChatEvent");
+                        listenGroupChatEvent();
+                    } else {
+                        System.out.println("listenSingleChatEvent");
+                        listenSingleChatEvent();
+                    }
+                }
+            });
     }
 
     private void setupInfo() {
@@ -160,6 +200,7 @@ public class JFTrangChu extends JFrameBase {
         scrollPaneNoiDungCuocTroChuyen.revalidate();
         scrollPaneNoiDungCuocTroChuyen.repaint();
         for (int i = 0; i < list.size(); i++) {
+            System.out.println("list.size(): " + list.size());
             Message m = list.get(i);
             addMessageToScrollPane(m);
         }
@@ -255,7 +296,9 @@ public class JFTrangChu extends JFrameBase {
         jCheckBox1 = new javax.swing.JCheckBox();
         jButton2 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblDSSV = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         panelStatistics = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -324,18 +367,14 @@ public class JFTrangChu extends JFrameBase {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lbTenGV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(panelAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbTenGV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(panelAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -491,23 +530,27 @@ public class JFTrangChu extends JFrameBase {
 
         panelManagement.setPreferredSize(new java.awt.Dimension(1000, 600));
 
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel2.setText("QUẢN LÝ SINH VIÊN");
 
+        jTextField1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+
+        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         jButton1.setText("Tìm kiếm");
 
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         jLabel3.setText("Lọc:");
 
+        jCheckBox1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         jCheckBox1.setText("Online");
 
+        jButton2.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         jButton2.setText("OK");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblDSSV.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        tblDSSV.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "STT", "Họ tên", "Mã sinh viên", "Máy tính", "Thời gian", "Online"
@@ -517,7 +560,7 @@ public class JFTrangChu extends JFrameBase {
                 java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -528,32 +571,37 @@ public class JFTrangChu extends JFrameBase {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(tblDSSV);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jTextArea1.setRows(5);
+        jTextArea1.setText("\n» Chọn một hàng trong bảng\n» Click chuột phải\n» Chọn hành động thích hợp:\n \t- Viewer\n \t- Lock\n \t- Shut down");
+        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout panelManagementLayout = new javax.swing.GroupLayout(panelManagement);
         panelManagement.setLayout(panelManagementLayout);
         panelManagementLayout.setHorizontalGroup(
             panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelManagementLayout.createSequentialGroup()
-                .addGap(164, 164, 164)
+                .addGap(60, 60, 60)
                 .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelManagementLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox1)
-                        .addGap(183, 183, 183)
-                        .addComponent(jButton2))
-                    .addGroup(panelManagementLayout.createSequentialGroup()
-                        .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(26, 26, 26)
-                        .addComponent(jButton1)))
-                .addContainerGap(478, Short.MAX_VALUE))
-            .addGroup(panelManagementLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4)
-                .addContainerGap())
+                    .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                        .addComponent(jLabel2)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 887, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panelManagementLayout.createSequentialGroup()
+                            .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panelManagementLayout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(13, 13, 13)
+                                    .addComponent(jCheckBox1)))
+                            .addGap(26, 26, 26)
+                            .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         panelManagementLayout.setVerticalGroup(
             panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -562,7 +610,7 @@ public class JFTrangChu extends JFrameBase {
                 .addComponent(jLabel2)
                 .addGap(43, 43, 43)
                 .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                    .addComponent(jButton1)
                     .addComponent(jTextField1))
                 .addGap(31, 31, 31)
                 .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -570,8 +618,10 @@ public class JFTrangChu extends JFrameBase {
                     .addComponent(jCheckBox1)
                     .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Quản lý", panelManagement);
@@ -651,11 +701,12 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lbTenCuocTroChuyen;
     private javax.swing.JLabel lbTenGV;
@@ -666,6 +717,7 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JPanel panelStatistics;
     private javax.swing.JPanel scrollPaneNoiDungCuocTroChuyen;
     private javax.swing.JScrollPane scrollPaneOnline;
+    private javax.swing.JTable tblDSSV;
     private javax.swing.JTable tblDSSVOnline;
     // End of variables declaration//GEN-END:variables
 }
