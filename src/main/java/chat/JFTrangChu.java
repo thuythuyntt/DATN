@@ -107,23 +107,6 @@ public class JFTrangChu extends JFrameBase {
             row[5] = true;
             model.addRow(row);
         }
-
-        tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
-                toUserId = list.get(row).getId();
-                setupPosIndex();
-                lbTenCuocTroChuyen.setText(list.get(row).getFullname());
-                if (row == 0) {
-                    System.out.println("listenGroupChatEvent");
-                    listenGroupChatEvent();
-                } else {
-                    System.out.println("listenSingleChatEvent");
-                    listenSingleChatEvent();
-                }
-            }
-        });
     }
 
     private void setupInfo() {
@@ -155,6 +138,7 @@ public class JFTrangChu extends JFrameBase {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
+                System.out.println("row: " + row);
                 toUserId = list.get(row).getId();
                 setupPosIndex();
                 scrollPaneNoiDungCuocTroChuyen.removeAll();
@@ -203,7 +187,7 @@ public class JFTrangChu extends JFrameBase {
 //        scrollPaneNoiDungCuocTroChuyen.revalidate();
 //        scrollPaneNoiDungCuocTroChuyen.repaint();
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("list.size(): " + list.size());
+            System.out.println("setupMessage list.size(): " + list.size());
             Message m = list.get(i);
             addMessageToScrollPane(m);
         }
