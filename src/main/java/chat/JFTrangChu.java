@@ -83,12 +83,12 @@ public class JFTrangChu extends JFrameBase {
         setupDSBanBe();
         setupPosIndex();
         listenGroupChatEvent();
-        
+
         setupDSSinhVien();
 
     }
-    
-    private void setupDSSinhVien(){
+
+    private void setupDSSinhVien() {
         tblDSSV.removeAll();
         tblDSSV.revalidate();
         tblDSSV.repaint();
@@ -99,7 +99,7 @@ public class JFTrangChu extends JFrameBase {
 
         Object[] row = new Object[6];
         for (int i = 0; i < list.size(); i++) {
-            row[0] = (i+1);
+            row[0] = (i + 1);
             row[1] = list.get(i).getFullname();
             row[2] = list.get(i).getCode();
             row[3] = "PC";
@@ -108,22 +108,22 @@ public class JFTrangChu extends JFrameBase {
             model.addRow(row);
         }
 
-            tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
-                    toUserId = list.get(row).getId();
-                    setupPosIndex();
-                    lbTenCuocTroChuyen.setText(list.get(row).getFullname());
-                    if (row == 0) {
-                        System.out.println("listenGroupChatEvent");
-                        listenGroupChatEvent();
-                    } else {
-                        System.out.println("listenSingleChatEvent");
-                        listenSingleChatEvent();
-                    }
+        tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
+                toUserId = list.get(row).getId();
+                setupPosIndex();
+                lbTenCuocTroChuyen.setText(list.get(row).getFullname());
+                if (row == 0) {
+                    System.out.println("listenGroupChatEvent");
+                    listenGroupChatEvent();
+                } else {
+                    System.out.println("listenSingleChatEvent");
+                    listenSingleChatEvent();
                 }
-            });
+            }
+        });
     }
 
     private void setupInfo() {
@@ -151,22 +151,25 @@ public class JFTrangChu extends JFrameBase {
             model.addRow(row);
         }
 
-            tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
-                    toUserId = list.get(row).getId();
-                    setupPosIndex();
-                    lbTenCuocTroChuyen.setText(list.get(row).getFullname());
-                    if (row == 0) {
-                        System.out.println("listenGroupChatEvent");
-                        listenGroupChatEvent();
-                    } else {
-                        System.out.println("listenSingleChatEvent");
-                        listenSingleChatEvent();
-                    }
+        tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
+                toUserId = list.get(row).getId();
+                setupPosIndex();
+                scrollPaneNoiDungCuocTroChuyen.removeAll();
+                scrollPaneNoiDungCuocTroChuyen.revalidate();
+                scrollPaneNoiDungCuocTroChuyen.repaint();
+                lbTenCuocTroChuyen.setText(list.get(row).getFullname());
+                if (row == 0) {
+                    System.out.println("listenGroupChatEvent");
+                    listenGroupChatEvent();
+                } else {
+                    System.out.println("listenSingleChatEvent");
+                    listenSingleChatEvent();
                 }
-            });
+            }
+        });
     }
 
     private void setupPosIndex() {
@@ -184,8 +187,8 @@ public class JFTrangChu extends JFrameBase {
             }
         });
     }
-    
-    private void listenSingleChatEvent(){
+
+    private void listenSingleChatEvent() {
         FirebaseHelper.getInstance().listenerSingleChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(List<Message> list) {
@@ -196,9 +199,9 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupMessage(List<Message> list) {
-        scrollPaneNoiDungCuocTroChuyen.removeAll();
-        scrollPaneNoiDungCuocTroChuyen.revalidate();
-        scrollPaneNoiDungCuocTroChuyen.repaint();
+//        scrollPaneNoiDungCuocTroChuyen.removeAll();
+//        scrollPaneNoiDungCuocTroChuyen.revalidate();
+//        scrollPaneNoiDungCuocTroChuyen.repaint();
         for (int i = 0; i < list.size(); i++) {
             System.out.println("list.size(): " + list.size());
             Message m = list.get(i);
@@ -212,19 +215,28 @@ public class JFTrangChu extends JFrameBase {
     int margin = 0;
 
     private void addMessageToScrollPane(Message m) {
-        JTextArea textArea = new JTextArea(m.getText());
+        JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("Times New Roman", Font.PLAIN, 13));
-        int height = Util.getContentHeight(width, m.getText());
+
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setSize(width, height + padding);
+
         textArea.setOpaque(true);
         textArea.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
+        int height = 0;
         if (m.getFromUserId().equals(user.getId())) {
+            height = Util.getContentHeight(width, m.getText());
+            textArea.setSize(width, height + padding);
+            textArea.setText(m.getText());
             textArea.setLocation(340, posY);
             textArea.setBackground(Color.decode("#90CAF9"));
         } else {
+            String content = FirebaseHelper.getInstance().getUserFromId(m.getFromUserId())
+                    .getFullname() + ":\n" + m.getText();
+            height = Util.getContentHeight(width, content);
+            textArea.setSize(width, height + padding);
+            textArea.setText(content);
             textArea.setLocation(8, posY);
             textArea.setBackground(Color.decode("#B0BEC5"));
         }
@@ -547,7 +559,8 @@ public class JFTrangChu extends JFrameBase {
         jButton2.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         jButton2.setText("OK");
 
-        tblDSSV.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        tblDSSV.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        tblDSSV.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         tblDSSV.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -601,7 +614,7 @@ public class JFTrangChu extends JFrameBase {
                                 .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGap(46, 46, 46))
         );
         panelManagementLayout.setVerticalGroup(
             panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

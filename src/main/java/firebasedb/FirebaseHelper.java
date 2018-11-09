@@ -145,6 +145,14 @@ public final class FirebaseHelper {
             return false;
         }
     }
+    
+    public User getUserFromId(String id){
+        List<User> list = getListUsers();
+        for (User u : list) {
+            if (u.getId().equals(id)) return u;
+        }
+        return new User();
+    }
 
     public List<User> getListUsers() {
         List<User> list = new ArrayList<>();
