@@ -297,9 +297,8 @@ public final class FirebaseHelper {
     }
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
-        List<Message> list = new ArrayList<>();
-        db.collection("chat").whereEqualTo("fromUserId", authUser.getId())
-                .whereEqualTo("toUserId", toUserId)
+        //List<Message> list = new ArrayList<>();
+        db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId)
                 //                .orderBy("datetime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -309,12 +308,11 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(list);
+                        //list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(listenerEvent(snapshots));
                     }
                 });
-        db.collection("chat").whereEqualTo("fromUserId", toUserId)
-                .whereEqualTo("toUserId", authUser.getId())
+        db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId())
                 //                .orderBy("datetime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -324,15 +322,14 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(list);
+                        //list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(listenerEvent(snapshots));
                     }
                 });
     }
 
-    public List<Message> listenerEvent(@Nullable QuerySnapshot snapshots) {
+    private List<Message> listenerEvent(@Nullable QuerySnapshot snapshots) {
         List<Message> list = new ArrayList<>();
-
         for (DocumentChange dc : snapshots.getDocumentChanges()) {
             switch (dc.getType()) {
                 case ADDED:
