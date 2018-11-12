@@ -43,7 +43,7 @@ public final class FirebaseHelper {
 
     public interface RoomMessageChangeListener {
 
-        void onEvent(List<Message> list);
+        void onEvent(String toUserId, List<Message> list);
     }
 
     private Firestore db = null;
@@ -291,15 +291,14 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        listener.onEvent(listenerEvent(snapshots));
+                        listener.onEvent(toUserId, listenerEvent(snapshots));
                     }
                 });
     }
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
-        //List<Message> list = new ArrayList<>();
+        List<Message> list = new ArrayList<>();
         db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId)
-                //                .orderBy("datetime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots,
@@ -308,12 +307,11 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        //list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(listenerEvent(snapshots));
+                        list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(toUserId, authUser.getId(), list);
                     }
                 });
         db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId())
-                //                .orderBy("datetime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots,
@@ -322,8 +320,8 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        //list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(listenerEvent(snapshots));
+                        list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(toUserId, authUser.getId(), list);
                     }
                 });
     }

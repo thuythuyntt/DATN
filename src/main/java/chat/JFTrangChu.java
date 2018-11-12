@@ -25,6 +25,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -43,6 +45,9 @@ public class JFTrangChu extends JFrameBase {
     private String[] friendNames;
     private User user;
     private String toUserId = "";
+    private String fromUserId = "";
+
+    private Map<String, List<Message>> conversationList;
 
     public JFTrangChu() {
         initComponents();
@@ -67,6 +72,8 @@ public class JFTrangChu extends JFrameBase {
                 logOut();
             }
         }));
+
+        
 //        BufferedImage img;
 //        try {
 //            img = ImageIO.read(new URL("http://www.java2s.com/style/download.png"));
@@ -110,7 +117,12 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupInfo() {
+        conversationList = new HashMap<>();
+        
         user = FirebaseHelper.getInstance().getAuthUser();
+        
+        fromUserId = user.getId();
+        
         lbTenGV.setText(user.getFullname());
         lbTenCuocTroChuyen.setText("ALL");
     }
@@ -166,8 +178,13 @@ public class JFTrangChu extends JFrameBase {
     private void listenGroupChatEvent() {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
-            public void onEvent(List<Message> list) {
-                setupMessage(list);
+            public void onEvent(String userId, List<Message> list) {
+                List<Message> newMess = conversationList.get(toUserId);
+                newMess.addAll(list);
+                conversationList.put(toUserId, newMess);
+                if (toUserId.equals(userId)) {
+                    setupMessage(list);
+                }
             }
         });
     }
@@ -175,22 +192,26 @@ public class JFTrangChu extends JFrameBase {
     private void listenSingleChatEvent() {
         FirebaseHelper.getInstance().listenerSingleChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
-            public void onEvent(List<Message> list) {
+            public void onEvent(String userId, List<Message> list) {
                 Collections.sort(list);
-                setupMessage(list);
+//                setupMessage(list);
             }
+
         });
     }
 
     private void setupMessage(List<Message> list) {
+//        setupPosIndex();
 //        scrollPaneNoiDungCuocTroChuyen.removeAll();
 //        scrollPaneNoiDungCuocTroChuyen.revalidate();
 //        scrollPaneNoiDungCuocTroChuyen.repaint();
+
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("setupMessage list.size(): " + list.size());
+            System.out.println("setupMessage mess.size(): " + list.size());
             Message m = list.get(i);
             addMessageToScrollPane(m);
         }
+
     }
 
     int width = 0;
