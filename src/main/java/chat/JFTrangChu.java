@@ -160,6 +160,7 @@ public class JFTrangChu extends JFrameBase {
                     listenGroupChatEvent();
                 } else {
                     System.out.println("listenSingleChatEvent");
+                    FirebaseHelper.getInstance().setIsFirstLoad(false);
                     listenSingleChatEvent();
                 }
             }
@@ -186,7 +187,6 @@ public class JFTrangChu extends JFrameBase {
                 System.out.println("listenGroupChatEvent onEvent newMess: " + newMess.size());
 
                 if (toUserId.equals(userId)) {
-                    System.out.println("listenGroupChatEvent setupMessage");
                     setupMessage(list);
                 }
             }
@@ -207,7 +207,6 @@ public class JFTrangChu extends JFrameBase {
                 System.out.println("listenSingleChatEvent onEvent newMess: " + newMess.size());
 
                 if (toUserId.equals(userId) || fromUserId.equals(userId)) {
-                    System.out.println("listenSingleChatEvent setupMessage");
                     setupMessage(list);
                 }
             }
@@ -217,7 +216,7 @@ public class JFTrangChu extends JFrameBase {
 
     private void setupMessage(List<Message> list) {
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("setupMessage mess.size(): " + list.size());
+            System.out.println("setupMessage size(): " + list.size());
             Message m = list.get(i);
             addMessageToScrollPane(m);
         }

@@ -12,6 +12,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.EventListener;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreException;
+import com.google.cloud.firestore.ListenerRegistration;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
@@ -25,6 +26,7 @@ import com.google.firebase.database.annotations.Nullable;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ public final class FirebaseHelper {
 
     private Firestore db = null;
     private User authUser;
+    private boolean isFirstLoad = true;
 
     private FirebaseHelper() {
         initFirebase();
@@ -66,6 +69,10 @@ public final class FirebaseHelper {
         return authUser;
     }
 
+    public void setIsFirstLoad(boolean isFirstLoad) {
+        this.isFirstLoad = isFirstLoad;
+    }
+    
     private void initFirebase() {
         FileInputStream serviceAccount = null;
         try {
@@ -144,11 +151,13 @@ public final class FirebaseHelper {
             return false;
         }
     }
-    
-    public User getUserFromId(String id){
+
+    public User getUserFromId(String id) {
         List<User> list = getListUsers();
         for (User u : list) {
-            if (u.getId().equals(id)) return u;
+            if (u.getId().equals(id)) {
+                return u;
+            }
         }
         return new User();
     }
@@ -181,7 +190,7 @@ public final class FirebaseHelper {
         }
         return listFriend;
     }
-    
+
     public List<User> getAllStudent() {
         List<User> listFriend = new ArrayList<User>();
         List<User> list = getListUsers();
@@ -296,36 +305,42 @@ public final class FirebaseHelper {
     }
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
-//        List<Message> list = new ArrayList<>();
+        List<Message> list = new ArrayList<>();
+        db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots,
+                    @Nullable FirestoreException e) {
+                System.out.println("fromUserId: " + authUser.getId() + " toUserId: " + toUserId);
+                if (e != null) {
+                    System.err.println("Listen failed:" + e);
+                    return;
+                }
+                if (isFirstLoad) {
+                    list.addAll(listenerEvent(snapshots));
+                } else {
+                    listener.onEvent(toUserId, listenerEvent(snapshots));
+                }            
+            }
+        });
+        db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots,
+                    @Nullable FirestoreException e) {
+                System.out.println("fromUserId: " + toUserId + " toUserId: " + authUser.getId());
+                if (e != null) {
+                    System.err.println("Listen failed:" + e);
+                    return;
+                }
+                if (isFirstLoad) {
+                    list.addAll(listenerEvent(snapshots));
+                } else {
+                    listener.onEvent(authUser.getId(), listenerEvent(snapshots));
+                }  
+            }
+        });
         
-        db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots,
-                            @Nullable FirestoreException e) {
-                        System.out.println("fromUserId: " + authUser.getId() + " toUserId: " + toUserId);
-                        if (e != null) {
-                            System.err.println("Listen failed:" + e);
-                            return;
-                        }
-//                        list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(toUserId, listenerEvent(snapshots));
-                    }
-                });
-        db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots,
-                            @Nullable FirestoreException e) {
-                        System.out.println("fromUserId: " + toUserId + " toUserId: " + authUser.getId());
-                        if (e != null) {
-                            System.err.println("Listen failed:" + e);
-                            return;
-                        }
-//                        list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(authUser.getId(), listenerEvent(snapshots));
-                    }
-                });
+        listener.onEvent(authUser.getId(), list);
+        isFirstLoad = false;
     }
 
     private List<Message> listenerEvent(@Nullable QuerySnapshot snapshots) {
