@@ -308,7 +308,7 @@ public final class FirebaseHelper {
                             return;
                         }
                         list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(toUserId, authUser.getId(), list);
+                        listener.onEvent(toUserId, list);
                     }
                 });
         db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId())
@@ -321,7 +321,7 @@ public final class FirebaseHelper {
                             return;
                         }
                         list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(toUserId, authUser.getId(), list);
+                        listener.onEvent(authUser.getId(), list);
                     }
                 });
     }

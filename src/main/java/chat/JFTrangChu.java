@@ -194,6 +194,12 @@ public class JFTrangChu extends JFrameBase {
             @Override
             public void onEvent(String userId, List<Message> list) {
                 Collections.sort(list);
+                List<Message> newMess = conversationList.get(toUserId);
+                newMess.addAll(list);
+                conversationList.put(toUserId, newMess);
+                if (toUserId.equals(userId) || fromUserId.equals(userId)) {
+                    setupMessage(list);
+                }
 //                setupMessage(list);
             }
 
