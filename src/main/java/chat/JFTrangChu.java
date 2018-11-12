@@ -42,7 +42,6 @@ public class JFTrangChu extends JFrameBase {
     /**
      * Creates new form JFHome
      */
-//    private String[] friendNames;
     private User user;
     private String toUserId = "";
     private String fromUserId = "";
@@ -199,7 +198,10 @@ public class JFTrangChu extends JFrameBase {
             @Override
             public void onEvent(String userId, List<Message> list) {
                 Collections.sort(list);
-                List<Message> newMess = conversationList.get(toUserId);
+                List<Message> newMess = new ArrayList<>();
+                if (conversationList.containsKey(userId)){
+                    newMess = conversationList.get(userId);
+                }
                 newMess.addAll(list);
                 conversationList.put(toUserId, newMess);
                 System.out.println("listenSingleChatEvent onEvent newMess: " + newMess.size());
@@ -208,24 +210,17 @@ public class JFTrangChu extends JFrameBase {
                     System.out.println("listenSingleChatEvent setupMessage");
                     setupMessage(list);
                 }
-//                setupMessage(list);
             }
 
         });
     }
 
     private void setupMessage(List<Message> list) {
-//        setupPosIndex();
-//        scrollPaneNoiDungCuocTroChuyen.removeAll();
-//        scrollPaneNoiDungCuocTroChuyen.revalidate();
-//        scrollPaneNoiDungCuocTroChuyen.repaint();
-
         for (int i = 0; i < list.size(); i++) {
             System.out.println("setupMessage mess.size(): " + list.size());
             Message m = list.get(i);
             addMessageToScrollPane(m);
         }
-
     }
 
     int width = 0;

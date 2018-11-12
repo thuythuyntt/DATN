@@ -47,7 +47,6 @@ public final class FirebaseHelper {
     }
 
     private Firestore db = null;
-//    private Bucket bucket = null;
     private User authUser;
 
     private FirebaseHelper() {
