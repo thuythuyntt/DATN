@@ -42,7 +42,7 @@ public class JFTrangChu extends JFrameBase {
     /**
      * Creates new form JFHome
      */
-    private String[] friendNames;
+//    private String[] friendNames;
     private User user;
     private String toUserId = "";
     private String fromUserId = "";
@@ -73,7 +73,6 @@ public class JFTrangChu extends JFrameBase {
             }
         }));
 
-        
 //        BufferedImage img;
 //        try {
 //            img = ImageIO.read(new URL("http://www.java2s.com/style/download.png"));
@@ -118,11 +117,11 @@ public class JFTrangChu extends JFrameBase {
 
     private void setupInfo() {
         conversationList = new HashMap<>();
-        
+
         user = FirebaseHelper.getInstance().getAuthUser();
-        
+
         fromUserId = user.getId();
-        
+
         lbTenGV.setText(user.getFullname());
         lbTenCuocTroChuyen.setText("ALL");
     }
@@ -179,10 +178,16 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-                List<Message> newMess = conversationList.get(toUserId);
+                List<Message> newMess = new ArrayList<>();
+                if (conversationList.containsKey(userId)){
+                    newMess = conversationList.get(userId);
+                }
                 newMess.addAll(list);
-                conversationList.put(toUserId, newMess);
+                conversationList.put(userId, newMess);
+                System.out.println("listenGroupChatEvent onEvent newMess: " + newMess.size());
+
                 if (toUserId.equals(userId)) {
+                    System.out.println("listenGroupChatEvent setupMessage");
                     setupMessage(list);
                 }
             }
@@ -197,7 +202,10 @@ public class JFTrangChu extends JFrameBase {
                 List<Message> newMess = conversationList.get(toUserId);
                 newMess.addAll(list);
                 conversationList.put(toUserId, newMess);
+                System.out.println("listenSingleChatEvent onEvent newMess: " + newMess.size());
+
                 if (toUserId.equals(userId) || fromUserId.equals(userId)) {
+                    System.out.println("listenSingleChatEvent setupMessage");
                     setupMessage(list);
                 }
 //                setupMessage(list);
