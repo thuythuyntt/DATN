@@ -296,18 +296,20 @@ public final class FirebaseHelper {
     }
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
-        List<Message> list = new ArrayList<>();
+//        List<Message> list = new ArrayList<>();
+        
         db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots,
                             @Nullable FirestoreException e) {
+                        System.out.println("fromUserId: " + authUser.getId() + " toUserId: " + toUserId);
                         if (e != null) {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(toUserId, list);
+//                        list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(toUserId, listenerEvent(snapshots));
                     }
                 });
         db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId())
@@ -315,12 +317,13 @@ public final class FirebaseHelper {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots,
                             @Nullable FirestoreException e) {
+                        System.out.println("fromUserId: " + toUserId + " toUserId: " + authUser.getId());
                         if (e != null) {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        list.addAll(listenerEvent(snapshots));
-                        listener.onEvent(authUser.getId(), list);
+//                        list.addAll(listenerEvent(snapshots));
+                        listener.onEvent(authUser.getId(), listenerEvent(snapshots));
                     }
                 });
     }
