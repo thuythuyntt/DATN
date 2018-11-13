@@ -72,7 +72,7 @@ public final class FirebaseHelper {
     public void setIsFirstLoad(boolean isFirstLoad) {
         this.isFirstLoad = isFirstLoad;
     }
-    
+
     private void initFirebase() {
         FileInputStream serviceAccount = null;
         try {
@@ -304,9 +304,14 @@ public final class FirebaseHelper {
                 });
     }
 
+    public ListenerRegistration registration1, registration2;
+
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
+        System.out.println("isFirstLoad: " + isFirstLoad);
+
         List<Message> list = new ArrayList<>();
-        db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        Query q1 = db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId);
+        registration1 = q1.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
                     @Nullable FirestoreException e) {
@@ -318,11 +323,14 @@ public final class FirebaseHelper {
                 if (isFirstLoad) {
                     list.addAll(listenerEvent(snapshots));
                 } else {
+                    System.out.println("isFirstLoad false");
                     listener.onEvent(toUserId, listenerEvent(snapshots));
-                }            
+                }
             }
         });
-        db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        Query q2 = db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId());
+        registration2 = q2.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
                     @Nullable FirestoreException e) {
@@ -334,11 +342,12 @@ public final class FirebaseHelper {
                 if (isFirstLoad) {
                     list.addAll(listenerEvent(snapshots));
                 } else {
+                    System.out.println("isFirstLoad false");
                     listener.onEvent(authUser.getId(), listenerEvent(snapshots));
-                }  
+                }
             }
         });
-        
+
         listener.onEvent(authUser.getId(), list);
         isFirstLoad = false;
     }

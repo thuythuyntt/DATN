@@ -147,6 +147,10 @@ public class JFTrangChu extends JFrameBase {
         tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                
+//                FirebaseHelper.getInstance().registration1.remove();
+//                FirebaseHelper.getInstance().registration2.remove();
+
                 int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
                 System.out.println("row: " + row);
                 toUserId = list.get(row).getId();
@@ -160,7 +164,8 @@ public class JFTrangChu extends JFrameBase {
                     listenGroupChatEvent();
                 } else {
                     System.out.println("listenSingleChatEvent");
-                    FirebaseHelper.getInstance().setIsFirstLoad(false);
+                    FirebaseHelper.getInstance().setIsFirstLoad(true);
+
                     listenSingleChatEvent();
                 }
             }
@@ -179,7 +184,7 @@ public class JFTrangChu extends JFrameBase {
             @Override
             public void onEvent(String userId, List<Message> list) {
                 List<Message> newMess = new ArrayList<>();
-                if (conversationList.containsKey(userId)){
+                if (conversationList.containsKey(userId)) {
                     newMess = conversationList.get(userId);
                 }
                 newMess.addAll(list);
@@ -199,7 +204,7 @@ public class JFTrangChu extends JFrameBase {
             public void onEvent(String userId, List<Message> list) {
                 Collections.sort(list);
                 List<Message> newMess = new ArrayList<>();
-                if (conversationList.containsKey(userId)){
+                if (conversationList.containsKey(userId)) {
                     newMess = conversationList.get(userId);
                 }
                 newMess.addAll(list);
