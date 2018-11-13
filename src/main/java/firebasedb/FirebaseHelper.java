@@ -288,9 +288,11 @@ public final class FirebaseHelper {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    //Đang bị double tin nhắn trong group
 
     public void listenerGroupChatEvent(String toUserId, RoomMessageChangeListener listener) {
-        mListGroupMessage = new ArrayList<>();
+//        mListGroupMessage = new ArrayList<>();
         db.collection("chat").whereEqualTo("toUserId", toUserId)
                 .orderBy("datetime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -301,21 +303,21 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        List<Message> lst = listenerEvent(snapshots);
-                        List<Message> newMess = new ArrayList<Message>();
-                        for (Message m : lst) {
-                            if (!containsMessage(m.getId())) {
-                                newMess.add(m);
-                                mListGroupMessage.add(m);
-                            }
-                        }
-                        listener.onEvent(toUserId, newMess);
-//                        listener.onEvent(toUserId, listenerEvent(snapshots));
+//                        List<Message> lst = listenerEvent(snapshots);
+//                        List<Message> newMess = new ArrayList<Message>();
+//                        for (Message m : lst) {
+//                            if (!containsMessage(m.getId())) {
+//                                newMess.add(m);
+//                                mListGroupMessage.add(m);
+//                            }
+//                        }
+//                        listener.onEvent(toUserId, newMess);
+                        listener.onEvent(toUserId, listenerEvent(snapshots));
                     }
                 });
     }
     public List<Message> mListSingleMessage;
-    public List<Message> mListGroupMessage;
+//    public List<Message> mListGroupMessage;
 
     public void getSingleMessage(String toUserId) {
         mListSingleMessage = new ArrayList<>();
@@ -419,7 +421,7 @@ public final class FirebaseHelper {
         return mListSingleMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
     }
     
-    public boolean containsMessageGroup(final String id) {
-        return mListGroupMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
-    }
+//    public boolean containsMessageGroup(final String id) {
+//        return mListGroupMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
+//    }
 }
