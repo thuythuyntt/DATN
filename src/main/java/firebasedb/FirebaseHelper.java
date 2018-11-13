@@ -46,6 +46,7 @@ public final class FirebaseHelper {
     public interface RoomMessageChangeListener {
 
         void onEvent(String toUserId, List<Message> list);
+
         void onEvent(String userA, String userB, List<Message> list);
     }
 
@@ -299,7 +300,15 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-                        listener.onEvent(toUserId, listenerEvent(snapshots));
+                        List<Message> lst = listenerEvent(snapshots);
+                        List<Message> newMess = new ArrayList<Message>();
+                        for (Message m : lst) {
+                            if (!containsMessage(m.getId())) {
+                                newMess.add(m);
+                            }
+                        }
+                        listener.onEvent(toUserId, newMess);
+//                        listener.onEvent(toUserId, listenerEvent(snapshots));
                     }
                 });
     }
