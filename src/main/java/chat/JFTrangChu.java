@@ -147,9 +147,6 @@ public class JFTrangChu extends JFrameBase {
         tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                
-//                FirebaseHelper.getInstance().registration1.remove();
-//                FirebaseHelper.getInstance().registration2.remove();
 
                 int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
                 toUserId = list.get(row).getId();
@@ -161,7 +158,6 @@ public class JFTrangChu extends JFrameBase {
                 if (row == 0) {
                     listenGroupChatEvent();
                 } else {
-//                    FirebaseHelper.getInstance().getSingleMessage(toUserId);
                     listenSingleChatEvent();
                 }
             }
@@ -185,12 +181,14 @@ public class JFTrangChu extends JFrameBase {
 //                }
 //                newMess.addAll(list);
 //                conversationList.put(userId, newMess);
-//                System.out.println("listenGroupChatEvent onEvent newMess: " + newMess.size());
 
                 if (toUserId.equals(userId)) {
                     setupMessage(list);
                 }
             }
+
+            @Override
+            public void onEvent(String toUserId, String fromUserId, List<Message> list) {}
         });
     }
 
@@ -198,16 +196,18 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerSingleChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-//                Collections.sort(list);
+            }
+
+            @Override
+            public void onEvent(String userA, String userB, List<Message> list) {
 //                List<Message> newMess = new ArrayList<>();
-//                if (conversationList.containsKey(userId)) {
-//                    newMess = conversationList.get(userId);
+//                if (conversationList.containsKey(userB)) {
+//                    newMess = conversationList.get(userB);
 //                }
 //                newMess.addAll(list);
 //                conversationList.put(toUserId, newMess);
-//                System.out.println("listenSingleChatEvent onEvent newMess: " + newMess.size());
 
-                if (toUserId.equals(userId) || fromUserId.equals(userId)) {
+                if ((fromUserId.equals(userA) && toUserId.equals(userB)) || (fromUserId.equals(userB) && toUserId.equals(userA))) {
                     setupMessage(list);
                 }
             }
@@ -216,8 +216,8 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupMessage(List<Message> list) {
+        System.out.println("setupMessage size(): " + list.size());
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("setupMessage size(): " + list.size());
             Message m = list.get(i);
             addMessageToScrollPane(m);
         }

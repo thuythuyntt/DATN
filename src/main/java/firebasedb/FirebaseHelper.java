@@ -46,6 +46,7 @@ public final class FirebaseHelper {
     public interface RoomMessageChangeListener {
 
         void onEvent(String toUserId, List<Message> list);
+        void onEvent(String userA, String userB, List<Message> list);
     }
 
     private Firestore db = null;
@@ -356,7 +357,7 @@ public final class FirebaseHelper {
                         mListSingleMessage.add(m);
                     }
                 }
-                listener.onEvent(toUserId, newMess);
+                listener.onEvent(authUser.getId(), toUserId, newMess);
             }
         });
 
@@ -377,7 +378,7 @@ public final class FirebaseHelper {
                         mListSingleMessage.add(m);
                     }
                 }
-                listener.onEvent(authUser.getId(), newMess);
+                listener.onEvent(toUserId, authUser.getId(), newMess);
 //                listener.onEvent(authUser.getId(), listenerEvent(snapshots));
             }
         });
