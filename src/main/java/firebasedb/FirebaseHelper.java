@@ -339,7 +339,7 @@ public final class FirebaseHelper {
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
         getSingleMessage(toUserId);
-        listener.onEvent(toUserId, mListSingleMessage);
+        listener.onEvent(authUser.getId(), toUserId, mListSingleMessage);
         Query q1 = db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId);
         registration1 = q1.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
