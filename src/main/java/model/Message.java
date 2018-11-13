@@ -6,6 +6,7 @@
 package model;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import java.util.List;
 
 /**
  *
@@ -66,6 +67,5 @@ public class Message extends ModelBase implements Comparable<Message>{
     public int compareTo(Message o) {
         return this.datetime.compareTo(o.datetime);
     }
-    
     
 }

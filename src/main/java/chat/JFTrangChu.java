@@ -46,7 +46,7 @@ public class JFTrangChu extends JFrameBase {
     private String toUserId = "";
     private String fromUserId = "";
 
-    private Map<String, List<Message>> conversationList;
+//    private Map<String, List<Message>> conversationList;
 
     public JFTrangChu() {
         initComponents();
@@ -115,7 +115,7 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupInfo() {
-        conversationList = new HashMap<>();
+//        conversationList = new HashMap<>();
 
         user = FirebaseHelper.getInstance().getAuthUser();
 
@@ -152,7 +152,6 @@ public class JFTrangChu extends JFrameBase {
 //                FirebaseHelper.getInstance().registration2.remove();
 
                 int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
-                System.out.println("row: " + row);
                 toUserId = list.get(row).getId();
                 setupPosIndex();
                 scrollPaneNoiDungCuocTroChuyen.removeAll();
@@ -160,12 +159,9 @@ public class JFTrangChu extends JFrameBase {
                 scrollPaneNoiDungCuocTroChuyen.repaint();
                 lbTenCuocTroChuyen.setText(list.get(row).getFullname());
                 if (row == 0) {
-                    System.out.println("listenGroupChatEvent");
                     listenGroupChatEvent();
                 } else {
-                    System.out.println("listenSingleChatEvent");
-                    FirebaseHelper.getInstance().setIsFirstLoad(true);
-
+//                    FirebaseHelper.getInstance().getSingleMessage(toUserId);
                     listenSingleChatEvent();
                 }
             }
@@ -183,13 +179,13 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-                List<Message> newMess = new ArrayList<>();
-                if (conversationList.containsKey(userId)) {
-                    newMess = conversationList.get(userId);
-                }
-                newMess.addAll(list);
-                conversationList.put(userId, newMess);
-                System.out.println("listenGroupChatEvent onEvent newMess: " + newMess.size());
+//                List<Message> newMess = new ArrayList<>();
+//                if (conversationList.containsKey(userId)) {
+//                    newMess = conversationList.get(userId);
+//                }
+//                newMess.addAll(list);
+//                conversationList.put(userId, newMess);
+//                System.out.println("listenGroupChatEvent onEvent newMess: " + newMess.size());
 
                 if (toUserId.equals(userId)) {
                     setupMessage(list);
@@ -202,14 +198,14 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerSingleChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-                Collections.sort(list);
-                List<Message> newMess = new ArrayList<>();
-                if (conversationList.containsKey(userId)) {
-                    newMess = conversationList.get(userId);
-                }
-                newMess.addAll(list);
-                conversationList.put(toUserId, newMess);
-                System.out.println("listenSingleChatEvent onEvent newMess: " + newMess.size());
+//                Collections.sort(list);
+//                List<Message> newMess = new ArrayList<>();
+//                if (conversationList.containsKey(userId)) {
+//                    newMess = conversationList.get(userId);
+//                }
+//                newMess.addAll(list);
+//                conversationList.put(toUserId, newMess);
+//                System.out.println("listenSingleChatEvent onEvent newMess: " + newMess.size());
 
                 if (toUserId.equals(userId) || fromUserId.equals(userId)) {
                     setupMessage(list);

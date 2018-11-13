@@ -50,7 +50,7 @@ public final class FirebaseHelper {
 
     private Firestore db = null;
     private User authUser;
-    private boolean isFirstLoad = true;
+//    private boolean isFirstLoad = true;
 
     private FirebaseHelper() {
         initFirebase();
@@ -69,10 +69,9 @@ public final class FirebaseHelper {
         return authUser;
     }
 
-    public void setIsFirstLoad(boolean isFirstLoad) {
-        this.isFirstLoad = isFirstLoad;
-    }
-
+//    public void setIsFirstLoad(boolean isFirstLoad) {
+//        this.isFirstLoad = isFirstLoad;
+//    }
     private void initFirebase() {
         FileInputStream serviceAccount = null;
         try {
@@ -303,29 +302,61 @@ public final class FirebaseHelper {
                     }
                 });
     }
+    public List<Message> mListSingleMessage;
+
+    public void getSingleMessage(String toUserId) {
+        mListSingleMessage = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> query = db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId).get();
+            QuerySnapshot querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+            documents.forEach((doc) -> {
+                Message m = new Message();
+                m.fromQueryDocument(doc);
+                mListSingleMessage.add(m);
+            });
+
+            ApiFuture<QuerySnapshot> query2 = db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId()).get();
+            QuerySnapshot querySnapshot2 = query2.get();
+            List<QueryDocumentSnapshot> documents2 = querySnapshot2.getDocuments();
+            documents2.forEach((doc) -> {
+                Message m = new Message();
+                m.fromQueryDocument(doc);
+                mListSingleMessage.add(m);
+            });
+
+            Collections.sort(mListSingleMessage);
+
+//            return list;
+        } catch (Exception ex) {
+            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+//            return list;
+        }
+    }
 
     public ListenerRegistration registration1, registration2;
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
-        System.out.println("isFirstLoad: " + isFirstLoad);
-
-        List<Message> list = new ArrayList<>();
+        getSingleMessage(toUserId);
+        listener.onEvent(toUserId, mListSingleMessage);
         Query q1 = db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId);
         registration1 = q1.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
                     @Nullable FirestoreException e) {
-                System.out.println("fromUserId: " + authUser.getId() + " toUserId: " + toUserId);
                 if (e != null) {
                     System.err.println("Listen failed:" + e);
                     return;
                 }
-                if (isFirstLoad) {
-                    list.addAll(listenerEvent(snapshots));
-                } else {
-                    System.out.println("isFirstLoad false");
-                    listener.onEvent(toUserId, listenerEvent(snapshots));
+                List<Message> lst = listenerEvent(snapshots);
+                List<Message> newMess = new ArrayList<Message>();
+                for (Message m : lst) {
+                    if (!containsMessage(m.getId())) {
+                        newMess.add(m);
+                        mListSingleMessage.add(m);
+                    }
                 }
+                listener.onEvent(toUserId, newMess);
             }
         });
 
@@ -334,22 +365,23 @@ public final class FirebaseHelper {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
                     @Nullable FirestoreException e) {
-                System.out.println("fromUserId: " + toUserId + " toUserId: " + authUser.getId());
                 if (e != null) {
                     System.err.println("Listen failed:" + e);
                     return;
                 }
-                if (isFirstLoad) {
-                    list.addAll(listenerEvent(snapshots));
-                } else {
-                    System.out.println("isFirstLoad false");
-                    listener.onEvent(authUser.getId(), listenerEvent(snapshots));
+                List<Message> lst = listenerEvent(snapshots);
+                List<Message> newMess = new ArrayList<Message>();
+                for (Message m : lst) {
+                    if (!containsMessage(m.getId())) {
+                        newMess.add(m);
+                        mListSingleMessage.add(m);
+                    }
                 }
+                listener.onEvent(authUser.getId(), newMess);
+//                listener.onEvent(authUser.getId(), listenerEvent(snapshots));
             }
         });
 
-        listener.onEvent(authUser.getId(), list);
-        isFirstLoad = false;
     }
 
     private List<Message> listenerEvent(@Nullable QuerySnapshot snapshots) {
@@ -368,5 +400,9 @@ public final class FirebaseHelper {
             }
         }
         return list;
+    }
+
+    public boolean containsMessage(final String id) {
+        return mListSingleMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
     }
 }
