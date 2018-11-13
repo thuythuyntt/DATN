@@ -290,6 +290,7 @@ public final class FirebaseHelper {
     }
 
     public void listenerGroupChatEvent(String toUserId, RoomMessageChangeListener listener) {
+        mListGroupMessage = new ArrayList<>();
         db.collection("chat").whereEqualTo("toUserId", toUserId)
                 .orderBy("datetime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -305,6 +306,7 @@ public final class FirebaseHelper {
                         for (Message m : lst) {
                             if (!containsMessage(m.getId())) {
                                 newMess.add(m);
+                                mListGroupMessage.add(m);
                             }
                         }
                         listener.onEvent(toUserId, newMess);
@@ -313,6 +315,7 @@ public final class FirebaseHelper {
                 });
     }
     public List<Message> mListSingleMessage;
+    public List<Message> mListGroupMessage;
 
     public void getSingleMessage(String toUserId) {
         mListSingleMessage = new ArrayList<>();
@@ -414,5 +417,9 @@ public final class FirebaseHelper {
 
     public boolean containsMessage(final String id) {
         return mListSingleMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
+    }
+    
+    public boolean containsMessageGroup(final String id) {
+        return mListGroupMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
     }
 }
