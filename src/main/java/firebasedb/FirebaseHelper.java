@@ -350,6 +350,11 @@ public final class FirebaseHelper {
     }
 
     public ListenerRegistration registration1, registration2;
+    
+    public void detachListenerRegistration(){
+        registration1.remove();
+        registration2.remove();
+    }
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
         getSingleMessage(toUserId);

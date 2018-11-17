@@ -136,7 +136,7 @@ public class JFDangNhap extends JFrameBase {
     
     private void btnDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangNhapActionPerformed
         if (FirebaseHelper.getInstance().checkLogin(tfTenDangNhap.getText(), pfMatKhau.getText())) {
-            new WebSocketClient().connect(url);
+//            new WebSocketClient().connect(url);
             this.dispose();
             this.showScreen(new JFTrangChu());
         } else {
