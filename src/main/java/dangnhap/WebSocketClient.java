@@ -1,4 +1,4 @@
-
+package dangnhap;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 
 public class WebSocketClient {
-
 	
     public void connect(String webSocketUrl) {
         URI uri = null;
