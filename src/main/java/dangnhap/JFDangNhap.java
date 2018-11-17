@@ -131,19 +131,17 @@ public class JFDangNhap extends JFrameBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
     static final String url = System.getProperty("url", "ws://127.0.0.1:8080/websocket");
+    
     private void btnDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangNhapActionPerformed
-            if (FirebaseHelper.getInstance().checkLogin(tfTenDangNhap.getText(), pfMatKhau.getText())) {
-                
-                WebSocketClient socketClient = new WebSocketClient();
-                socketClient.connect(url);
-                
-                
-                this.dispose();
-                this.showScreen(new JFTrangChu());
-            } else {
-                JOptionPane.showMessageDialog(this, "Tài khoản không đúng!", "ERROR", JOptionPane.ERROR_MESSAGE);
-            }
+        if (FirebaseHelper.getInstance().checkLogin(tfTenDangNhap.getText(), pfMatKhau.getText())) {
+            new WebSocketClient().connect(url);
+            this.dispose();
+            this.showScreen(new JFTrangChu());
+        } else {
+            JOptionPane.showMessageDialog(this, "Tài khoản không đúng!", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnDangNhapActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
