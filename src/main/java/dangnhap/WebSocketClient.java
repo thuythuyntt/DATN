@@ -37,7 +37,7 @@ public class WebSocketClient {
             uri = new URI(webSocketUrl);
 
             String scheme = uri.getScheme() == null ? "ws" : uri.getScheme();
-            final String host = uri.getHost() == null ? "127.0.0.1" : uri.getHost();
+            final String host = uri.getHost() == null ? "192.168.4.36" : uri.getHost();
             final int port;
             if (uri.getPort() == -1) {
                 if ("ws".equalsIgnoreCase(scheme)) {
