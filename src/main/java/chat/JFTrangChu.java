@@ -46,7 +46,7 @@ public class JFTrangChu extends JFrameBase {
     private String toUserId = "";
     private String fromUserId = "";
 
-    private Map<String, List<Message>> conversationList;
+//    private Map<String, List<Message>> conversationList;
 
     public JFTrangChu() {
         initComponents();
@@ -115,7 +115,7 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupInfo() {
-        conversationList = new HashMap<>();
+//        conversationList = new HashMap<>();
 
         user = FirebaseHelper.getInstance().getAuthUser();
 
@@ -175,12 +175,12 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-                List<Message> newMess = new ArrayList<>();
-                if (conversationList.containsKey(userId)) {
-                    newMess = conversationList.get(userId);
-                }
-                newMess.addAll(list);
-                conversationList.put(userId, newMess);
+//                List<Message> newMess = new ArrayList<>();
+//                if (conversationList.containsKey(userId)) {
+//                    newMess = conversationList.get(userId);
+//                }
+//                newMess.addAll(list);
+//                conversationList.put(userId, newMess);
 
                 if (toUserId.equals(userId)) {
                     setupMessage(list);
@@ -193,7 +193,6 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void listenSingleChatEvent() {
-        FirebaseHelper.getInstance().detachListenerRegistration();
         FirebaseHelper.getInstance().listenerSingleChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {

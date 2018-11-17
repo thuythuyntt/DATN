@@ -288,11 +288,10 @@ public final class FirebaseHelper {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    //Đang bị double tin nhắn trong group
 
+    //Đang bị double tin nhắn trong group
     public void listenerGroupChatEvent(String toUserId, RoomMessageChangeListener listener) {
-//        mListGroupMessage = new ArrayList<>();
+        mListGroupMessage = new ArrayList<>();
         db.collection("chat").whereEqualTo("toUserId", toUserId)
                 .orderBy("datetime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -303,21 +302,20 @@ public final class FirebaseHelper {
                             System.err.println("Listen failed:" + e);
                             return;
                         }
-//                        List<Message> lst = listenerEvent(snapshots);
-//                        List<Message> newMess = new ArrayList<Message>();
-//                        for (Message m : lst) {
-//                            if (!containsMessage(m.getId())) {
-//                                newMess.add(m);
-//                                mListGroupMessage.add(m);
-//                            }
-//                        }
-//                        listener.onEvent(toUserId, newMess);
-                        listener.onEvent(toUserId, listenerEvent(snapshots));
+                        List<Message> lst = listenerEvent(snapshots);
+                        List<Message> newMess = new ArrayList<Message>();
+                        for (Message m : lst) {
+                            if (!containsGroupMessage(m.getId())) {
+                                newMess.add(m);
+                                mListGroupMessage.add(m);
+                            }
+                        }
+                        listener.onEvent(toUserId, newMess);
                     }
                 });
     }
     public List<Message> mListSingleMessage;
-//    public List<Message> mListGroupMessage;
+    public List<Message> mListGroupMessage;
 
     public void getSingleMessage(String toUserId) {
         mListSingleMessage = new ArrayList<>();
@@ -342,25 +340,15 @@ public final class FirebaseHelper {
 
             Collections.sort(mListSingleMessage);
 
-//            return list;
         } catch (Exception ex) {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
-//            return list;
         }
-    }
-
-    public ListenerRegistration registration1, registration2;
-    
-    public void detachListenerRegistration(){
-        registration1.remove();
-        registration2.remove();
     }
 
     public void listenerSingleChatEvent(String toUserId, RoomMessageChangeListener listener) {
         getSingleMessage(toUserId);
         listener.onEvent(authUser.getId(), toUserId, mListSingleMessage);
-        Query q1 = db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId);
-        registration1 = q1.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("chat").whereEqualTo("fromUserId", authUser.getId()).whereEqualTo("toUserId", toUserId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
                     @Nullable FirestoreException e) {
@@ -371,7 +359,7 @@ public final class FirebaseHelper {
                 List<Message> lst = listenerEvent(snapshots);
                 List<Message> newMess = new ArrayList<Message>();
                 for (Message m : lst) {
-                    if (!containsMessage(m.getId())) {
+                    if (!containsSingleMessage(m.getId())) {
                         newMess.add(m);
                         mListSingleMessage.add(m);
                     }
@@ -380,8 +368,7 @@ public final class FirebaseHelper {
             }
         });
 
-        Query q2 = db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId());
-        registration2 = q2.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("chat").whereEqualTo("fromUserId", toUserId).whereEqualTo("toUserId", authUser.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
                     @Nullable FirestoreException e) {
@@ -392,13 +379,12 @@ public final class FirebaseHelper {
                 List<Message> lst = listenerEvent(snapshots);
                 List<Message> newMess = new ArrayList<Message>();
                 for (Message m : lst) {
-                    if (!containsMessage(m.getId())) {
+                    if (!containsSingleMessage(m.getId())) {
                         newMess.add(m);
                         mListSingleMessage.add(m);
                     }
                 }
                 listener.onEvent(toUserId, authUser.getId(), newMess);
-//                listener.onEvent(authUser.getId(), listenerEvent(snapshots));
             }
         });
 
@@ -422,11 +408,11 @@ public final class FirebaseHelper {
         return list;
     }
 
-    public boolean containsMessage(final String id) {
+    public boolean containsSingleMessage(final String id) {
         return mListSingleMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
     }
-    
-//    public boolean containsMessageGroup(final String id) {
-//        return mListGroupMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
-//    }
+
+    public boolean containsGroupMessage(final String id) {
+        return mListGroupMessage.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
+    }
 }
