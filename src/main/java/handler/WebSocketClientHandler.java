@@ -1,5 +1,6 @@
 package client.handler;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,14 +13,26 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.CharsetUtil;
+import model.SocketMessage;
 
 public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> {
 
     private final WebSocketClientHandshaker handshaker;
     private ChannelPromise handshakeFuture;
+    private ChannelHandlerContext ctx;
 
     public WebSocketClientHandler(WebSocketClientHandshaker handshaker) {
         this.handshaker = handshaker;
+    }
+    
+    public void sendMessage() {
+        if (ctx == null) {
+            return;
+        }
+        SocketMessage sm = new SocketMessage();
+        sm.setId("xxx");
+        sm.setText("yyy");
+        ctx.writeAndFlush(sm);
     }
 
     public ChannelFuture handshakeFuture() {
@@ -34,6 +47,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         handshaker.handshake(ctx.channel());
+        this.ctx = ctx;
     }
 
     @Override
@@ -48,6 +62,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
             handshaker.finishHandshake(ch, (FullHttpResponse) msg);
             System.out.println("WebSocket Client connected!");
             handshakeFuture.setSuccess();
+            sendMessage();
             return;
         }
 
@@ -59,6 +74,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
         }
 
         WebSocketFrame frame = (WebSocketFrame) msg;
+        System.out.println("WebSocketFrame:" +frame.getClass().getSimpleName());
         if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
             System.out.println("WebSocket Client received message: " + textFrame.text());
