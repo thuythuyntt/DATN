@@ -289,7 +289,10 @@ public final class FirebaseHelper {
         }
     }
 
-    //Đang bị double tin nhắn trong group
+    // Đang bị double tin nhắn do có nhiều snapshotlistener cùng lắng nghe cùng một sự thay đổi:
+    // khi click vài lần để chuyển tới cuộc trò chuyện nào đó, mỗi lần click là một lần tạo ra listener để lắng nghe sự thay đổi
+    // => Tạo ra mảng chứa tin nhắn, chưa có thì thêm vào mảng và cập nhật lại giao diện chat.
+    
     public void listenerGroupChatEvent(String toUserId, RoomMessageChangeListener listener) {
         mListGroupMessage = new ArrayList<>();
         db.collection("chat").whereEqualTo("toUserId", toUserId)

@@ -47,7 +47,6 @@ public class JFTrangChu extends JFrameBase {
     private String fromUserId = "";
 
 //    private Map<String, List<Message>> conversationList;
-
     public JFTrangChu() {
         initComponents();
         initCustomComponents();
@@ -188,7 +187,8 @@ public class JFTrangChu extends JFrameBase {
             }
 
             @Override
-            public void onEvent(String toUserId, String fromUserId, List<Message> list) {}
+            public void onEvent(String toUserId, String fromUserId, List<Message> list) {
+            }
         });
     }
 
@@ -255,11 +255,8 @@ public class JFTrangChu extends JFrameBase {
             textArea.setBackground(Color.decode("#B0BEC5"));
         }
         posY += padding * 2 + height + margin;
-
-        scrollPaneNoiDungCuocTroChuyen.add(textArea);
         scrollPaneNoiDungCuocTroChuyen.setPreferredSize(new Dimension(750, posY));
-        scrollPaneNoiDungCuocTroChuyen.repaint();
-        jScrollPane.repaint();
+        scrollPaneNoiDungCuocTroChuyen.add(textArea);
 
         JScrollBar verticalBar = jScrollPane.getVerticalScrollBar();
         AdjustmentListener downScroller = new AdjustmentListener() {
@@ -271,6 +268,11 @@ public class JFTrangChu extends JFrameBase {
             }
         };
         verticalBar.addAdjustmentListener(downScroller);
+
+        scrollPaneNoiDungCuocTroChuyen.repaint();
+        scrollPaneNoiDungCuocTroChuyen.revalidate();
+        jScrollPane.repaint();
+        jScrollPane.revalidate();
     }
 
     public void showPersonInformation() {
