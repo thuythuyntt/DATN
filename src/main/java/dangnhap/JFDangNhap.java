@@ -5,6 +5,7 @@
  */
 package dangnhap;
 
+import socket.WebSocketClient;
 import chat.JFTrangChu;
 import chat.JFrameBase;
 import firebasedb.FirebaseHelper;
@@ -20,6 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.plaf.ProgressBarUI;
+import model.SocketMessage;
+import socket.SocketHelper;
 
 /**
  *
@@ -136,9 +139,13 @@ public class JFDangNhap extends JFrameBase {
     
     private void btnDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangNhapActionPerformed
         if (FirebaseHelper.getInstance().checkLogin(tfTenDangNhap.getText(), pfMatKhau.getText())) {
-//            new WebSocketClient().connect(url);
-            this.dispose();
-            this.showScreen(new JFTrangChu());
+            SocketHelper.getInstance().connectServer(url, new WebSocketClient.Listener() {
+                @Override
+                public void connected() {
+                    JFDangNhap.this.dispose();
+                    JFDangNhap.this.showScreen(new JFTrangChu());
+                }
+            });
         } else {
             JOptionPane.showMessageDialog(this, "Tài khoản không đúng!", "ERROR", JOptionPane.ERROR_MESSAGE);
         }

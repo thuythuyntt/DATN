@@ -1,5 +1,6 @@
-package client.handler;
+package socket;
 
+import socket.WebSocketClient;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -20,18 +21,18 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
     private final WebSocketClientHandshaker handshaker;
     private ChannelPromise handshakeFuture;
     private ChannelHandlerContext ctx;
+    private WebSocketClient.Listener socketClientListener;
 
-    public WebSocketClientHandler(WebSocketClientHandshaker handshaker) {
+    public WebSocketClientHandler(WebSocketClientHandshaker handshaker, WebSocketClient.Listener socketClientListener) {
         this.handshaker = handshaker;
+        this.socketClientListener = socketClientListener;
     }
     
-    public void sendMessage() {
+    public void sendMessage(SocketMessage sm) {
         if (ctx == null) {
             return;
         }
-        SocketMessage sm = new SocketMessage();
-        sm.setId("xxx");
-        sm.setText("yyy");
+        System.err.println("[sendMessage]SocketMessage: " + sm.toString());
         ctx.writeAndFlush(sm);
     }
 
@@ -62,7 +63,8 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
             handshaker.finishHandshake(ch, (FullHttpResponse) msg);
             System.out.println("WebSocket Client connected!");
             handshakeFuture.setSuccess();
-            sendMessage();
+            socketClientListener.connected();
+            //sendMessage();
             return;
         }
 

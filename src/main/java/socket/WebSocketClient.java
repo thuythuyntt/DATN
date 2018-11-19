@@ -1,4 +1,4 @@
-package dangnhap;
+package socket;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import client.handler.WebSocketClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -27,8 +26,24 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.SocketMessage;
 
 public class WebSocketClient {
+    
+    public interface Listener {
+        void connected();
+    }
+    
+    private Listener listener;
+    private WebSocketClientHandler handler;
+    
+    public WebSocketClient(Listener listener) {
+        this.listener = listener;
+    }
+    
+    public void sendMessage(SocketMessage sm) {
+        handler.sendMessage(sm);
+    }
 
     public void connect(String webSocketUrl) {
         try {
@@ -58,10 +73,8 @@ public class WebSocketClient {
 
             EventLoopGroup group = new NioEventLoopGroup();
             try {
-                final WebSocketClientHandler handler
-                        = new WebSocketClientHandler(
-                                WebSocketClientHandshakerFactory.newHandshaker(
-                                        uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders()));
+                handler = new WebSocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(
+                                        uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders()), listener);
 
                 Bootstrap b = new Bootstrap();
                 b.group(group)
@@ -79,36 +92,36 @@ public class WebSocketClient {
 
                 Channel ch = b.connect(uri.getHost(), port).sync().channel();
                 handler.handshakeFuture().sync();
-                BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-                while (true) {
-                    String msg;
-                    msg = console.readLine();
-
-                    if (msg == null) {
-                        break;
-                    } else if ("bye".equals(msg.toLowerCase())) {
-                        ch.writeAndFlush(new CloseWebSocketFrame());
-                        ch.closeFuture().sync();
-                        break;
-                    } else if ("ping".equals(msg.toLowerCase())) {
-                        WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
-                        ch.writeAndFlush(frame);
-                    } else {
-                        String jsonExample = "{\"foo\" : \"foo\", \"bar\" : \"bar\"}";
-                        WebSocketFrame frame = new TextWebSocketFrame(jsonExample);
-                        ch.writeAndFlush(frame);
-                    }
-                }
+//                BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+//                while (true) {
+//                    String msg;
+//                    msg = console.readLine();
+//
+//                    if (msg == null) {
+//                        break;
+//                    } else if ("bye".equals(msg.toLowerCase())) {
+//                        ch.writeAndFlush(new CloseWebSocketFrame());
+//                        ch.closeFuture().sync();
+//                        break;
+//                    } else if ("ping".equals(msg.toLowerCase())) {
+//                        WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
+//                        ch.writeAndFlush(frame);
+//                    } else {
+//                        String jsonExample = "{\"foo\" : \"foo\", \"bar\" : \"bar\"}";
+//                        WebSocketFrame frame = new TextWebSocketFrame(jsonExample);
+//                        ch.writeAndFlush(frame);
+//                    }
+//                }
             } finally {
-                group.shutdownGracefully();
+                //group.shutdownGracefully();
             }
         } catch (URISyntaxException ex) {
             Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } //catch (IOException ex) {
+        //    Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
+        //}
     }
 
 }

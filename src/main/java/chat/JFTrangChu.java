@@ -30,6 +30,8 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
+import model.SocketMessage;
+import socket.SocketHelper;
 import util.Constants;
 import util.Util;
 
@@ -686,6 +688,13 @@ public class JFTrangChu extends JFrameBase {
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
         sendMessage();
+        
+        
+        
+                    SocketMessage sm = new SocketMessage();
+                    sm.setId("xxx");
+                    sm.setText("yyy");
+                    SocketHelper.getInstance().sendMessageToServer(sm);
     }//GEN-LAST:event_btnSendMessageMouseClicked
 
     private void areaNhapTinNhanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_areaNhapTinNhanKeyPressed
