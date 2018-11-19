@@ -32,6 +32,10 @@ public class SocketMessage {
 		this.text = text;
 	}
         
+        public String toString() {
+            return "id: " + id + ", text: " + text;
+        }
+        
         public TextWebSocketFrame toSocketFrame() {
             Gson gson = new Gson();
             String json = gson.toJson(this);
