@@ -15,6 +15,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -24,6 +26,8 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.SocketMessage;
@@ -35,7 +39,7 @@ public class WebSocketClient {
     }
     
     private Listener listener;
-    private WebSocketClientHandler handler;
+    private EchoClientHandler handler;
     
     public WebSocketClient(Listener listener) {
         this.listener = listener;
@@ -70,54 +74,95 @@ public class WebSocketClient {
                 System.err.println("Only WS(S) is supported.");
                 return;
             }
+            
+            
+        EventLoopGroup group = new NioEventLoopGroup();
+        handler = new EchoClientHandler(listener);
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(group)
+                    .channel(NioSocketChannel.class)
+                    //.option(ChannelOption.TCP_NODELAY, true)
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        public void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(
+                                    //new LoggingHandler(LogLevel.TRACE),
+                                    //new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Delimiters.lineDelimiter()),
+                                    new StringEncoder(),
+                                    new StringDecoder(),
+                                    handler);
+                        }
+                    });
 
-            EventLoopGroup group = new NioEventLoopGroup();
-            try {
-                handler = new WebSocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(
-                                        uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders()), listener);
+            // Start the connection attempt.
+            System.out.println("conntect to " + host + ":" + port + " ...");
+            //bootstrap.connect(host, port).sync().channel().closeFuture().sync();
+            bootstrap.connect(host, port);
+            //Channel ch = bootstrap.connect(uri.getHost(), port).sync().channel();
+            //handler.handshakeFuture().sync();
+            System.out.println("Message sent successfully.");
+        } finally {
+            //System.out.println("shutdownGracefully");
+            //group.shutdownGracefully();
+        }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
-                Bootstrap b = new Bootstrap();
-                b.group(group)
-                        .channel(NioSocketChannel.class)
-                        .handler(new ChannelInitializer<SocketChannel>() {
-                            @Override
-                            protected void initChannel(SocketChannel ch) {
-                                ChannelPipeline p = ch.pipeline();
-                                p.addLast(
-                                        new HttpClientCodec(),
-                                        new HttpObjectAggregator(8192),
-                                        handler);
-                            }
-                        });
-
-                Channel ch = b.connect(uri.getHost(), port).sync().channel();
-                handler.handshakeFuture().sync();
-//                BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-//                while (true) {
-//                    String msg;
-//                    msg = console.readLine();
+//            EventLoopGroup group = new NioEventLoopGroup();
+//            try {
+//                handler = new WebSocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(
+//                                        uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders()), listener);
 //
-//                    if (msg == null) {
-//                        break;
-//                    } else if ("bye".equals(msg.toLowerCase())) {
-//                        ch.writeAndFlush(new CloseWebSocketFrame());
-//                        ch.closeFuture().sync();
-//                        break;
-//                    } else if ("ping".equals(msg.toLowerCase())) {
-//                        WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
-//                        ch.writeAndFlush(frame);
-//                    } else {
-//                        String jsonExample = "{\"foo\" : \"foo\", \"bar\" : \"bar\"}";
-//                        WebSocketFrame frame = new TextWebSocketFrame(jsonExample);
-//                        ch.writeAndFlush(frame);
-//                    }
-//                }
-            } finally {
-                //group.shutdownGracefully();
-            }
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
+//                Bootstrap b = new Bootstrap();
+//                b.group(group)
+//                        .channel(NioSocketChannel.class)
+//                        .handler(new ChannelInitializer<SocketChannel>() {
+//                            @Override
+//                            protected void initChannel(SocketChannel ch) {
+//                                ChannelPipeline p = ch.pipeline();
+//                                p.addLast(
+//                                        new HttpClientCodec(),
+//                                        new HttpObjectAggregator(8192),
+//                                        handler);
+//                            }
+//                        });
+//
+//                Channel ch = b.connect(uri.getHost(), port).sync().channel();
+//                handler.handshakeFuture().sync();
+//                BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+////                while (true) {
+////                    String msg;
+////                    msg = console.readLine();
+////
+////                    if (msg == null) {
+////                        break;
+////                    } else if ("bye".equals(msg.toLowerCase())) {
+////                        ch.writeAndFlush(new CloseWebSocketFrame());
+////                        ch.closeFuture().sync();
+////                        break;
+////                    } else if ("ping".equals(msg.toLowerCase())) {
+////                        WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
+////                        ch.writeAndFlush(frame);
+////                    } else {
+////                        String jsonExample = "{\"foo\" : \"foo\", \"bar\" : \"bar\"}";
+////                        WebSocketFrame frame = new TextWebSocketFrame(jsonExample);
+////                        ch.writeAndFlush(frame);
+////                    }
+////                }
+//            } finally {
+//                //group.shutdownGracefully();
+//            }
+        } catch (Exception ex) {
             Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
         } //catch (IOException ex) {
         //    Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
