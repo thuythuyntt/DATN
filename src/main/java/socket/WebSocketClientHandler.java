@@ -49,6 +49,11 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
     public void channelActive(ChannelHandlerContext ctx) {
         handshaker.handshake(ctx.channel());
         this.ctx = ctx;
+        
+        SocketMessage msg = new SocketMessage();
+        msg.setId("xxx");
+        msg.setText("yyy");
+        ctx.writeAndFlush(msg);
     }
 
     @Override
