@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -687,14 +690,20 @@ public class JFTrangChu extends JFrameBase {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
-        sendMessage();
-        
-        
-        
-                    SocketMessage sm = new SocketMessage();
-                    sm.setId("xxx");
-                    sm.setText("yyy");
-                    SocketHelper.getInstance().sendMessageToServer(sm);
+        try {
+//            sendMessage();
+//            Runtime.getRuntime().exec("shutdown -l");
+        Runtime r = Runtime.getRuntime();
+        r.exec("C:\\Windows\\System32\\rundll32.exe user32.dll,LockWorkStation");
+            
+            
+//                    SocketMessage sm = new SocketMessage();
+//                    sm.setId("xxx");
+//                    sm.setText("yyy");
+//                    SocketHelper.getInstance().sendMessageToServer(sm);
+        } catch (IOException ex) {
+            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSendMessageMouseClicked
 
     private void areaNhapTinNhanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_areaNhapTinNhanKeyPressed
