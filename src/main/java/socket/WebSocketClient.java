@@ -79,7 +79,7 @@ public class WebSocketClient {
                 System.out.println("Message sent successfully.");
             } finally {
                 System.out.println("shutdownGracefully");
-                group.shutdownGracefully();
+//                group.shutdownGracefully();
             }
         } catch (Exception ex) {
             Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
