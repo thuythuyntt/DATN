@@ -25,16 +25,11 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
-import model.SocketMessage;
-import socket.SocketHelper;
 import util.Constants;
 import util.Util;
 
@@ -44,14 +39,10 @@ import util.Util;
  */
 public class JFTrangChu extends JFrameBase {
 
-    /**
-     * Creates new form JFHome
-     */
     private User user;
     private String toUserId = "";
     private String fromUserId = "";
 
-//    private Map<String, List<Message>> conversationList;
     public JFTrangChu() {
         initComponents();
         initCustomComponents();
@@ -119,8 +110,6 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupInfo() {
-//        conversationList = new HashMap<>();
-
         user = FirebaseHelper.getInstance().getAuthUser();
 
         fromUserId = user.getId();
@@ -179,13 +168,6 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-//                List<Message> newMess = new ArrayList<>();
-//                if (conversationList.containsKey(userId)) {
-//                    newMess = conversationList.get(userId);
-//                }
-//                newMess.addAll(list);
-//                conversationList.put(userId, newMess);
-
                 if (toUserId.equals(userId)) {
                     setupMessage(list);
                 }
@@ -205,13 +187,6 @@ public class JFTrangChu extends JFrameBase {
 
             @Override
             public void onEvent(String userA, String userB, List<Message> list) {
-//                List<Message> newMess = new ArrayList<>();
-//                if (conversationList.containsKey(userB)) {
-//                    newMess = conversationList.get(userB);
-//                }
-//                newMess.addAll(list);
-//                conversationList.put(toUserId, newMess);
-
                 if ((fromUserId.equals(userA) && toUserId.equals(userB)) || (fromUserId.equals(userB) && toUserId.equals(userA))) {
                     setupMessage(list);
                 }
@@ -690,20 +665,15 @@ public class JFTrangChu extends JFrameBase {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
-        try {
-//            sendMessage();
+//        try {
+            sendMessage();
 //            Runtime.getRuntime().exec("shutdown -l");
-        Runtime r = Runtime.getRuntime();
-        r.exec("C:\\Windows\\System32\\rundll32.exe user32.dll,LockWorkStation");
+//        Runtime r = Runtime.getRuntime();
+//        r.exec("C:\\Windows\\System32\\rundll32.exe user32.dll,LockWorkStation");
             
-            
-//                    SocketMessage sm = new SocketMessage();
-//                    sm.setId("xxx");
-//                    sm.setText("yyy");
-//                    SocketHelper.getInstance().sendMessageToServer(sm);
-        } catch (IOException ex) {
-            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        } catch (IOException ex) {
+//            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_btnSendMessageMouseClicked
 
     private void areaNhapTinNhanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_areaNhapTinNhanKeyPressed
