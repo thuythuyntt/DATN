@@ -148,13 +148,31 @@ public final class FirebaseHelper {
     }
 
     public User getUserFromId(String id) {
-        List<User> list = getListStudent();
+        List<User> list = getListUser();
         for (User u : list) {
             if (u.getId().equals(id)) {
                 return u;
             }
         }
         return new User();
+    }
+    
+    public List<User> getListUser() {
+        List<User> list = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> query = db.collection("account").get();
+            QuerySnapshot querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+            documents.forEach((doc) -> {
+                User user = new User();
+                user.fromQueryDocument(doc);
+                list.add(user);
+            });
+            return list;
+        } catch (Exception ex) {
+            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            return list;
+        }
     }
 
     public List<User> getListStudent() {
