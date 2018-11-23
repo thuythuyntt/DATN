@@ -23,6 +23,7 @@ public class User extends ModelBase {
     private String phone;
     private String role;
     private String token;
+    private boolean online;
 
     public String getUsername() {
         return username;
@@ -103,6 +104,14 @@ public class User extends ModelBase {
     public void setId(String id) {
         this.id = id;
     }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
     
     @Override
     public void fromQueryDocument(DocumentSnapshot doc) {
@@ -116,6 +125,7 @@ public class User extends ModelBase {
         fullname = doc.getString("fullname");
         phone = doc.getString("phone");
         role = doc.getString("role");
+        online = doc.getBoolean("online");
     }
 
     public String toString() {

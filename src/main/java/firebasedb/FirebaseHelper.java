@@ -12,16 +12,13 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.EventListener;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreException;
-import com.google.cloud.firestore.ListenerRegistration;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-import com.google.cloud.storage.Bucket;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.cloud.StorageClient;
 import com.google.firebase.database.annotations.Nullable;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -71,9 +68,6 @@ public final class FirebaseHelper {
         return authUser;
     }
 
-//    public void setIsFirstLoad(boolean isFirstLoad) {
-//        this.isFirstLoad = isFirstLoad;
-//    }
     private void initFirebase() {
         FileInputStream serviceAccount = null;
         try {
@@ -154,7 +148,7 @@ public final class FirebaseHelper {
     }
 
     public User getUserFromId(String id) {
-        List<User> list = getListUsers();
+        List<User> list = getListStudent();
         for (User u : list) {
             if (u.getId().equals(id)) {
                 return u;
@@ -163,10 +157,28 @@ public final class FirebaseHelper {
         return new User();
     }
 
-    public List<User> getListUsers() {
+    public List<User> getListStudent() {
         List<User> list = new ArrayList<>();
         try {
-            ApiFuture<QuerySnapshot> query = db.collection("account").get();
+            ApiFuture<QuerySnapshot> query = db.collection("account").whereEqualTo("role", "sv").get();
+            QuerySnapshot querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+            documents.forEach((doc) -> {
+                User user = new User();
+                user.fromQueryDocument(doc);
+                list.add(user);
+            });
+            return list;
+        } catch (Exception ex) {
+            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            return list;
+        }
+    }
+    
+    public List<User> getListOnlineUsers() {
+        List<User> list = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> query = db.collection("account").whereEqualTo("online", true).get();
             QuerySnapshot querySnapshot = query.get();
             List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
             documents.forEach((doc) -> {
@@ -181,22 +193,11 @@ public final class FirebaseHelper {
         }
     }
 
-    public List<User> getListFriends() {
+    public List<User> getListOnlineFriends() {
         List<User> listFriend = new ArrayList<User>();
-        List<User> list = getListUsers();
+        List<User> list = getListOnlineUsers();
         for (User u : list) {
             if (!u.getUsername().equals(authUser.getUsername())) {
-                listFriend.add(u);
-            }
-        }
-        return listFriend;
-    }
-
-    public List<User> getAllStudent() {
-        List<User> listFriend = new ArrayList<User>();
-        List<User> list = getListUsers();
-        for (User u : list) {
-            if (!u.getRole().equals(Constants.ROLE_TEACHER)) {
                 listFriend.add(u);
             }
         }
@@ -280,6 +281,24 @@ public final class FirebaseHelper {
 
             ApiFuture<WriteResult> writeResult = docRef.update(updates);
             authUser.setPassword(newPassword);
+
+            System.out.println("Write result: " + writeResult.get());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void updateOnlineStatus(boolean online){
+        try {
+            DocumentReference docRef = db.collection("account").document(authUser.getId());
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("online", online);
+
+            ApiFuture<WriteResult> writeResult = docRef.update(updates);
+            authUser.setOnline(online);
 
             System.out.println("Write result: " + writeResult.get());
         } catch (InterruptedException ex) {

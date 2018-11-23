@@ -16,7 +16,6 @@ import java.awt.Font;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
@@ -25,8 +24,6 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -79,12 +76,19 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupData() {
+        //tab 1: Trang chu
         setupInfo();
         setupDSBanBe();
         setupPosIndex();
         listenGroupChatEvent();
-
+        
+        if (user.getRole().equals(Constants.ROLE_TEACHER)){
+        //tab 2: Quan ly
         setupDSSinhVien();
+        } else {
+            jTabbedPane1.remove(panelManagement);
+            jTabbedPane1.remove(panelStatistics);
+        }
 
     }
 
@@ -94,7 +98,7 @@ public class JFTrangChu extends JFrameBase {
         tblDSSV.repaint();
 
         List<User> list = new ArrayList<User>();
-        list.addAll(FirebaseHelper.getInstance().getAllStudent());
+        list.addAll(FirebaseHelper.getInstance().getListStudent());
         DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
 
         Object[] row = new Object[6];
@@ -128,7 +132,7 @@ public class JFTrangChu extends JFrameBase {
         all.setId("");
         all.setFullname("ALL");
         list.add(all);
-        list.addAll(FirebaseHelper.getInstance().getListFriends());
+        list.addAll(FirebaseHelper.getInstance().getListOnlineFriends());
         DefaultTableModel model = (DefaultTableModel) tblDSSVOnline.getModel();
 
         Object[] row = new Object[1];
@@ -272,6 +276,7 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().updateToken("");
         this.dispose();
         this.showScreen(new JFDangNhap());
+        FirebaseHelper.getInstance().updateOnlineStatus(false);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

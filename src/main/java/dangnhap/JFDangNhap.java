@@ -9,19 +9,7 @@ import socket.WebSocketClient;
 import chat.JFTrangChu;
 import chat.JFrameBase;
 import firebasedb.FirebaseHelper;
-import java.awt.BorderLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
-import javax.swing.plaf.ProgressBarUI;
-import model.SocketMessage;
 import socket.SocketHelper;
 
 /**
@@ -144,6 +132,7 @@ public class JFDangNhap extends JFrameBase {
                 public void connected() {
                     JFDangNhap.this.dispose();
                     JFDangNhap.this.showScreen(new JFTrangChu());
+                    FirebaseHelper.getInstance().updateOnlineStatus(true);
                 }
             });
         } else {
