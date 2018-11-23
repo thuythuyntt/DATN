@@ -309,6 +309,7 @@ public final class FirebaseHelper {
     }
     
     public void updateOnlineStatus(boolean online){
+        System.out.println("updateOnlineStatus");
         try {
             DocumentReference docRef = db.collection("account").document(authUser.getId());
 
