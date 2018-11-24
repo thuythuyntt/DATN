@@ -24,7 +24,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush("Client Active" + System.lineSeparator());
+        ctx.writeAndFlush("[channelActive]" + System.lineSeparator());
         this.ctx = ctx;
         socketClientListener.connected();
     }
@@ -38,14 +38,14 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         SocketMessage sm = SocketMessage.fromJsonString(msg);
-        System.out.println("channelRead0: " + sm.toString());
+        System.out.println("[channelRead0]: " + sm.toString());
     }
 
     public void sendMessage(SocketMessage sm) {
         if (ctx == null) {
             return;
         }
-        System.err.println("[sendMessage]SocketMessage: " + sm.toString());
+        System.err.println("Client [sendMessage]: " + sm.toString());
         ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
     }
 }

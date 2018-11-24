@@ -9,6 +9,7 @@ import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentChange;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.EventListener;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreException;
@@ -45,11 +46,16 @@ public final class FirebaseHelper {
         void onEvent(String toUserId, List<Message> list);
 
         void onEvent(String userA, String userB, List<Message> list);
+
+    }
+
+    public interface UserOnlineChangeListener {
+
+        void onEventOnline(List<User> list);
     }
 
     private Firestore db = null;
     private User authUser;
-//    private boolean isFirstLoad = true;
 
     private FirebaseHelper() {
         initFirebase();
@@ -156,7 +162,7 @@ public final class FirebaseHelper {
         }
         return new User();
     }
-    
+
     public List<User> getListUser() {
         List<User> list = new ArrayList<>();
         try {
@@ -192,28 +198,63 @@ public final class FirebaseHelper {
             return list;
         }
     }
-    
-    public List<User> getListOnlineUsers() {
-        List<User> list = new ArrayList<>();
-        try {
-            ApiFuture<QuerySnapshot> query = db.collection("account").whereEqualTo("online", true).get();
-            QuerySnapshot querySnapshot = query.get();
-            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-            documents.forEach((doc) -> {
-                User user = new User();
-                user.fromQueryDocument(doc);
-                list.add(user);
-            });
-            return list;
-        } catch (Exception ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
-            return list;
-        }
+
+    public void getListOnlineUsers(UserOnlineChangeListener listener) {
+//        try {
+//            ApiFuture<QuerySnapshot> query = db.collection("account").whereEqualTo("online", true).get();
+//            QuerySnapshot querySnapshot = query.get();
+//            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+//            documents.forEach((doc) -> {
+//                User user = new User();
+//                user.fromQueryDocument(doc);
+//                list.add(user);
+//            });
+//            return list;
+//        } catch (Exception ex) {
+//            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+//            return list;
+//        }
+
+        db.collection("account")
+                .orderBy("fullname", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                            @Nullable FirestoreException e) {
+                        if (e != null) {
+                            System.err.println("Listen failed:" + e);
+                            return;
+                        }
+                        List<User> users = new ArrayList<>();
+//                        for (DocumentSnapshot doc : snapshots) {
+//                            User user = new User();
+//                            user.fromQueryDocument(doc);
+//                            if (user.isOnline()) {
+//                                users.add(user);
+//                            }
+//                        }
+
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            switch (dc.getType()) {
+                                case MODIFIED:
+                                    User user = new User();
+                                    user.fromQueryDocument(dc.getDocument());
+                                    if (user.isOnline()) {
+                                        users.add(user);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        listener.onEventOnline(getListOnlineFriends(users));
+                    }
+                });
+
     }
 
-    public List<User> getListOnlineFriends() {
+    public List<User> getListOnlineFriends(List<User> list) {
         List<User> listFriend = new ArrayList<User>();
-        List<User> list = getListOnlineUsers();
         for (User u : list) {
             if (!u.getUsername().equals(authUser.getUsername())) {
                 listFriend.add(u);
@@ -231,10 +272,14 @@ public final class FirebaseHelper {
             data.put("datetime", message.getDatetime());
             ApiFuture<DocumentReference> addedDocRef = db.collection("chat").add(data);
             return !addedDocRef.get().getId().isEmpty();
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
+
         } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
@@ -265,10 +310,14 @@ public final class FirebaseHelper {
             authUser.setPhone(phone);
 
             System.out.println("Write result: " + writeResult.get());
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
+
         } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -283,10 +332,14 @@ public final class FirebaseHelper {
             authUser.setToken(token);
 
             System.out.println("Write result: " + writeResult.get());
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
+
         } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -301,14 +354,18 @@ public final class FirebaseHelper {
             authUser.setPassword(newPassword);
 
             System.out.println("Write result: " + writeResult.get());
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
+
         } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void updateOnlineStatus(boolean online){
+
+    public void updateOnlineStatus(boolean online) {
         System.out.println("updateOnlineStatus");
         try {
             DocumentReference docRef = db.collection("account").document(authUser.getId());
@@ -320,17 +377,20 @@ public final class FirebaseHelper {
             authUser.setOnline(online);
 
             System.out.println("Write result: " + writeResult.get());
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
+
         } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     // Đang bị double tin nhắn do có nhiều snapshotlistener cùng lắng nghe cùng một sự thay đổi:
     // khi click vài lần để chuyển tới cuộc trò chuyện nào đó, mỗi lần click là một lần tạo ra listener để lắng nghe sự thay đổi
     // => Tạo ra mảng chứa tin nhắn, chưa có thì thêm vào mảng và cập nhật lại giao diện chat.
-    
     public void listenerGroupChatEvent(String toUserId, RoomMessageChangeListener listener) {
         mListGroupMessage = new ArrayList<>();
         db.collection("chat").whereEqualTo("toUserId", toUserId)
@@ -382,7 +442,8 @@ public final class FirebaseHelper {
             Collections.sort(mListSingleMessage);
 
         } catch (Exception ex) {
-            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FirebaseHelper.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -3,6 +3,7 @@ package socket;
 import java.net.URI;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -17,7 +18,6 @@ import model.SocketMessage;
 public class WebSocketClient {
 
     public interface Listener {
-
         void connected();
     }
 
@@ -34,32 +34,10 @@ public class WebSocketClient {
 
     public void connect(String webSocketUrl) {
         try {
-            URI uri = null;
-
-            uri = new URI(webSocketUrl);
-
-            String scheme = uri.getScheme() == null ? "ws" : uri.getScheme();
-            final String host = uri.getHost() == null ? "192.168.4.36" : uri.getHost();
-            final int port;
-            if (uri.getPort() == -1) {
-                if ("ws".equalsIgnoreCase(scheme)) {
-                    port = 80;
-                } else if ("wss".equalsIgnoreCase(scheme)) {
-                    port = 443;
-                } else {
-                    port = -1;
-                }
-            } else {
-                port = uri.getPort();
-            }
-
-            if (!"ws".equalsIgnoreCase(scheme) && !"wss".equalsIgnoreCase(scheme)) {
-                System.err.println("Only WS(S) is supported.");
-                return;
-            }
-
+            final String host = "192.168.4.36";
+            final int port = 8080;
+            
             EventLoopGroup group = new NioEventLoopGroup();
-            handler = new EchoClientHandler(listener);
             try {
                 Bootstrap bootstrap = new Bootstrap();
                 bootstrap.group(group)
@@ -70,16 +48,17 @@ public class WebSocketClient {
                                 ch.pipeline().addLast(
                                         new StringEncoder(),
                                         new StringDecoder(),
-                                        handler);
+                                        new EchoClientHandler(listener));
                             }
                         });
 
-                System.out.println("conntect to " + host + ":" + port + " ...");
-                bootstrap.connect(host, port);
-                System.out.println("Message sent successfully.");
+                System.out.println("conntect to " + host + ":" + port);
+//                bootstrap.connect(host, port);
+                ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
+    channelFuture.channel().closeFuture().sync();
             } finally {
                 System.out.println("shutdownGracefully");
-//                group.shutdownGracefully();
+//                group.shutdownGracefully().sync();
             }
         } catch (Exception ex) {
             Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);

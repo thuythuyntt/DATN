@@ -81,10 +81,10 @@ public class JFTrangChu extends JFrameBase {
         setupDSBanBe();
         setupPosIndex();
         listenGroupChatEvent();
-        
-        if (user.getRole().equals(Constants.ROLE_TEACHER)){
-        //tab 2: Quan ly
-        setupDSSinhVien();
+
+        if (user.getRole().equals(Constants.ROLE_TEACHER)) {
+            //tab 2: Quan ly
+            setupDSSinhVien();
         } else {
             jTabbedPane1.remove(panelManagement);
             jTabbedPane1.remove(panelStatistics);
@@ -132,15 +132,38 @@ public class JFTrangChu extends JFrameBase {
         all.setId("");
         all.setFullname("ALL");
         list.add(all);
-        list.addAll(FirebaseHelper.getInstance().getListOnlineFriends());
-        DefaultTableModel model = (DefaultTableModel) tblDSSVOnline.getModel();
+        FirebaseHelper.getInstance().getListOnlineUsers(new FirebaseHelper.UserOnlineChangeListener() {
+            @Override
+            public void onEventOnline(List<User> lst) {
+                list.addAll(lst);
 
-        Object[] row = new Object[1];
-        for (int i = 0; i < list.size(); i++) {
-            row[0] = list.get(i).getFullname();
-            model.addRow(row);
-        }
+                DefaultTableModel model = (DefaultTableModel) tblDSSVOnline.getModel();
 
+                if (model.getRowCount() > 0) {
+                    for (int i=0; i<model.getRowCount();i++) {
+                        model.removeRow(i);
+                    }
+                }
+
+                Object[] row = new Object[1];
+                for (int i = 0; i < list.size(); i++) {
+                    row[0] = list.get(i).getFullname();
+                    model.addRow(row);
+                }
+
+//                tblDSSVOnline.repaint();
+//                tblDSSVOnline.revalidate();
+
+            }
+        });
+
+//        DefaultTableModel model = (DefaultTableModel) tblDSSVOnline.getModel();
+//
+//        Object[] row = new Object[1];
+//        for (int i = 0; i < list.size(); i++) {
+//            row[0] = list.get(i).getFullname();
+//            model.addRow(row);
+//        }
         tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -671,11 +694,11 @@ public class JFTrangChu extends JFrameBase {
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
 //        try {
-            sendMessage();
+        sendMessage();
 //            Runtime.getRuntime().exec("shutdown -l");
 //        Runtime r = Runtime.getRuntime();
 //        r.exec("C:\\Windows\\System32\\rundll32.exe user32.dll,LockWorkStation");
-            
+
 //        } catch (IOException ex) {
 //            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
 //        }
