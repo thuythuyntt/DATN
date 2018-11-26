@@ -226,27 +226,29 @@ public final class FirebaseHelper {
                             return;
                         }
                         List<User> users = new ArrayList<>();
-//                        for (DocumentSnapshot doc : snapshots) {
-//                            User user = new User();
-//                            user.fromQueryDocument(doc);
-//                            if (user.isOnline()) {
-//                                users.add(user);
+                        for (DocumentSnapshot doc : snapshots) {
+                            User user = new User();
+                            user.fromQueryDocument(doc);
+                            if (user.isOnline()) {
+                                users.add(user);
+                            }
+                        }
+
+//                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+//                            switch (dc.getType()) {
+//                                case MODIFIED:
+//                                    User user = new User();
+//                                    user.fromQueryDocument(dc.getDocument());
+//                                    if (user.isOnline()) {
+//                                        users.add(user);
+//                                    }
+//                                    break;
+//                                default:
+//                                    break;
 //                            }
 //                        }
 
-                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                            switch (dc.getType()) {
-                                case MODIFIED:
-                                    User user = new User();
-                                    user.fromQueryDocument(dc.getDocument());
-                                    if (user.isOnline()) {
-                                        users.add(user);
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
+                        System.out.println("onEvent lst online: " + users.size());
                         listener.onEventOnline(getListOnlineFriends(users));
                     }
                 });
