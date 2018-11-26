@@ -43,32 +43,28 @@ public class JFTrangChu extends JFrameBase {
     private String fromUserId = "";
 
     private boolean firstLoad = true;
-    
-//    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
 
+//    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
     public JFTrangChu() {
         initComponents();
         SocketHelper.getInstance().connectServer(new WebSocketClient.Listener() {
-                @Override
-                public void connected() {
-//                    JFDangNhap.this.dispose();
-//                    JFDangNhap.this.showScreen(new JFTrangChu());
-//                    FirebaseHelper.getInstance().updateOnlineStatus(true);
+            @Override
+            public void connected() {
+                if (firstLoad) {
+                    showProgressBar();
+                    initCustomComponents();
+                    setupData();
+                    firstLoad = false;
                 }
-            });
-        if (firstLoad) {
-            showProgressBar();
-            initCustomComponents();
-            setupData();
-            firstLoad = false;
-        }
+            }
+        });
     }
 
     private void showProgressBar() {
         panelLoading.setVisible(true);
     }
-    
-    private void hideProgressBar(){
+
+    private void hideProgressBar() {
         panelLoading.setVisible(false);
     }
 
@@ -210,7 +206,7 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-                
+
                 if (toUserId.equals(userId)) {
                     setupMessage(list);
                 }
@@ -552,9 +548,10 @@ public class JFTrangChu extends JFrameBase {
                 .addContainerGap(16, Short.MAX_VALUE)
                 .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSendMessage)
-                    .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnSendFile)
-                        .addComponent(btnSendImage)))
+                    .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnSendImage)
+                        .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSendFile))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
