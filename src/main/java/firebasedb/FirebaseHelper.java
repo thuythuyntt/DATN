@@ -200,21 +200,6 @@ public final class FirebaseHelper {
     }
 
     public void getListOnlineUsers(UserOnlineChangeListener listener) {
-//        try {
-//            ApiFuture<QuerySnapshot> query = db.collection("account").whereEqualTo("online", true).get();
-//            QuerySnapshot querySnapshot = query.get();
-//            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-//            documents.forEach((doc) -> {
-//                User user = new User();
-//                user.fromQueryDocument(doc);
-//                list.add(user);
-//            });
-//            return list;
-//        } catch (Exception ex) {
-//            Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
-//            return list;
-//        }
-
         db.collection("account")
                 .orderBy("fullname", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -233,20 +218,6 @@ public final class FirebaseHelper {
                                 users.add(user);
                             }
                         }
-
-//                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
-//                            switch (dc.getType()) {
-//                                case MODIFIED:
-//                                    User user = new User();
-//                                    user.fromQueryDocument(dc.getDocument());
-//                                    if (user.isOnline()) {
-//                                        users.add(user);
-//                                    }
-//                                    break;
-//                                default:
-//                                    break;
-//                            }
-//                        }
 
                         System.out.println("onEvent lst online: " + users.size());
                         listener.onEventOnline(getListOnlineFriends(users));

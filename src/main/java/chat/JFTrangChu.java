@@ -45,10 +45,19 @@ public class JFTrangChu extends JFrameBase {
     public JFTrangChu() {
         initComponents();
         if (firstLoad) {
+            showProgressBar();
             initCustomComponents();
             setupData();
             firstLoad = false;
         }
+    }
+
+    private void showProgressBar() {
+        panelLoading.setVisible(true);
+    }
+    
+    private void hideProgressBar(){
+        panelLoading.setVisible(false);
     }
 
     private void initCustomComponents() {
@@ -128,10 +137,6 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupDSBanBe() {
-//        tblDSSVOnline.removeAll();
-//        tblDSSVOnline.revalidate();
-//        tblDSSVOnline.repaint();
-
         List<User> list = new ArrayList<User>();
 
         FirebaseHelper.getInstance().getListOnlineUsers(new FirebaseHelper.UserOnlineChangeListener() {
@@ -153,7 +158,7 @@ public class JFTrangChu extends JFrameBase {
                     System.out.println("Remove table model");
                     model.setRowCount(0);
                 }
-                
+
                 Object[] row = new Object[1];
                 for (int i = 0; i < list.size(); i++) {
                     row[0] = list.get(i).getFullname();
@@ -161,11 +166,11 @@ public class JFTrangChu extends JFrameBase {
                 }
             }
         });
-        
+
         tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-
+                showProgressBar();
                 int row = tblDSSVOnline.rowAtPoint(evt.getPoint());
                 toUserId = list.get(row).getId();
                 setupPosIndex();
@@ -193,6 +198,7 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
+                
                 if (toUserId.equals(userId)) {
                     setupMessage(list);
                 }
@@ -226,6 +232,7 @@ public class JFTrangChu extends JFrameBase {
             Message m = list.get(i);
             addMessageToScrollPane(m);
         }
+        hideProgressBar();
     }
 
     int width = 0;
@@ -302,7 +309,10 @@ public class JFTrangChu extends JFrameBase {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        panelLoading = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         panelHome = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -336,6 +346,28 @@ public class JFTrangChu extends JFrameBase {
         panelStatistics = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loading_icon.gif"))); // NOI18N
+
+        javax.swing.GroupLayout panelLoadingLayout = new javax.swing.GroupLayout(panelLoading);
+        panelLoading.setLayout(panelLoadingLayout);
+        panelLoadingLayout.setHorizontalGroup(
+            panelLoadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        panelLoadingLayout.setVerticalGroup(
+            panelLoadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(298, 450, 0, 0);
+        getContentPane().add(panelLoading, gridBagConstraints);
 
         jTabbedPane1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -413,7 +445,7 @@ public class JFTrangChu extends JFrameBase {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(lbTenGV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -446,7 +478,7 @@ public class JFTrangChu extends JFrameBase {
         );
         scrollPaneNoiDungCuocTroChuyenLayout.setVerticalGroup(
             scrollPaneNoiDungCuocTroChuyenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGap(0, 442, Short.MAX_VALUE)
         );
 
         jScrollPane.setViewportView(scrollPaneNoiDungCuocTroChuyen);
@@ -555,8 +587,8 @@ public class JFTrangChu extends JFrameBase {
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHomeLayout.createSequentialGroup()
                 .addGroup(panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -655,7 +687,7 @@ public class JFTrangChu extends JFrameBase {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -671,21 +703,19 @@ public class JFTrangChu extends JFrameBase {
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 674, Short.MAX_VALUE)
+            .addGap(0, 666, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Thống kê và tổng hợp", panelStatistics);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        getContentPane().add(jTabbedPane1, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -741,6 +771,7 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane;
@@ -756,6 +787,7 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JPanel panelAvatar;
     private javax.swing.JPanel panelChatInput;
     private javax.swing.JPanel panelHome;
+    private javax.swing.JPanel panelLoading;
     private javax.swing.JPanel panelManagement;
     private javax.swing.JPanel panelStatistics;
     private javax.swing.JPanel scrollPaneNoiDungCuocTroChuyen;
