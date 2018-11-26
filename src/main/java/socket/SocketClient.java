@@ -11,8 +11,9 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.OnlineMessage;
 
-public class WebSocketClient {
+public class SocketClient {
 
     public interface Listener {
 
@@ -22,19 +23,21 @@ public class WebSocketClient {
     private Listener listener;
     private EchoClientHandler handler;
 
-    public WebSocketClient(Listener listener) {
+    public SocketClient(Listener listener) {
         this.listener = listener;
     }
 
-//    public void sendMessage(SocketMessage sm) {
-//        handler.sendMessage(sm);
-//    }
+    public void sendMessage(OnlineMessage om) {
+        handler.sendOnlineMessage(om);
+    }
 
     public void connect() {
         try {
             final String host = "192.168.4.36";
 //            final String host = "localhost";
             final int port = 8080;
+            
+            handler = new EchoClientHandler(listener); 
 
             EventLoopGroup group = new NioEventLoopGroup();
             try {
@@ -47,7 +50,7 @@ public class WebSocketClient {
                                 ch.pipeline().addLast(
                                         new StringEncoder(),
                                         new StringDecoder(),
-                                        new EchoClientHandler(listener));
+                                        handler);
                             }
                         });
 
@@ -60,7 +63,7 @@ public class WebSocketClient {
 //                group.shutdownGracefully().sync();
             }
         } catch (Exception ex) {
-            Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

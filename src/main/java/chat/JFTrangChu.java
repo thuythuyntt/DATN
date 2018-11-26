@@ -16,6 +16,8 @@ import java.awt.Font;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
@@ -24,11 +26,14 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
+import model.OnlineMessage;
 import socket.SocketHelper;
-import socket.WebSocketClient;
+import socket.SocketClient;
 import util.Constants;
 import util.Util;
 
@@ -46,18 +51,24 @@ public class JFTrangChu extends JFrameBase {
 
 //    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
     public JFTrangChu() {
-        initComponents();
-        SocketHelper.getInstance().connectServer(new WebSocketClient.Listener() {
-            @Override
-            public void connected() {
-                if (firstLoad) {
-                    showProgressBar();
-                    initCustomComponents();
-                    setupData();
-                    firstLoad = false;
-                }
-            }
-        });
+        try {
+            initComponents();
+            String pcname = InetAddress.getLocalHost().getHostName();
+            OnlineMessage om = new OnlineMessage(user.getFullname(), pcname, getTimeNow(), "", 1);
+                    SocketHelper.getInstance().connectServer(om, new SocketClient.Listener() {
+                        @Override
+                        public void connected() {
+                            if (firstLoad) {
+                                showProgressBar();
+                                initCustomComponents();
+                                setupData();
+                                firstLoad = false;
+                            }
+                        }
+                    });
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void showProgressBar() {

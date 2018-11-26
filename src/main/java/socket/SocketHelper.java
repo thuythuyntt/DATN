@@ -5,6 +5,7 @@
  */
 package socket;
 
+import model.OnlineMessage;
 import model.SocketMessage;
 
 /**
@@ -22,21 +23,22 @@ public class SocketHelper {
         return instance;
     }
 
-    private WebSocketClient skClient;
+    private SocketClient skClient;
 
     private SocketHelper() {
     }
 
-    public void connectServer(WebSocketClient.Listener listener) {
-        skClient = new WebSocketClient(listener);
+    public void connectServer(OnlineMessage om, SocketClient.Listener listener) {
+        skClient = new SocketClient(listener);
         skClient.connect();
+        sendOnlineMessageToServer(om);
     }
 
-//    public void sendMessageToServer(SocketMessage sm) {
-//        if (skClient == null) {
-//            return;
-//        }
+    public void sendOnlineMessageToServer(OnlineMessage om) {
+        if (skClient == null) {
+            return;
+        }
 
-//        skClient.sendMessage(sm);
-//    }
+        skClient.sendMessage(om);
+    }
 }

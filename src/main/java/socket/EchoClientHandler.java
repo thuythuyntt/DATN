@@ -7,6 +7,7 @@ package socket;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import model.OnlineMessage;
 import model.SocketMessage;
 
 /**
@@ -16,9 +17,9 @@ import model.SocketMessage;
 public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
     private ChannelHandlerContext ctx;
-    private WebSocketClient.Listener socketClientListener;
+    private SocketClient.Listener socketClientListener;
 
-    public EchoClientHandler(WebSocketClient.Listener listener) {
+    public EchoClientHandler(SocketClient.Listener listener) {
         socketClientListener = listener;
     }
 
@@ -42,11 +43,11 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
         System.out.println("[channelRead0]: " + msg);
     }
 
-//    public void sendMessage(SocketMessage sm) {
-//        if (ctx == null) {
-//            return;
-//        }
-//        System.err.println("Client [sendMessage]: " + sm.toString());
-//        ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
-//    }
+    public void sendOnlineMessage(OnlineMessage om) {
+        if (ctx == null) {
+            return;
+        }
+        System.err.println("[OnlineMessage]: " + om.toString());
+        ctx.writeAndFlush(om.toJsonString() + System.lineSeparator());
+    }
 }
