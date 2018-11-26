@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
+import socket.SocketHelper;
+import socket.WebSocketClient;
 import util.Constants;
 import util.Util;
 
@@ -41,9 +43,19 @@ public class JFTrangChu extends JFrameBase {
     private String fromUserId = "";
 
     private boolean firstLoad = true;
+    
+//    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
 
     public JFTrangChu() {
         initComponents();
+        SocketHelper.getInstance().connectServer(new WebSocketClient.Listener() {
+                @Override
+                public void connected() {
+//                    JFDangNhap.this.dispose();
+//                    JFDangNhap.this.showScreen(new JFTrangChu());
+//                    FirebaseHelper.getInstance().updateOnlineStatus(true);
+                }
+            });
         if (firstLoad) {
             showProgressBar();
             initCustomComponents();

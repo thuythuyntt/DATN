@@ -122,19 +122,14 @@ public class JFDangNhap extends JFrameBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
-    
+
+//    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
+
     private void btnDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangNhapActionPerformed
         if (FirebaseHelper.getInstance().checkLogin(tfTenDangNhap.getText(), pfMatKhau.getText())) {
-//            SocketHelper.getInstance().connectServer(url, new WebSocketClient.Listener() {
-//                @Override
-//                public void connected() {
-                    JFDangNhap.this.dispose();
-                    JFDangNhap.this.showScreen(new JFTrangChu());
-                    FirebaseHelper.getInstance().updateOnlineStatus(true);
-//                }
-//            });
+            JFDangNhap.this.dispose();
+            JFDangNhap.this.showScreen(new JFTrangChu());
+            FirebaseHelper.getInstance().updateOnlineStatus(true);
         } else {
             JOptionPane.showMessageDialog(this, "Tài khoản không đúng!", "ERROR", JOptionPane.ERROR_MESSAGE);
         }

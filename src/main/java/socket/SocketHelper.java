@@ -27,16 +27,16 @@ public class SocketHelper {
     private SocketHelper() {
     }
 
-    public void connectServer(String address, WebSocketClient.Listener listener) {
+    public void connectServer(WebSocketClient.Listener listener) {
         skClient = new WebSocketClient(listener);
-        skClient.connect(address);
+        skClient.connect();
     }
 
-    public void sendMessageToServer(SocketMessage sm) {
-        if (skClient == null) {
-            return;
-        }
+//    public void sendMessageToServer(SocketMessage sm) {
+//        if (skClient == null) {
+//            return;
+//        }
 
-        skClient.sendMessage(sm);
-    }
+//        skClient.sendMessage(sm);
+//    }
 }

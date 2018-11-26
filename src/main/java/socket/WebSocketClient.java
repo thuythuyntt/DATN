@@ -1,7 +1,5 @@
 package socket;
 
-import java.net.URI;
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -13,11 +11,11 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.SocketMessage;
 
 public class WebSocketClient {
 
     public interface Listener {
+
         void connected();
     }
 
@@ -28,15 +26,16 @@ public class WebSocketClient {
         this.listener = listener;
     }
 
-    public void sendMessage(SocketMessage sm) {
-        handler.sendMessage(sm);
-    }
+//    public void sendMessage(SocketMessage sm) {
+//        handler.sendMessage(sm);
+//    }
 
-    public void connect(String webSocketUrl) {
+    public void connect() {
         try {
-            final String host = "192.168.4.36";
+//            final String host = "192.168.4.36";
+            final String host = "localhost";
             final int port = 8080;
-            
+
             EventLoopGroup group = new NioEventLoopGroup();
             try {
                 Bootstrap bootstrap = new Bootstrap();
@@ -55,7 +54,7 @@ public class WebSocketClient {
                 System.out.println("conntect to " + host + ":" + port);
 //                bootstrap.connect(host, port);
                 ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
-    channelFuture.channel().closeFuture().sync();
+                channelFuture.channel().closeFuture().sync();
             } finally {
                 System.out.println("shutdownGracefully");
 //                group.shutdownGracefully().sync();

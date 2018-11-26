@@ -24,7 +24,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush("[channelActive]" + System.lineSeparator());
+        ctx.writeAndFlush(new SocketMessage("1", "aaaaaaaaaaa").toJsonString());
         this.ctx = ctx;
         socketClientListener.connected();
     }
@@ -37,15 +37,16 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        SocketMessage sm = SocketMessage.fromJsonString(msg);
-        System.out.println("[channelRead0]: " + sm.toString());
+//        SocketMessage sm = SocketMessage.fromJsonString(msg);
+//        System.out.println("[channelRead0]: " + sm.toString());
+        System.out.println("[channelRead0]: " + msg);
     }
 
-    public void sendMessage(SocketMessage sm) {
-        if (ctx == null) {
-            return;
-        }
-        System.err.println("Client [sendMessage]: " + sm.toString());
-        ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
-    }
+//    public void sendMessage(SocketMessage sm) {
+//        if (ctx == null) {
+//            return;
+//        }
+//        System.err.println("Client [sendMessage]: " + sm.toString());
+//        ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
+//    }
 }
