@@ -477,7 +477,7 @@ public class JFTrangChu extends JFrameBase {
         btnSendImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ic_image_24.png"))); // NOI18N
 
         btnSendMessage.setFont(new java.awt.Font("Cambria Math", 3, 10)); // NOI18N
-        btnSendMessage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ic_send_24.png"))); // NOI18N
+        btnSendMessage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ic_send_24_1.png"))); // NOI18N
         btnSendMessage.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnSendMessageMouseClicked(evt);
@@ -491,14 +491,15 @@ public class JFTrangChu extends JFrameBase {
             .addGroup(panelChatInputLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelChatInputLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnSendFile)
                         .addGap(49, 49, 49)
                         .addComponent(btnSendImage)
-                        .addGap(49, 49, 49)
-                        .addComponent(btnSendMessage)))
+                        .addGap(39, 39, 39)
+                        .addComponent(btnSendMessage)
+                        .addGap(10, 10, 10)))
                 .addContainerGap())
         );
         panelChatInputLayout.setVerticalGroup(
@@ -554,8 +555,8 @@ public class JFTrangChu extends JFrameBase {
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHomeLayout.createSequentialGroup()
                 .addGroup(panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
