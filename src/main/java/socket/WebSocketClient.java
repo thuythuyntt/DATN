@@ -32,8 +32,8 @@ public class WebSocketClient {
 
     public void connect() {
         try {
-//            final String host = "192.168.4.36";
-            final String host = "localhost";
+            final String host = "192.168.4.36";
+//            final String host = "localhost";
             final int port = 8080;
 
             EventLoopGroup group = new NioEventLoopGroup();
