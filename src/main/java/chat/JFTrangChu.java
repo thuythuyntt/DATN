@@ -60,7 +60,7 @@ public class JFTrangChu extends JFrameBase {
                 setupData();
                 firstLoad = false;
             }
-            firstConnect();
+            //firstConnect();
         }
 
         @Override
@@ -127,6 +127,7 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupData() {
+        System.out.println("setupData");
         //tab 1: Trang chu
         setupInfo();
         setupDSBanBe();
