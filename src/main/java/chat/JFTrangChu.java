@@ -33,7 +33,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import model.ClientInfo;
 import model.SocketMessage;
-import socket.SocketHelper;
 import socket.SocketClient;
 import util.Constants;
 import util.Util;
@@ -47,45 +46,44 @@ public class JFTrangChu extends JFrameBase {
     private User user;
     private String toUserId = "";
     private String fromUserId = "";
+    private SocketClient sk = SocketClient.getInstance();
 
     private boolean firstLoad = true;
 
-//    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
-    public JFTrangChu() {
-        try {
-            initComponents();
-            user = FirebaseHelper.getInstance().getAuthUser();
-            ClientInfo clt = new ClientInfo();
-            clt.setUsername(user.getFullname());
-            clt.setPcname(InetAddress.getLocalHost().getHostName());
-            clt.setDtLogin(getTimeNow());
-            SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
-//            SocketHelper.getInstance().connectServer(sm, new SocketClient.Listener() {
-//                @Override
-//                public void connected() {
-//                    if (firstLoad) {
-//                        showProgressBar();
-//                        initCustomComponents();
-//                        setupData();
-//                        firstLoad = false;
-//                    }
-//                }
-//            });
-
-//            SocketHelper.getInstance().connectServer();
-
-SocketClient.getInstance().connect();
-SocketClient.getInstance().sendMessage(sm);
+    private SocketClient.Listener socketListener = new SocketClient.Listener() {
+        @Override
+        public void connected() {
             if (firstLoad) {
                 showProgressBar();
                 initCustomComponents();
                 setupData();
                 firstLoad = false;
             }
-
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
+            firstConnect();
         }
+
+        @Override
+        public void disconnected(Throwable e) {
+        }
+    };
+
+    private void firstConnect() {
+        try {
+            ClientInfo clt = new ClientInfo();
+            clt.setUsername(user.getFullname());
+            clt.setPcname(InetAddress.getLocalHost().getHostName());
+            clt.setDtLogin(getTimeNow());
+            SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
+            sk.sendMessage(sm);
+        } catch (Exception e) {
+        }
+    }
+
+//    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
+    public JFTrangChu() {
+        initComponents();
+        user = FirebaseHelper.getInstance().getAuthUser();
+        SocketClient.getInstance().connect(socketListener);
     }
 
     private void showProgressBar() {

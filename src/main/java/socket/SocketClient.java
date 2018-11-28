@@ -15,12 +15,12 @@ import model.SocketMessage;
 
 public class SocketClient {
 
-//    public interface Listener {
-//
-//        void connected();
-//    }
+    public interface Listener {
+        void connected();
+        void disconnected(Throwable e);
+    }
 
-//    private Listener listener;
+    //private Listener listener;
     private EchoClientHandler handler;
 
 //    public SocketClient(Listener listener) {
@@ -36,17 +36,18 @@ public class SocketClient {
     }
     
     public void sendMessage(SocketMessage sm) {
-        handler.sendOnlineMessage(sm);
+        handler.sendSocketMessage(sm);
     }
 
-    public void connect() {
+    public void connect(Listener listener) {
+        //this.listener = listener;
         try {
             final String host = "192.168.6.111";
 //            final String host = "localhost";
             final int port = 8080;
             
 //            handler = new EchoClientHandler(listener); 
-            handler = new EchoClientHandler(); 
+            handler = new EchoClientHandler(listener); 
 
             EventLoopGroup group = new NioEventLoopGroup();
             try {
@@ -73,6 +74,7 @@ public class SocketClient {
             }
         } catch (Exception ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            listener.disconnected(ex);
         }
     }
 
