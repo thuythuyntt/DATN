@@ -74,6 +74,7 @@ public class JFTrangChu extends JFrameBase {
             ClientInfo clt = new ClientInfo();
             clt.setUsername(user.getFullname());
             clt.setPcname(InetAddress.getLocalHost().getHostName());
+            //clt.setIpAddress(InetAddress.getLocalHost().);
             clt.setDtLogin(getTimeNow());
             SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
             sk.sendMessage(sm);
