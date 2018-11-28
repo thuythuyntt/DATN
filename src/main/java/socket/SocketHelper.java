@@ -5,7 +5,6 @@
  */
 package socket;
 
-import model.OnlineMessage;
 import model.SocketMessage;
 
 /**
@@ -28,17 +27,15 @@ public class SocketHelper {
     private SocketHelper() {
     }
 
-    public void connectServer(OnlineMessage om, SocketClient.Listener listener) {
-        skClient = new SocketClient(listener);
+//    public void connectServer(SocketMessage sm, SocketClient.Listener listener) {
+//        skClient = new SocketClient(listener);
+//        skClient.connect();
+//        sendOnlineMessageToServer(sm);
+//    }
+    
+    public void connectServer(SocketMessage sm) {
+        skClient = new SocketClient();
         skClient.connect();
-        sendOnlineMessageToServer(om);
-    }
-
-    public void sendOnlineMessageToServer(OnlineMessage om) {
-        if (skClient == null) {
-            return;
-        }
-
-        skClient.sendMessage(om);
+        skClient.sendMessage(sm);
     }
 }

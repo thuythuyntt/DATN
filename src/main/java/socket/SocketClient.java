@@ -11,24 +11,24 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.OnlineMessage;
+import model.SocketMessage;
 
 public class SocketClient {
 
-    public interface Listener {
+//    public interface Listener {
+//
+//        void connected();
+//    }
 
-        void connected();
-    }
-
-    private Listener listener;
+//    private Listener listener;
     private EchoClientHandler handler;
 
-    public SocketClient(Listener listener) {
-        this.listener = listener;
-    }
+//    public SocketClient(Listener listener) {
+//        this.listener = listener;
+//    }
 
-    public void sendMessage(OnlineMessage om) {
-        handler.sendOnlineMessage(om);
+    public void sendMessage(SocketMessage sm) {
+        handler.sendOnlineMessage(sm);
     }
 
     public void connect() {
@@ -37,7 +37,8 @@ public class SocketClient {
 //            final String host = "localhost";
             final int port = 8080;
             
-            handler = new EchoClientHandler(listener); 
+//            handler = new EchoClientHandler(listener); 
+            handler = new EchoClientHandler(); 
 
             EventLoopGroup group = new NioEventLoopGroup();
             try {

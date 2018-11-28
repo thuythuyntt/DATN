@@ -7,7 +7,6 @@ package socket;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import model.OnlineMessage;
 import model.SocketMessage;
 
 /**
@@ -17,17 +16,16 @@ import model.SocketMessage;
 public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
     private ChannelHandlerContext ctx;
-    private SocketClient.Listener socketClientListener;
+//    private SocketClient.Listener socketClientListener;
 
-    public EchoClientHandler(SocketClient.Listener listener) {
-        socketClientListener = listener;
-    }
+//    public EchoClientHandler(SocketClient.Listener listener) {
+//        socketClientListener = listener;
+//    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(new SocketMessage("1", "aaaaaaaaaaa").toJsonString());
         this.ctx = ctx;
-        socketClientListener.connected();
+//        socketClientListener.connected();
     }
 
     @Override
@@ -38,16 +36,14 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-//        SocketMessage sm = SocketMessage.fromJsonString(msg);
-//        System.out.println("[channelRead0]: " + sm.toString());
         System.out.println("[channelRead0]: " + msg);
     }
 
-    public void sendOnlineMessage(OnlineMessage om) {
+    public void sendOnlineMessage(SocketMessage sm) {
         if (ctx == null) {
             return;
         }
-        System.err.println("[OnlineMessage]: " + om.toString());
-        ctx.writeAndFlush(om.toJsonString() + System.lineSeparator());
+        System.err.println("[sendOnlineMessage]: " + sm.toString());
+        ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
     }
 }

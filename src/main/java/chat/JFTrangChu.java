@@ -31,7 +31,8 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
-import model.OnlineMessage;
+import model.ClientInfo;
+import model.SocketMessage;
 import socket.SocketHelper;
 import socket.SocketClient;
 import util.Constants;
@@ -54,18 +55,31 @@ public class JFTrangChu extends JFrameBase {
         try {
             initComponents();
             String pcname = InetAddress.getLocalHost().getHostName();
-            OnlineMessage om = new OnlineMessage(user.getFullname(), pcname, getTimeNow(), "", 1);
-                    SocketHelper.getInstance().connectServer(om, new SocketClient.Listener() {
-                        @Override
-                        public void connected() {
-                            if (firstLoad) {
-                                showProgressBar();
-                                initCustomComponents();
-                                setupData();
-                                firstLoad = false;
-                            }
-                        }
-                    });
+            ClientInfo clt = new ClientInfo();
+            clt.setUsername(user.getFullname());
+            clt.setPcname(pcname);
+            clt.setDtLogin(getTimeNow());
+            SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
+//            SocketHelper.getInstance().connectServer(sm, new SocketClient.Listener() {
+//                @Override
+//                public void connected() {
+//                    if (firstLoad) {
+//                        showProgressBar();
+//                        initCustomComponents();
+//                        setupData();
+//                        firstLoad = false;
+//                    }
+//                }
+//            });
+
+            SocketHelper.getInstance().connectServer(sm);
+            if (firstLoad) {
+                showProgressBar();
+                initCustomComponents();
+                setupData();
+                firstLoad = false;
+            }
+
         } catch (UnknownHostException ex) {
             Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
         }
