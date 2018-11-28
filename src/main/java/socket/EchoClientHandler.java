@@ -7,6 +7,7 @@ package socket;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.util.HashMap;
 import java.util.List;
 import model.ClientInfo;
 import model.SocketMessage;
@@ -44,7 +45,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
             return;
         }
         if (SocketMessage.SET_LIST_ONINE.equals(sm.getId())) {
-            List<ClientInfo> list = sm.getListOnline();
+            HashMap<String, ClientInfo> list = sm.getListOnline();
             System.err.println("SET_LIST_ONINE list:" + list == null ? "null" : list.size());
         }
         //System.out.println("[channelRead0]: " + msg);
