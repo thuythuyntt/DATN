@@ -42,8 +42,10 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         SocketMessage sm = SocketMessage.fromJsonString(msg);
         if (sm == null) {
+            System.out.println("[channelRead0] but SocketMessage null");
             return;
         }
+        System.out.println("[channelRead0]: " + sm.getId());
         if (SocketMessage.SET_LIST_ONINE.equals(sm.getId())) {
             HashMap<String, ClientInfo> list = sm.getListOnline();
             System.err.println("SET_LIST_ONINE list:" + list == null ? "null" : list.size());
@@ -53,8 +55,10 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
 
     public void sendSocketMessage(SocketMessage sm) {
         if (ctx == null) {
+            System.out.println("[sendSocketMessage] but ctx null");
             return;
         }
+        System.out.println("[sendSocketMessage]: " + sm.getId());
         ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
     }
 }

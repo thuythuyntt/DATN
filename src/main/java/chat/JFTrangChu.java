@@ -53,6 +53,7 @@ public class JFTrangChu extends JFrameBase {
     private SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
+            System.out.println("[TrangChu] connected");
             if (firstLoad) {
                 showProgressBar();
                 initCustomComponents();
@@ -64,6 +65,7 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void disconnected(Throwable e) {
+            System.out.println("[TrangChu] disconnected");
         }
     };
 
