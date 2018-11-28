@@ -54,10 +54,10 @@ public class JFTrangChu extends JFrameBase {
     public JFTrangChu() {
         try {
             initComponents();
-            String pcname = InetAddress.getLocalHost().getHostName();
+            user = FirebaseHelper.getInstance().getAuthUser();
             ClientInfo clt = new ClientInfo();
             clt.setUsername(user.getFullname());
-            clt.setPcname(pcname);
+            clt.setPcname(InetAddress.getLocalHost().getHostName());
             clt.setDtLogin(getTimeNow());
             SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
 //            SocketHelper.getInstance().connectServer(sm, new SocketClient.Listener() {
@@ -72,7 +72,10 @@ public class JFTrangChu extends JFrameBase {
 //                }
 //            });
 
-            SocketHelper.getInstance().connectServer(sm);
+//            SocketHelper.getInstance().connectServer();
+
+SocketClient.getInstance().connect();
+SocketClient.getInstance().sendMessage(sm);
             if (firstLoad) {
                 showProgressBar();
                 initCustomComponents();
@@ -161,8 +164,6 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupInfo() {
-        user = FirebaseHelper.getInstance().getAuthUser();
-
         fromUserId = user.getId();
 
         lbTenGV.setText(user.getFullname());

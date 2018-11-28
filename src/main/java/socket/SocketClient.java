@@ -26,14 +26,22 @@ public class SocketClient {
 //    public SocketClient(Listener listener) {
 //        this.listener = listener;
 //    }
+    private static SocketClient instance = null;
 
+    public static SocketClient getInstance() {
+        if (instance == null) {
+            instance = new SocketClient();
+        }
+        return instance;
+    }
+    
     public void sendMessage(SocketMessage sm) {
         handler.sendOnlineMessage(sm);
     }
 
     public void connect() {
         try {
-            final String host = "192.168.4.36";
+            final String host = "192.168.6.111";
 //            final String host = "localhost";
             final int port = 8080;
             

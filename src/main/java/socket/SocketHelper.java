@@ -33,9 +33,9 @@ public class SocketHelper {
 //        sendOnlineMessageToServer(sm);
 //    }
     
-    public void connectServer(SocketMessage sm) {
+    public void connectServer() {
         skClient = new SocketClient();
         skClient.connect();
-        skClient.sendMessage(sm);
+//        skClient.sendMessage(sm);S
     }
 }
