@@ -52,13 +52,6 @@ public class JFTrangChu extends JFrameBase {
         public void connected() {
             firstConnect();
 
-            System.out.println("[TrangChu] connected");
-            if (firstLoad) {
-                showProgressBar();
-                initCustomComponents();
-                setupData();
-                firstLoad = false;
-            }
         }
 
         @Override
@@ -91,6 +84,12 @@ public class JFTrangChu extends JFrameBase {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
         SocketClient.getInstance().connect(socketListener);
+        if (firstLoad) {
+            showProgressBar();
+            initCustomComponents();
+            setupData();
+            firstLoad = false;
+        }
     }
 
     private void showProgressBar() {
@@ -155,16 +154,15 @@ public class JFTrangChu extends JFrameBase {
         tblDSSV.removeAll();
         tblDSSV.revalidate();
         tblDSSV.repaint();
-        
+
         List<ClientInfo> onlineList = new ArrayList<ClientInfo>();
-        
-        for (ClientInfo ci : list){
-            if (!ci.getUsername().equals(user.getFullname())){
+
+        for (ClientInfo ci : list) {
+            if (!ci.getUsername().equals(user.getFullname())) {
                 onlineList.add(ci);
             }
         }
 
-        
 //        list.addAll(FirebaseHelper.getInstance().getListStudent());
         DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
 
