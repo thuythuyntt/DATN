@@ -50,6 +50,12 @@ public class JFTrangChu extends JFrameBase {
     private SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
+            if (firstLoad) {
+            showProgressBar();
+            initCustomComponents();
+            setupData();
+            firstLoad = false;
+        }
             firstConnect();
 
         }
@@ -84,12 +90,7 @@ public class JFTrangChu extends JFrameBase {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
         SocketClient.getInstance().connect(socketListener);
-        if (firstLoad) {
-            showProgressBar();
-            initCustomComponents();
-            setupData();
-            firstLoad = false;
-        }
+        
     }
 
     private void showProgressBar() {
