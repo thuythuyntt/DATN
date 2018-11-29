@@ -53,6 +53,8 @@ public class JFTrangChu extends JFrameBase {
     private SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
+            firstConnect();
+
             System.out.println("[TrangChu] connected");
             if (firstLoad) {
                 showProgressBar();
@@ -60,12 +62,16 @@ public class JFTrangChu extends JFrameBase {
                 setupData();
                 firstLoad = false;
             }
-            //firstConnect();
         }
 
         @Override
         public void disconnected(Throwable e) {
             System.out.println("[TrangChu] disconnected");
+        }
+
+        @Override
+        public void updateOnlineList(List<ClientInfo> list) {
+            setupDSSinhVien(list);
         }
     };
 
@@ -136,7 +142,9 @@ public class JFTrangChu extends JFrameBase {
 
         if (user.getRole().equals(Constants.ROLE_TEACHER)) {
             //tab 2: Quan ly
-            setupDSSinhVien();
+            SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
+            sk.sendMessage(sm);
+//            setupDSSinhVien();
         } else {
             jTabbedPane1.remove(panelManagement);
             jTabbedPane1.remove(panelStatistics);
@@ -144,22 +152,30 @@ public class JFTrangChu extends JFrameBase {
 
     }
 
-    private void setupDSSinhVien() {
+    private void setupDSSinhVien(List<ClientInfo> list) {
         tblDSSV.removeAll();
         tblDSSV.revalidate();
         tblDSSV.repaint();
+        
+        List<ClientInfo> onlineList = new ArrayList<ClientInfo>();
+        
+        for (ClientInfo ci : list){
+            if (!ci.getUsername().equals(user.getFullname())){
+                onlineList.add(ci);
+            }
+        }
 
-        List<User> list = new ArrayList<User>();
-        list.addAll(FirebaseHelper.getInstance().getListStudent());
+        
+//        list.addAll(FirebaseHelper.getInstance().getListStudent());
         DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
 
         Object[] row = new Object[6];
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < onlineList.size(); i++) {
             row[0] = (i + 1);
-            row[1] = list.get(i).getFullname();
-            row[2] = list.get(i).getCode();
-            row[3] = "PC";
-            row[4] = "time";
+            row[1] = onlineList.get(i).getUsername();
+            row[2] = onlineList.get(i).getIpAddress();
+            row[3] = onlineList.get(i).getPcname();
+            row[4] = onlineList.get(i).getDtLogin();
             row[5] = true;
             model.addRow(row);
         }
@@ -576,10 +592,8 @@ public class JFTrangChu extends JFrameBase {
                 .addContainerGap(16, Short.MAX_VALUE)
                 .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSendMessage)
-                    .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnSendImage)
-                        .addGroup(panelChatInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnSendFile))))
+                    .addComponent(btnSendImage)
+                    .addComponent(btnSendFile))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -657,7 +671,7 @@ public class JFTrangChu extends JFrameBase {
 
             },
             new String [] {
-                "STT", "Họ tên", "Mã sinh viên", "Máy tính", "Thời gian", "Online"
+                "STT", "Họ tên", "Địa chỉ IP", "Máy tính", "Thời gian", "Online"
             }
         ) {
             Class[] types = new Class [] {

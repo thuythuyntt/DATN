@@ -621,7 +621,7 @@
                       <Table columnCount="6" rowCount="0">
                         <Column editable="false" title="STT" type="java.lang.Integer"/>
                         <Column editable="false" title="H&#x1ecd; t&#xea;n" type="java.lang.Object"/>
-                        <Column editable="false" title="M&#xe3; sinh vi&#xea;n" type="java.lang.Object"/>
+                        <Column editable="false" title="&#x110;&#x1ecb;a ch&#x1ec9; IP" type="java.lang.Object"/>
                         <Column editable="false" title="M&#xe1;y t&#xed;nh" type="java.lang.Object"/>
                         <Column editable="false" title="Th&#x1edd;i gian" type="java.lang.Object"/>
                         <Column editable="false" title="Online" type="java.lang.Boolean"/>

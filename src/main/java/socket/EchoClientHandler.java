@@ -48,6 +48,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
         System.out.println("[channelRead0]: " + sm.getId());
         if (SocketMessage.SET_LIST_ONINE.equals(sm.getId())) {
             List<ClientInfo> list = sm.getListOnline();
+            socketClientListener.updateOnlineList(list);
             System.out.println("SET_LIST_ONINE list:" + (list == null ? "null" : list.size()));
         } else if (SocketMessage.FORCE_LOGOUT.equals(sm.getId())) {
             //TODO:
@@ -59,8 +60,8 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
             System.out.println("[sendSocketMessage] but ctx null");
             return;
         }
-        if (sm.getClient() != null) {
-            sm.getClient().setIpAddress(ctx.channel().localAddress().toString());
+        if (sm.getClientInfo()!= null) {
+            sm.getClientInfo().setIpAddress(ctx.channel().localAddress().toString());
         }
         System.out.println("[sendSocketMessage]: " + sm.getId());
         ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
