@@ -48,8 +48,8 @@ public class SocketClient {
     public void connect(Listener listener) {
         //this.listener = listener;
         try {
-//            final String host = "192.168.4.36";
-            final String host = "192.168.6.111";
+            final String host = "192.168.4.36";
+//            final String host = "192.168.6.111";
 //            final String host = "localhost";
             final int port = 8080;
 
