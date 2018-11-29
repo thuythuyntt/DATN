@@ -70,7 +70,7 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void updateOnlineList(List<ClientInfo> list) {
-            System.out.println("updateOnlineList");
+            System.out.println("updateOnlineList: " + list.size());
             setupDSSinhVien(list);
         }
     };
