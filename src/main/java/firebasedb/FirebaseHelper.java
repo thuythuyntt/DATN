@@ -219,7 +219,6 @@ public final class FirebaseHelper {
                             }
                         }
 
-                        System.out.println("onEvent lst online: " + users.size());
                         listener.onEventOnline(getListOnlineFriends(users));
                     }
                 });

@@ -17,7 +17,6 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
@@ -26,8 +25,6 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -71,6 +68,7 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void updateOnlineList(List<ClientInfo> list) {
+            System.out.println("updateOnlineList");
             setupDSSinhVien(list);
         }
     };
@@ -144,6 +142,7 @@ public class JFTrangChu extends JFrameBase {
             //tab 2: Quan ly
             SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
             sk.sendMessage(sm);
+            System.out.println("send get online list message");
 //            setupDSSinhVien();
         } else {
             jTabbedPane1.remove(panelManagement);
@@ -194,8 +193,6 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().getListOnlineUsers(new FirebaseHelper.UserOnlineChangeListener() {
             @Override
             public void onEventOnline(List<User> lst) {
-                System.out.println("onEventOnline lst: " + lst.size());
-
                 list.clear();
                 User all = new User();
                 all.setId("");
