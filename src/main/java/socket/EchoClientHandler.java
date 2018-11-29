@@ -66,4 +66,8 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
         System.out.println("[sendSocketMessage]: " + sm.getId());
         ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
     }
+    
+    public void disconnect() {
+        ctx.disconnect();
+    }
 }

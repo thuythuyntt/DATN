@@ -44,6 +44,10 @@ public class SocketClient {
     public void sendMessage(SocketMessage sm) {
         handler.sendSocketMessage(sm);
     }
+    
+    public void disconnect() {
+        handler.disconnect();
+    }
 
     public void connect(Listener listener) {
         //this.listener = listener;
