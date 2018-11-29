@@ -55,7 +55,7 @@ public class JFTrangChu extends JFrameBase {
             initCustomComponents();
             setupData();
             firstLoad = false;
-        }
+            }
             firstConnect();
 
         }

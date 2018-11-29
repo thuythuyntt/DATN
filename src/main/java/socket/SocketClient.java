@@ -73,8 +73,8 @@ public class SocketClient {
 
                 System.out.println("conntect to " + host + ":" + port);
 //                bootstrap.connect(host, port);
-                ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
-                channelFuture.channel().closeFuture().sync();
+                ChannelFuture channelFuture = bootstrap.connect(host, port);//.sync();
+                channelFuture.channel().closeFuture();//.sync();
             } finally {
                 System.out.println("shutdownGracefully");
 //                group.shutdownGracefully().sync();
