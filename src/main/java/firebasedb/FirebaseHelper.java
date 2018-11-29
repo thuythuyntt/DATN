@@ -87,7 +87,7 @@ public final class FirebaseHelper {
             db = FirestoreClient.getFirestore();
 //            bucket = StorageClient.getInstance().bucket();
             System.out.println("FirebaseApp.initializeApp success");
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             System.out.println("FirebaseApp.initializeApp error");
             ex.printStackTrace();
         } finally {
@@ -123,7 +123,7 @@ public final class FirebaseHelper {
 
             System.out.println("checkLogin: " + authUser.toString());
             return true;
-        } catch (Exception ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
@@ -147,7 +147,7 @@ public final class FirebaseHelper {
             authUser.fromQueryDocument(doc);
             System.out.println("checkAutoLogin " + authUser.toString());
             return true;
-        } catch (Exception ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
@@ -175,7 +175,7 @@ public final class FirebaseHelper {
                 list.add(user);
             });
             return list;
-        } catch (Exception ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
             return list;
         }
@@ -193,7 +193,7 @@ public final class FirebaseHelper {
                 list.add(user);
             });
             return list;
-        } catch (Exception ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
             return list;
         }
@@ -245,13 +245,10 @@ public final class FirebaseHelper {
             ApiFuture<DocumentReference> addedDocRef = db.collection("chat").add(data);
             return !addedDocRef.get().getId().isEmpty();
 
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class
                     .getName()).log(Level.SEVERE, null, ex);
 
-        } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
@@ -283,13 +280,10 @@ public final class FirebaseHelper {
 
             System.out.println("Write result: " + writeResult.get());
 
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class
                     .getName()).log(Level.SEVERE, null, ex);
 
-        } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -305,13 +299,10 @@ public final class FirebaseHelper {
 
             System.out.println("Write result: " + writeResult.get());
 
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class
                     .getName()).log(Level.SEVERE, null, ex);
 
-        } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -327,13 +318,10 @@ public final class FirebaseHelper {
 
             System.out.println("Write result: " + writeResult.get());
 
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class
                     .getName()).log(Level.SEVERE, null, ex);
 
-        } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -350,13 +338,10 @@ public final class FirebaseHelper {
 
             System.out.println("Write result: " + writeResult.get());
 
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class
                     .getName()).log(Level.SEVERE, null, ex);
 
-        } catch (ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -413,7 +398,7 @@ public final class FirebaseHelper {
 
             Collections.sort(mListSingleMessage);
 
-        } catch (Exception ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class
                     .getName()).log(Level.SEVERE, null, ex);
         }

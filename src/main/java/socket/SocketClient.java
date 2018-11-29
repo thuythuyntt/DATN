@@ -26,12 +26,8 @@ public class SocketClient {
         void updateOnlineList(List<ClientInfo> list);
     }
 
-    //private Listener listener;
-    private EchoClientHandler handler;
+    private SocketChannelHandler handler;
 
-//    public SocketClient(Listener listener) {
-//        this.listener = listener;
-//    }
     private static SocketClient instance = null;
 
     public static SocketClient getInstance() {
@@ -50,15 +46,13 @@ public class SocketClient {
     }
 
     public void connect(Listener listener) {
-        //this.listener = listener;
         try {
             final String host = "192.168.4.36";
 //            final String host = "192.168.6.111";
 //            final String host = "localhost";
             final int port = 8080;
 
-//            handler = new EchoClientHandler(listener); 
-            handler = new EchoClientHandler(listener);
+            handler = new SocketChannelHandler(listener);
 
             EventLoopGroup group = new NioEventLoopGroup();
             try {
@@ -76,7 +70,6 @@ public class SocketClient {
                         });
 
                 System.out.println("conntect to " + host + ":" + port);
-//                bootstrap.connect(host, port);
                 ChannelFuture channelFuture = bootstrap.connect(host, port);//.sync();
                 channelFuture.channel().closeFuture();//.sync();
             } finally {

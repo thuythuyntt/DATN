@@ -7,6 +7,7 @@ package chat;
 
 import customview.MyAvatarPopup;
 import customview.MyMouseListener;
+import customview.MyPCControllerPopup;
 import dangnhap.JFDangNhap;
 import firebasedb.FirebaseHelper;
 import java.awt.Adjustable;
@@ -16,7 +17,10 @@ import java.awt.Font;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
@@ -27,7 +31,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
+import javax.swing.JTable;
 import model.ClientInfo;
 import model.SocketMessage;
 import socket.SocketClient;
@@ -40,13 +46,12 @@ import util.Util;
  */
 public class JFTrangChu extends JFrameBase {
 
-    private User user;
+    private final User user;
     private String toUserId = "";
     private String fromUserId = "";
-    private SocketClient sk = SocketClient.getInstance();
+    private final SocketClient sk = SocketClient.getInstance();
 
-
-    private SocketClient.Listener socketListener = new SocketClient.Listener() {
+    private final SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
             firstConnect();
@@ -62,7 +67,6 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void updateOnlineList(List<ClientInfo> list) {
-            System.out.println("updateOnlineList: " + list.size());
             setupDSSinhVien(list);
         }
     };
@@ -72,20 +76,19 @@ public class JFTrangChu extends JFrameBase {
             ClientInfo clt = new ClientInfo();
             clt.setUsername(user.getFullname());
             clt.setPcname(InetAddress.getLocalHost().getHostName());
-            //clt.setIpAddress(InetAddress.getLocalHost().);
             clt.setDtLogin(getTimeNow());
             SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
             sk.sendMessage(sm);
-        } catch (Exception e) {
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
     }
 
-//    static final String url = System.getProperty("url", "ws://192.168.4.36:8080/websocket");
     public JFTrangChu() {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
         SocketClient.getInstance().connect(socketListener);
-        
+
     }
 
     private void showProgressBar() {
@@ -126,7 +129,6 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupData() {
-        System.out.println("setupData");
         //tab 1: Trang chu
         setupInfo();
         setupDSBanBe();
@@ -137,8 +139,6 @@ public class JFTrangChu extends JFrameBase {
             //tab 2: Quan ly
             SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
             sk.sendMessage(sm);
-            System.out.println("send get online list message");
-//            setupDSSinhVien();
         } else {
             jTabbedPane1.remove(panelManagement);
             jTabbedPane1.remove(panelStatistics);
@@ -151,17 +151,14 @@ public class JFTrangChu extends JFrameBase {
         tblDSSV.revalidate();
         tblDSSV.repaint();
 
-        List<ClientInfo> onlineList = new ArrayList<ClientInfo>();
-
+        List<ClientInfo> onlineList = new ArrayList<>();
         for (ClientInfo ci : list) {
             if (!ci.getUsername().equals(user.getFullname())) {
                 onlineList.add(ci);
             }
         }
 
-//        list.addAll(FirebaseHelper.getInstance().getListStudent());
         DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
-
         Object[] row = new Object[6];
         for (int i = 0; i < onlineList.size(); i++) {
             row[0] = (i + 1);
@@ -172,6 +169,43 @@ public class JFTrangChu extends JFrameBase {
             row[5] = true;
             model.addRow(row);
         }
+        
+        tblDSSV.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                int r = tblDSSV.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < tblDSSV.getRowCount()) {
+                    tblDSSV.setRowSelectionInterval(r, r);
+                } else {
+                    tblDSSV.clearSelection();
+                }
+
+                int rowindex = tblDSSV.getSelectedRow();
+                if (rowindex < 0) {
+                    return;
+                }
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
+                    
+                    MyPCControllerPopup popup = new MyPCControllerPopup(new MyPCControllerPopup.OnClick() {
+                        @Override
+                        public void clickLockScreen() {
+                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_LOCK_SCREEN));
+                        }
+
+                        @Override
+                        public void clickShutdown() {
+                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_SHUTDOWN));
+                        }
+
+                        @Override
+                        public void clickRestart() {
+                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_RESTART));
+                        }
+                    });
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 
     private void setupInfo() {
@@ -182,7 +216,7 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupDSBanBe() {
-        List<User> list = new ArrayList<User>();
+        List<User> list = new ArrayList<>();
 
         FirebaseHelper.getInstance().getListOnlineUsers(new FirebaseHelper.UserOnlineChangeListener() {
             @Override

@@ -7,7 +7,6 @@ package socket;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.util.HashMap;
 import java.util.List;
 import model.ClientInfo;
 import model.SocketMessage;
@@ -16,12 +15,12 @@ import model.SocketMessage;
  *
  * @author nguyen.thi.thu.thuy
  */
-public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
+public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
 
     private ChannelHandlerContext ctx;
     private SocketClient.Listener socketClientListener;
 
-    public EchoClientHandler(SocketClient.Listener listener) {
+    public SocketChannelHandler(SocketClient.Listener listener) {
         socketClientListener = listener;
     }
 
@@ -49,9 +48,14 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<String> {
         if (SocketMessage.SET_LIST_ONINE.equals(sm.getId())) {
             List<ClientInfo> list = sm.getListOnline();
             socketClientListener.updateOnlineList(list);
-            System.out.println("SET_LIST_ONINE list:" + (list == null ? "null" : list.size()));
         } else if (SocketMessage.FORCE_LOGOUT.equals(sm.getId())) {
             //TODO:
+        } else if (SocketMessage.CTL_LOCK_SCREEN.equals(sm.getId())){
+            
+        } else if (SocketMessage.CTL_SHUTDOWN.equals(sm.getId())){
+            
+        } else if (SocketMessage.CTL_RESTART.equals(sm.getId())){
+            
         }
     }
 
