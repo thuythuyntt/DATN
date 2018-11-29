@@ -45,22 +45,14 @@ public class JFTrangChu extends JFrameBase {
     private String fromUserId = "";
     private SocketClient sk = SocketClient.getInstance();
 
-    private boolean firstLoad = true;
 
     private SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
-            
             firstConnect();
-            
-            if (firstLoad) {
             showProgressBar();
             initCustomComponents();
             setupData();
-            firstLoad = false;
-            }
-            
-
         }
 
         @Override

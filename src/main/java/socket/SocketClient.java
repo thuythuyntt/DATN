@@ -80,7 +80,7 @@ public class SocketClient {
                 ChannelFuture channelFuture = bootstrap.connect(host, port);//.sync();
                 channelFuture.channel().closeFuture();//.sync();
             } finally {
-                System.out.println("shutdownGracefully");
+                //System.out.println("shutdownGracefully");
 //                group.shutdownGracefully().sync();
             }
         } catch (Exception ex) {
