@@ -19,6 +19,8 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -138,6 +140,14 @@ public class JFTrangChu extends JFrameBase {
                 logOut();
             }
         }));
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                sk.disconnect();
+            }
+
+        });
 
 //        BufferedImage img;
 //        try {
