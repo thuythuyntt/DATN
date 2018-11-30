@@ -208,7 +208,7 @@ public class JFTrangChu extends JFrameBase {
                 }
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
                     ClientInfo c = list.get(rowindex);
-                    System.out.println(c.getPcname());
+                    System.out.println(c.getIpAddress());
                     new MyPCControllerPopup(new MyPCControllerPopup.OnClick() {
                         @Override
                         public void clickLockScreen() {
