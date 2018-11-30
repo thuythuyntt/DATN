@@ -49,7 +49,7 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
             List<ClientInfo> list = sm.getListOnline();
             socketClientListener.updateOnlineList(list);
         } else if (sm.getId().startsWith("CTL_")) {
-            socketClientListener.doControlAction(sm.getId(), sm.getClientInfo().getPcname());
+            socketClientListener.doControlAction(sm.getId(), sm.getClientInfo().getPcName());
         }
     }
 

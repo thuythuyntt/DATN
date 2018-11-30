@@ -98,8 +98,9 @@ public class JFTrangChu extends JFrameBase {
     private void firstConnect() {
         try {
             ClientInfo clt = new ClientInfo();
-            clt.setUsername(user.getFullname());
-            clt.setPcname(InetAddress.getLocalHost().getHostName());
+            clt.setFullName(user.getFullname());
+            clt.setUserName(user.getUsername());
+            clt.setPcName(InetAddress.getLocalHost().getHostName());
             clt.setDtLogin(getTimeNow());
             SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
             sk.sendMessage(sm);
@@ -185,7 +186,7 @@ public class JFTrangChu extends JFrameBase {
 
         List<ClientInfo> onlineList = new ArrayList<>();
         for (ClientInfo ci : list) {
-            if (!ci.getUsername().equals(user.getFullname())) {
+            if (!ci.getUserName().equals(user.getUsername())) {
                 onlineList.add(ci);
             }
         }
@@ -194,9 +195,9 @@ public class JFTrangChu extends JFrameBase {
         Object[] row = new Object[6];
         for (int i = 0; i < onlineList.size(); i++) {
             row[0] = (i + 1);
-            row[1] = onlineList.get(i).getUsername();
+            row[1] = onlineList.get(i).getFullName();
             row[2] = onlineList.get(i).getIpAddress();
-            row[3] = onlineList.get(i).getPcname();
+            row[3] = onlineList.get(i).getPcName();
             row[4] = onlineList.get(i).getDtLogin();
             row[5] = true;
             model.addRow(row);
@@ -227,7 +228,7 @@ public class JFTrangChu extends JFrameBase {
                                 "Hủy"};
                             int n = JOptionPane.showOptionDialog(
                                     JFTrangChu.this,
-                                    "Bạn muốn LOCK SCREEN máy tính: " + c.getPcname() + "?",
+                                    "Bạn muốn LOCK SCREEN máy tính: " + c.getPcName()+ "?",
                                     "XÁC NHẬN",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.QUESTION_MESSAGE,
@@ -245,7 +246,7 @@ public class JFTrangChu extends JFrameBase {
                                 "Hủy"};
                             int n = JOptionPane.showOptionDialog(
                                     JFTrangChu.this,
-                                    "Bạn muốn SHUT DOWN máy tính: " + c.getPcname() + "?",
+                                    "Bạn muốn SHUT DOWN máy tính: " + c.getPcName()+ "?",
                                     "XÁC NHẬN",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.QUESTION_MESSAGE,
@@ -263,7 +264,7 @@ public class JFTrangChu extends JFrameBase {
                                 "Hủy"};
                             int n = JOptionPane.showOptionDialog(
                                     JFTrangChu.this,
-                                    "Bạn muốn RESTART máy tính: " + c.getPcname() + "?",
+                                    "Bạn muốn RESTART máy tính: " + c.getPcName()+ "?",
                                     "XÁC NHẬN",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.QUESTION_MESSAGE,
