@@ -185,8 +185,6 @@ public class JFTrangChu extends JFrameBase {
 
         List<ClientInfo> onlineList = new ArrayList<>();
         for (ClientInfo ci : list) {
-            System.out.println("CLIENT: " + ci.getUsername());
-            System.out.println("CLIENT: " + user.getFullname());
             if (!ci.getUsername().equals(user.getFullname())) {
                 onlineList.add(ci);
             }

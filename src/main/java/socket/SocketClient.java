@@ -9,6 +9,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.CharsetUtil;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,8 +66,8 @@ public class SocketClient {
                             @Override
                             public void initChannel(SocketChannel ch) throws Exception {
                                 ch.pipeline().addLast(
-                                        new StringEncoder(),
-                                        new StringDecoder(),
+                                        new StringEncoder(CharsetUtil.UTF_8),
+                                        new StringDecoder(CharsetUtil.UTF_8),
                                         handler);
                             }
                         });
