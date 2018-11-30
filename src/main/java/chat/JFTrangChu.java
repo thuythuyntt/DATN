@@ -76,31 +76,19 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void doControlAction(String action, String pc) {
-            Object[] options = {"Luôn và ngay",
-                "Hủy"};
-            int n = JOptionPane.showOptionDialog(
-                    JFTrangChu.this,
-                    "Bạn muốn " + action + " máy tính: " + pc + "?",
-                    "XÁC NHẬN",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[0]);
-            if (n == 0) {
-                switch (action) {
-                    case SocketMessage.CTL_LOCK_SCREEN:
-                        OSCommand.lockScreen();
-                        break;
-                    case SocketMessage.CTL_RESTART:
-                        OSCommand.restart();
-                        break;
-                    case SocketMessage.CTL_SHUTDOWN:
-                        OSCommand.shutdown();
-                        break;
-                    default:
-                        break;
-                }
+
+            switch (action) {
+                case SocketMessage.CTL_LOCK_SCREEN:
+                    OSCommand.lockScreen();
+                    break;
+                case SocketMessage.CTL_RESTART:
+                    OSCommand.restart();
+                    break;
+                case SocketMessage.CTL_SHUTDOWN:
+                    OSCommand.shutdown();
+                    break;
+                default:
+                    break;
             }
         }
     };
@@ -219,21 +207,61 @@ public class JFTrangChu extends JFrameBase {
                     return;
                 }
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
-                    String ip = list.get(rowindex).getIpAddress();
+                    ClientInfo c = list.get(rowindex);
                     new MyPCControllerPopup(new MyPCControllerPopup.OnClick() {
                         @Override
                         public void clickLockScreen() {
-                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_LOCK_SCREEN, ip));
+
+                            Object[] options = {"Luôn và ngay",
+                                "Hủy"};
+                            int n = JOptionPane.showOptionDialog(
+                                    JFTrangChu.this,
+                                    "Bạn muốn LOCK SCREEN máy tính: " + c.getPcname() + "?",
+                                    "XÁC NHẬN",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    null,
+                                    options,
+                                    options[0]);
+                            if (n == 0) {
+                                sk.sendMessage(new SocketMessage(SocketMessage.CTL_LOCK_SCREEN, c));
+                            }
                         }
 
                         @Override
                         public void clickShutdown() {
-                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_SHUTDOWN, ip));
+                            Object[] options = {"Luôn và ngay",
+                                "Hủy"};
+                            int n = JOptionPane.showOptionDialog(
+                                    JFTrangChu.this,
+                                    "Bạn muốn SHUT DOWN máy tính: " + c.getPcname() + "?",
+                                    "XÁC NHẬN",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    null,
+                                    options,
+                                    options[0]);
+                            if (n == 0) {
+                                sk.sendMessage(new SocketMessage(SocketMessage.CTL_SHUTDOWN, c));
+                            }
                         }
 
                         @Override
                         public void clickRestart() {
-                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_RESTART, ip));
+                            Object[] options = {"Luôn và ngay",
+                                "Hủy"};
+                            int n = JOptionPane.showOptionDialog(
+                                    JFTrangChu.this,
+                                    "Bạn muốn RESTART máy tính: " + c.getPcname() + "?",
+                                    "XÁC NHẬN",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    null,
+                                    options,
+                                    options[0]);
+                            if (n == 0) {
+                                sk.sendMessage(new SocketMessage(SocketMessage.CTL_RESTART, c));
+                            }
                         }
                     }).show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -415,7 +443,7 @@ public class JFTrangChu extends JFrameBase {
         this.dispose();
         this.showScreen(new JFDangNhap());
         FirebaseHelper.getInstance().updateOnlineStatus(false);
-        sk.disconnect();
+//        sk.disconnect();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
