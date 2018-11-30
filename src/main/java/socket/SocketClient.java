@@ -24,6 +24,8 @@ public class SocketClient {
         void disconnected(Throwable e);
 
         void updateOnlineList(List<ClientInfo> list);
+        
+        void doControlAction(String action, String pcName);
     }
 
     private SocketChannelHandler handler;

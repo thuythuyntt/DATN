@@ -48,14 +48,8 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
         if (SocketMessage.SET_LIST_ONINE.equals(sm.getId())) {
             List<ClientInfo> list = sm.getListOnline();
             socketClientListener.updateOnlineList(list);
-        } else if (SocketMessage.FORCE_LOGOUT.equals(sm.getId())) {
-            //TODO:
-        } else if (SocketMessage.CTL_LOCK_SCREEN.equals(sm.getId())){
-            
-        } else if (SocketMessage.CTL_SHUTDOWN.equals(sm.getId())){
-            
-        } else if (SocketMessage.CTL_RESTART.equals(sm.getId())){
-            
+        } else if (sm.getId().startsWith("CTL_")) {
+            socketClientListener.doControlAction(sm.getId(), sm.getClientInfo().getPcname());
         }
     }
 

@@ -19,6 +19,7 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -29,6 +30,8 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -38,6 +41,7 @@ import model.ClientInfo;
 import model.SocketMessage;
 import socket.SocketClient;
 import util.Constants;
+import util.OSCommand;
 import util.Util;
 
 /**
@@ -68,6 +72,36 @@ public class JFTrangChu extends JFrameBase {
         @Override
         public void updateOnlineList(List<ClientInfo> list) {
             setupDSSinhVien(list);
+        }
+
+        @Override
+        public void doControlAction(String action, String pc) {
+            Object[] options = {"Luôn và ngay",
+                "Hủy"};
+            int n = JOptionPane.showOptionDialog(
+                    JFTrangChu.this,
+                    "Bạn muốn " + action + " máy tính: " + pc + "?",
+                    "XÁC NHẬN",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+            if (n == 0) {
+                switch (action) {
+                    case SocketMessage.CTL_LOCK_SCREEN:
+                        OSCommand.lockScreen();
+                        break;
+                    case SocketMessage.CTL_RESTART:
+                        OSCommand.restart();
+                        break;
+                    case SocketMessage.CTL_SHUTDOWN:
+                        OSCommand.shutdown();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     };
 
@@ -169,7 +203,7 @@ public class JFTrangChu extends JFrameBase {
             row[5] = true;
             model.addRow(row);
         }
-        
+
         tblDSSV.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -185,24 +219,23 @@ public class JFTrangChu extends JFrameBase {
                     return;
                 }
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
-                    
-                    MyPCControllerPopup popup = new MyPCControllerPopup(new MyPCControllerPopup.OnClick() {
+                    String ip = list.get(rowindex).getIpAddress();
+                    new MyPCControllerPopup(new MyPCControllerPopup.OnClick() {
                         @Override
                         public void clickLockScreen() {
-                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_LOCK_SCREEN));
+                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_LOCK_SCREEN, ip));
                         }
 
                         @Override
                         public void clickShutdown() {
-                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_SHUTDOWN));
+                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_SHUTDOWN, ip));
                         }
 
                         @Override
                         public void clickRestart() {
-                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_RESTART));
+                            sk.sendMessage(new SocketMessage(SocketMessage.CTL_RESTART, ip));
                         }
-                    });
-                    popup.show(e.getComponent(), e.getX(), e.getY());
+                    }).show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -798,15 +831,7 @@ public class JFTrangChu extends JFrameBase {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
-//        try {
         sendMessage();
-//            Runtime.getRuntime().exec("shutdown -l");
-//        Runtime r = Runtime.getRuntime();
-//        r.exec("C:\\Windows\\System32\\rundll32.exe user32.dll,LockWorkStation");
-
-//        } catch (IOException ex) {
-//            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }//GEN-LAST:event_btnSendMessageMouseClicked
 
     private void areaNhapTinNhanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_areaNhapTinNhanKeyPressed
