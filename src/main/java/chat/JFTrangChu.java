@@ -444,7 +444,7 @@ public class JFTrangChu extends JFrameBase {
         this.dispose();
         this.showScreen(new JFDangNhap());
         FirebaseHelper.getInstance().updateOnlineStatus(false);
-//        sk.disconnect();
+        sk.disconnect();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
