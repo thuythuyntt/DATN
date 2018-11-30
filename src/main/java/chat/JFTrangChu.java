@@ -746,7 +746,7 @@ public class JFTrangChu extends JFrameBase {
         panelManagement.setPreferredSize(new java.awt.Dimension(1000, 600));
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel2.setText("QUẢN LÝ SINH VIÊN");
+        jLabel2.setText("QUẢN LÝ MÁY TÍNH PHÒNG THỰC HÀNH");
 
         jTextField1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
 
@@ -769,14 +769,14 @@ public class JFTrangChu extends JFrameBase {
 
             },
             new String [] {
-                "STT", "Họ tên", "Địa chỉ IP", "Máy tính", "Thời gian", "Online"
+                "STT", "Họ tên", "Địa chỉ IP", "Máy tính", "Thời gian"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -787,7 +787,15 @@ public class JFTrangChu extends JFrameBase {
                 return canEdit [columnIndex];
             }
         });
+        tblDSSV.setPreferredSize(new java.awt.Dimension(312, 0));
         jScrollPane4.setViewportView(tblDSSV);
+        if (tblDSSV.getColumnModel().getColumnCount() > 0) {
+            tblDSSV.getColumnModel().getColumn(0).setPreferredWidth(8);
+            tblDSSV.getColumnModel().getColumn(1).setPreferredWidth(76);
+            tblDSSV.getColumnModel().getColumn(2).setPreferredWidth(76);
+            tblDSSV.getColumnModel().getColumn(3).setPreferredWidth(76);
+            tblDSSV.getColumnModel().getColumn(4).setPreferredWidth(76);
+        }
 
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
