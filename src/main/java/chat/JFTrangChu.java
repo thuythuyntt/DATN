@@ -193,7 +193,7 @@ public class JFTrangChu extends JFrameBase {
             model.setRowCount(0);
         }
 
-        Object[] row = new Object[6];
+        Object[] row = new Object[5];
         for (int i = 0; i < onlineList.size(); i++) {
             row[0] = (i + 1);
             row[1] = onlineList.get(i).getFullName();
@@ -485,9 +485,6 @@ public class JFTrangChu extends JFrameBase {
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jButton2 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblDSSV = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -589,7 +586,7 @@ public class JFTrangChu extends JFrameBase {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -726,8 +723,8 @@ public class JFTrangChu extends JFrameBase {
         panelHomeLayout.setHorizontalGroup(
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelHomeLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -745,21 +742,13 @@ public class JFTrangChu extends JFrameBase {
         panelManagement.setPreferredSize(new java.awt.Dimension(1000, 600));
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("QUẢN LÝ MÁY TÍNH PHÒNG THỰC HÀNH");
 
         jTextField1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         jButton1.setText("Tìm kiếm");
-
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
-        jLabel3.setText("Lọc:");
-
-        jCheckBox1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
-        jCheckBox1.setText("Online");
-
-        jButton2.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
-        jButton2.setText("OK");
 
         tblDSSV.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tblDSSV.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
@@ -810,37 +799,26 @@ public class JFTrangChu extends JFrameBase {
                 .addGap(60, 60, 60)
                 .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(jLabel2)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 887, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(panelManagementLayout.createSequentialGroup()
-                            .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addGroup(panelManagementLayout.createSequentialGroup()
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(panelManagementLayout.createSequentialGroup()
-                                    .addComponent(jLabel3)
-                                    .addGap(13, 13, 13)
-                                    .addComponent(jCheckBox1)))
-                            .addGap(26, 26, 26)
-                            .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGap(26, 26, 26)
+                                .addComponent(jButton1))))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(46, 46, 46))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelManagementLayout.setVerticalGroup(
             panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelManagementLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(39, 39, 39)
                 .addComponent(jLabel2)
-                .addGap(43, 43, 43)
+                .addGap(48, 48, 48)
                 .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton1)
-                    .addComponent(jTextField1))
-                .addGap(31, 31, 31)
-                .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
@@ -855,7 +833,7 @@ public class JFTrangChu extends JFrameBase {
         panelStatistics.setLayout(panelStatisticsLayout);
         panelStatisticsLayout.setHorizontalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGap(0, 974, Short.MAX_VALUE)
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -912,11 +890,8 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JLabel btnSendImage;
     private javax.swing.JLabel btnSendMessage;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
