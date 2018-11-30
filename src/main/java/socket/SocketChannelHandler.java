@@ -58,7 +58,7 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
             System.out.println("[sendSocketMessage] but ctx null");
             return;
         }
-        if (sm.getClientInfo()!= null) {
+        if (sm.getClientInfo()!= null && sm.getId().equals(SocketMessage.CONNECT)) {
             sm.getClientInfo().setIpAddress(ctx.channel().localAddress().toString());
         }
         System.out.println("[sendSocketMessage]: " + sm.getId());
