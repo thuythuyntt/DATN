@@ -64,7 +64,7 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void disconnected(Throwable e) {
-            System.out.println("[TrangChu] disconnected");
+            System.out.println("disconnected");
         }
 
         @Override
@@ -188,11 +188,11 @@ public class JFTrangChu extends JFrameBase {
         }
 
         DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
-        
+
         if (model.getRowCount() > 0) {
-                    model.setRowCount(0);
-                }
-        
+            model.setRowCount(0);
+        }
+
         Object[] row = new Object[6];
         for (int i = 0; i < onlineList.size(); i++) {
             row[0] = (i + 1);
@@ -229,7 +229,7 @@ public class JFTrangChu extends JFrameBase {
                                 "Hủy"};
                             int n = JOptionPane.showOptionDialog(
                                     JFTrangChu.this,
-                                    "Bạn muốn LOCK SCREEN máy tính: " + c.getPcName()+ "?",
+                                    "Bạn muốn LOCK SCREEN máy tính: " + c.getPcName() + "?",
                                     "XÁC NHẬN",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.QUESTION_MESSAGE,
@@ -247,7 +247,7 @@ public class JFTrangChu extends JFrameBase {
                                 "Hủy"};
                             int n = JOptionPane.showOptionDialog(
                                     JFTrangChu.this,
-                                    "Bạn muốn SHUT DOWN máy tính: " + c.getPcName()+ "?",
+                                    "Bạn muốn SHUT DOWN máy tính: " + c.getPcName() + "?",
                                     "XÁC NHẬN",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.QUESTION_MESSAGE,
@@ -265,7 +265,7 @@ public class JFTrangChu extends JFrameBase {
                                 "Hủy"};
                             int n = JOptionPane.showOptionDialog(
                                     JFTrangChu.this,
-                                    "Bạn muốn RESTART máy tính: " + c.getPcName()+ "?",
+                                    "Bạn muốn RESTART máy tính: " + c.getPcName() + "?",
                                     "XÁC NHẬN",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.QUESTION_MESSAGE,
@@ -377,7 +377,6 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupMessage(List<Message> list) {
-        System.out.println("setupMessage size(): " + list.size());
         for (int i = 0; i < list.size(); i++) {
             Message m = list.get(i);
             addMessageToScrollPane(m);
@@ -888,9 +887,7 @@ public class JFTrangChu extends JFrameBase {
         Message m = new Message(from, to, text, dateTime);
 
         if (FirebaseHelper.getInstance().sendMessage(m)) {
-            System.out.println("Gửi tin nhắn thành công");
         } else {
-            System.out.println("Gửi tin nhắn thất bại");
             JOptionPane.showMessageDialog(this, "Gửi tin nhắn thất bại! :(", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
         areaNhapTinNhan.setText("");

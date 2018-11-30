@@ -121,7 +121,6 @@ public final class FirebaseHelper {
             //lưu file tmp
             Util.saveFile(token, Constants.TMP_FILE_NAME);
 
-            System.out.println("checkLogin: " + authUser.toString());
             return true;
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(FirebaseHelper.class.getName()).log(Level.SEVERE, null, ex);
@@ -259,36 +258,24 @@ public final class FirebaseHelper {
             String group,
             String fullname,
             String phone) {
-        try {
-            DocumentReference docRef = db.collection("account").document(authUser.getId());
-
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("class", group);
-            updates.put("code", code);
-            updates.put("dob", dob);
-            updates.put("faculty", faculty);
-            updates.put("fullname", fullname);
-            updates.put("phone", phone);
-
-            ApiFuture<WriteResult> writeResult = docRef.update(updates);
-            authUser.setGroup(group);
-            authUser.setCode(code);
-            authUser.setDob(dob);
-            authUser.setFaculty(faculty);
-            authUser.setFullname(fullname);
-            authUser.setPhone(phone);
-
-            System.out.println("Write result: " + writeResult.get());
-
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
-
-        }
+        DocumentReference docRef = db.collection("account").document(authUser.getId());
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("class", group);
+        updates.put("code", code);
+        updates.put("dob", dob);
+        updates.put("faculty", faculty);
+        updates.put("fullname", fullname);
+        updates.put("phone", phone);
+        ApiFuture<WriteResult> writeResult = docRef.update(updates);
+        authUser.setGroup(group);
+        authUser.setCode(code);
+        authUser.setDob(dob);
+        authUser.setFaculty(faculty);
+        authUser.setFullname(fullname);
+        authUser.setPhone(phone);
     }
 
     public void updateToken(String token) {
-        try {
             DocumentReference docRef = db.collection("account").document(authUser.getId());
 
             Map<String, Object> updates = new HashMap<>();
@@ -296,18 +283,9 @@ public final class FirebaseHelper {
 
             ApiFuture<WriteResult> writeResult = docRef.update(updates);
             authUser.setToken(token);
-
-            System.out.println("Write result: " + writeResult.get());
-
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
-
-        }
     }
 
     public void updatePassword(String newPassword) {
-        try {
             DocumentReference docRef = db.collection("account").document(authUser.getId());
 
             Map<String, Object> updates = new HashMap<>();
@@ -315,19 +293,9 @@ public final class FirebaseHelper {
 
             ApiFuture<WriteResult> writeResult = docRef.update(updates);
             authUser.setPassword(newPassword);
-
-            System.out.println("Write result: " + writeResult.get());
-
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
-
-        }
     }
 
     public void updateOnlineStatus(boolean online) {
-        System.out.println("updateOnlineStatus");
-        try {
             DocumentReference docRef = db.collection("account").document(authUser.getId());
 
             Map<String, Object> updates = new HashMap<>();
@@ -335,14 +303,6 @@ public final class FirebaseHelper {
 
             ApiFuture<WriteResult> writeResult = docRef.update(updates);
             authUser.setOnline(online);
-
-            System.out.println("Write result: " + writeResult.get());
-
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(FirebaseHelper.class
-                    .getName()).log(Level.SEVERE, null, ex);
-
-        }
     }
 
     // Đang bị double tin nhắn do có nhiều snapshotlistener cùng lắng nghe cùng một sự thay đổi:
@@ -457,7 +417,6 @@ public final class FirebaseHelper {
                     Message m = new Message();
                     m.fromQueryDocument(dc.getDocument());
                     list.add(m);
-                    System.out.println("New message: " + dc.getDocument().getData());
                     break;
 
                 default:
