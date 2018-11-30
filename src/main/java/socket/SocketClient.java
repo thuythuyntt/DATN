@@ -49,7 +49,7 @@ public class SocketClient {
 
     public void connect(Listener listener) {
         try {
-            final String host = "192.168.4.36";
+            final String host = "192.168.6.57"; // .6.57 máy mac trên công ty; .4.36 máy tính cá nhân
 //            final String host = "192.168.6.111";
 //            final String host = "localhost";
             final int port = 8080;
