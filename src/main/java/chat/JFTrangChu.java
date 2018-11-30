@@ -200,7 +200,6 @@ public class JFTrangChu extends JFrameBase {
             row[2] = onlineList.get(i).getIpAddress();
             row[3] = onlineList.get(i).getPcName();
             row[4] = onlineList.get(i).getDtLogin();
-            row[5] = true;
             model.addRow(row);
         }
 
