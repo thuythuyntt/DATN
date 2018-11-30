@@ -21,7 +21,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -32,11 +31,8 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JTable;
 import model.ClientInfo;
@@ -192,6 +188,11 @@ public class JFTrangChu extends JFrameBase {
         }
 
         DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
+        
+        if (model.getRowCount() > 0) {
+                    model.setRowCount(0);
+                }
+        
         Object[] row = new Object[6];
         for (int i = 0; i < onlineList.size(); i++) {
             row[0] = (i + 1);
@@ -285,7 +286,7 @@ public class JFTrangChu extends JFrameBase {
         fromUserId = user.getId();
 
         lbTenGV.setText(user.getFullname());
-        lbTenCuocTroChuyen.setText("ALL");
+        lbTenCuocTroChuyen.setText("Cả lớp");
     }
 
     private void setupDSBanBe() {
@@ -297,7 +298,7 @@ public class JFTrangChu extends JFrameBase {
                 list.clear();
                 User all = new User();
                 all.setId("");
-                all.setFullname("ALL");
+                all.setFullname("Cả lớp");
                 list.add(all);
 
                 list.addAll(lst);
@@ -305,7 +306,6 @@ public class JFTrangChu extends JFrameBase {
                 DefaultTableModel model = (DefaultTableModel) tblDSSVOnline.getModel();
 
                 if (model.getRowCount() > 0) {
-                    System.out.println("Remove table model");
                     model.setRowCount(0);
                 }
 
