@@ -76,8 +76,6 @@ public class SocketClient {
                 ChannelFuture channelFuture = bootstrap.connect(host, port);//.sync();
                 channelFuture.channel().closeFuture();//.sync();
             } finally {
-                System.out.println("shutdownGracefully");
-//                group.shutdownGracefully().sync();
             }
         } catch (Exception ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);

@@ -115,11 +115,11 @@ public final class FirebaseHelper {
             authUser.fromQueryDocument(doc);
 
             //lưu token ở firebase
-            String token = Util.hash(authUser.getUsername() + authUser.getId());
+            String token = TokenFile.hash(authUser.getUsername() + authUser.getId());
             updateToken(token);
 
             //lưu file tmp
-            Util.saveFile(token, Constants.TMP_FILE_NAME);
+            TokenFile.saveFile(token, Constants.TMP_FILE_NAME);
 
             return true;
         } catch (InterruptedException | ExecutionException ex) {

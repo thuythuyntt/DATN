@@ -8,14 +8,10 @@ package util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -26,7 +22,7 @@ import javax.swing.JEditorPane;
  *
  * @author thuy
  */
-public class Util {
+public class TokenFile {
 
     public static int getContentHeight(int width, String content) {
         JEditorPane dummyEditorPane = new JEditorPane();
@@ -58,7 +54,7 @@ public class Util {
             bw.write(content);
             bw.close();
         } catch (IOException ex) {
-            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(File.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

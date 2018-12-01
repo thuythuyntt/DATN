@@ -5,7 +5,7 @@ import chat.JFrameBase;
 import dangnhap.JFDangNhap;
 import firebasedb.FirebaseHelper;
 import util.Constants;
-import util.Util;
+import util.TokenFile;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,7 +19,7 @@ import util.Util;
 public class Main {
 
     public static void main(String[] args) {
-        String token = Util.readFile(Constants.TMP_FILE_NAME);
+        String token = TokenFile.readFile(Constants.TMP_FILE_NAME);
         if (FirebaseHelper.getInstance().checkAutoLogin(token)) {
             JFTrangChu view = new JFTrangChu();
             view.setVisible(true);

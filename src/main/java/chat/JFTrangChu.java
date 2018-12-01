@@ -5,8 +5,6 @@
  */
 package chat;
 
-import customview.MyAvatarPopup;
-import customview.MyMouseListener;
 import customview.MyPCControllerPopup;
 import dangnhap.JFDangNhap;
 import firebasedb.FirebaseHelper;
@@ -22,6 +20,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.List;
 import javax.swing.JTextArea;
@@ -31,6 +31,8 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -40,7 +42,8 @@ import model.SocketMessage;
 import socket.SocketClient;
 import util.Constants;
 import util.OSCommand;
-import util.Util;
+import util.TokenFile;
+import util.WebPage;
 
 /**
  *
@@ -56,6 +59,7 @@ public class JFTrangChu extends JFrameBase {
     private final SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
+            jMenuItemReconnect.setEnabled(false);
             firstConnect();
             showProgressBar();
             initCustomComponents();
@@ -65,6 +69,7 @@ public class JFTrangChu extends JFrameBase {
         @Override
         public void disconnected(Throwable e) {
             System.out.println("disconnected");
+            jMenuItemReconnect.setEnabled(true);
         }
 
         @Override
@@ -80,9 +85,11 @@ public class JFTrangChu extends JFrameBase {
                     OSCommand.lockScreen();
                     break;
                 case SocketMessage.CTL_RESTART:
+                    sk.disconnect();
                     OSCommand.restart();
                     break;
                 case SocketMessage.CTL_SHUTDOWN:
+                    sk.disconnect();
                     OSCommand.shutdown();
                     break;
                 default:
@@ -121,23 +128,6 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void initCustomComponents() {
-        panelAvatar.addMouseListener(new MyMouseListener(new MyAvatarPopup.OnClick() {
-            @Override
-            public void clickShowPersonInformation() {
-                showPersonInformation();
-            }
-
-            @Override
-            public void clickChangePassword() {
-                showChangePwDialog();
-            }
-
-            @Override
-            public void clickLogout() {
-                logOut();
-            }
-        }));
-
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -182,6 +172,7 @@ public class JFTrangChu extends JFrameBase {
 
         List<ClientInfo> onlineList = new ArrayList<>();
         for (ClientInfo ci : list) {
+            System.out.println(ci.getFullName());
             if (!ci.getUserName().equals(user.getUsername())) {
                 onlineList.add(ci);
             }
@@ -193,9 +184,9 @@ public class JFTrangChu extends JFrameBase {
             model.setRowCount(0);
         }
 
-        Object[] row = new Object[5];
         for (int i = 0; i < onlineList.size(); i++) {
-            row[0] = (i + 1);
+            Object[] row = new Object[5];
+            row[0] = i + 1;
             row[1] = onlineList.get(i).getFullName();
             row[2] = onlineList.get(i).getIpAddress();
             row[3] = onlineList.get(i).getPcName();
@@ -218,7 +209,7 @@ public class JFTrangChu extends JFrameBase {
                     return;
                 }
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
-                    ClientInfo c = list.get(rowindex);
+                    ClientInfo c = onlineList.get(rowindex);
                     System.out.println(c.getIpAddress());
                     new MyPCControllerPopup(new MyPCControllerPopup.OnClick() {
                         @Override
@@ -400,7 +391,7 @@ public class JFTrangChu extends JFrameBase {
         textArea.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
         int height = 0;
         if (m.getFromUserId().equals(user.getId())) {
-            height = Util.getContentHeight(width, m.getText());
+            height = TokenFile.getContentHeight(width, m.getText());
             textArea.setSize(width, height + padding);
             textArea.setText(m.getText());
             textArea.setLocation(340, posY);
@@ -408,7 +399,7 @@ public class JFTrangChu extends JFrameBase {
         } else {
             String content = FirebaseHelper.getInstance().getUserFromId(m.getFromUserId())
                     .getFullname() + ":\n" + m.getText();
-            height = Util.getContentHeight(width, content);
+            height = TokenFile.getContentHeight(width, content);
             textArea.setSize(width, height + padding);
             textArea.setText(content);
             textArea.setLocation(8, posY);
@@ -448,7 +439,7 @@ public class JFTrangChu extends JFrameBase {
     }
 
     public void logOut() {
-        Util.deleteFile(Constants.TMP_FILE_NAME);
+        TokenFile.deleteFile(Constants.TMP_FILE_NAME);
         FirebaseHelper.getInstance().updateToken("");
         this.dispose();
         this.showScreen(new JFDangNhap());
@@ -458,7 +449,6 @@ public class JFTrangChu extends JFrameBase {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         panelLoading = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -485,14 +475,24 @@ public class JFTrangChu extends JFrameBase {
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tblDSSV = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblDSSV = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
         panelStatistics = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuSetting = new javax.swing.JMenu();
+        jMenuItemChangePw = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemLogout = new javax.swing.JMenuItem();
+        jMenuHelp = new javax.swing.JMenu();
+        jMenuItemReconnect = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemAboutMe = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        getContentPane().setLayout(new javax.swing.OverlayLayout(getContentPane()));
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loading_icon.gif"))); // NOI18N
@@ -508,12 +508,7 @@ public class JFTrangChu extends JFrameBase {
             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(298, 450, 0, 0);
-        getContentPane().add(panelLoading, gridBagConstraints);
+        getContentPane().add(panelLoading);
 
         jTabbedPane1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -532,6 +527,11 @@ public class JFTrangChu extends JFrameBase {
 
         panelAvatar.setBackground(new java.awt.Color(204, 204, 204));
         panelAvatar.setPreferredSize(new java.awt.Dimension(140, 140));
+        panelAvatar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelAvatarMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelAvatarLayout = new javax.swing.GroupLayout(panelAvatar);
         panelAvatar.setLayout(panelAvatarLayout);
@@ -624,7 +624,7 @@ public class JFTrangChu extends JFrameBase {
         );
         scrollPaneNoiDungCuocTroChuyenLayout.setVerticalGroup(
             scrollPaneNoiDungCuocTroChuyenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 442, Short.MAX_VALUE)
+            .addGap(0, 450, Short.MAX_VALUE)
         );
 
         jScrollPane.setViewportView(scrollPaneNoiDungCuocTroChuyen);
@@ -723,7 +723,7 @@ public class JFTrangChu extends JFrameBase {
         panelHomeLayout.setHorizontalGroup(
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelHomeLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -732,13 +732,14 @@ public class JFTrangChu extends JFrameBase {
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHomeLayout.createSequentialGroup()
                 .addGroup(panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Trang chủ", panelHome);
 
+        panelManagement.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         panelManagement.setPreferredSize(new java.awt.Dimension(1000, 600));
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
@@ -749,9 +750,21 @@ public class JFTrangChu extends JFrameBase {
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         jButton1.setText("Tìm kiếm");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        tblDSSV.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        tblDSSV.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jTextArea1.setRows(5);
+        jTextArea1.setText("» Chọn một hàng trong bảng\n» Click chuột phải\n» Chọn hành động thích hợp:\n \t- Viewer\n \t- Lock\n \t- Shut down");
+        jTextArea1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        jScrollPane1.setViewportView(jTextArea1);
+
         tblDSSV.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -761,10 +774,10 @@ public class JFTrangChu extends JFrameBase {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -775,54 +788,54 @@ public class JFTrangChu extends JFrameBase {
                 return canEdit [columnIndex];
             }
         });
-        tblDSSV.setPreferredSize(new java.awt.Dimension(312, 0));
-        jScrollPane4.setViewportView(tblDSSV);
+        jScrollPane3.setViewportView(tblDSSV);
         if (tblDSSV.getColumnModel().getColumnCount() > 0) {
-            tblDSSV.getColumnModel().getColumn(0).setPreferredWidth(8);
-            tblDSSV.getColumnModel().getColumn(1).setPreferredWidth(76);
-            tblDSSV.getColumnModel().getColumn(2).setPreferredWidth(76);
-            tblDSSV.getColumnModel().getColumn(3).setPreferredWidth(76);
-            tblDSSV.getColumnModel().getColumn(4).setPreferredWidth(76);
+            tblDSSV.getColumnModel().getColumn(0).setResizable(false);
+            tblDSSV.getColumnModel().getColumn(1).setResizable(false);
+            tblDSSV.getColumnModel().getColumn(2).setResizable(false);
+            tblDSSV.getColumnModel().getColumn(3).setResizable(false);
+            tblDSSV.getColumnModel().getColumn(4).setResizable(false);
         }
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jTextArea1.setRows(5);
-        jTextArea1.setText("\n» Chọn một hàng trong bảng\n» Click chuột phải\n» Chọn hành động thích hợp:\n \t- Viewer\n \t- Lock\n \t- Shut down");
-        jScrollPane1.setViewportView(jTextArea1);
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/guideline.png"))); // NOI18N
+        jLabel3.setText("Hướng dẫn:");
 
         javax.swing.GroupLayout panelManagementLayout = new javax.swing.GroupLayout(panelManagement);
         panelManagement.setLayout(panelManagementLayout);
         panelManagementLayout.setHorizontalGroup(
             panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelManagementLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addGap(330, 330, 330))
             .addGroup(panelManagementLayout.createSequentialGroup()
                 .addGap(60, 60, 60)
                 .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 887, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addGroup(panelManagementLayout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26)
-                                .addComponent(jButton1))))
+                    .addComponent(jLabel3)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         panelManagementLayout.setVerticalGroup(
             panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelManagementLayout.createSequentialGroup()
-                .addGap(39, 39, 39)
+                .addGap(42, 42, 42)
                 .addComponent(jLabel2)
-                .addGap(48, 48, 48)
-                .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(47, 47, 47)
+                .addGroup(panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
         );
 
         jTabbedPane1.addTab("Quản lý", panelManagement);
@@ -833,23 +846,64 @@ public class JFTrangChu extends JFrameBase {
         panelStatistics.setLayout(panelStatisticsLayout);
         panelStatisticsLayout.setHorizontalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 974, Short.MAX_VALUE)
+            .addGap(0, 995, Short.MAX_VALUE)
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 666, Short.MAX_VALUE)
+            .addGap(0, 674, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Thống kê và tổng hợp", panelStatistics);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipady = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        getContentPane().add(jTabbedPane1, gridBagConstraints);
+        getContentPane().add(jTabbedPane1);
+
+        jMenuSetting.setText("Setting");
+
+        jMenuItemChangePw.setIcon(new javax.swing.ImageIcon(getClass().getResource("/change_password_16.png"))); // NOI18N
+        jMenuItemChangePw.setText("Đổi mật khẩu");
+        jMenuItemChangePw.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemChangePwActionPerformed(evt);
+            }
+        });
+        jMenuSetting.add(jMenuItemChangePw);
+        jMenuSetting.add(jSeparator2);
+
+        jMenuItemLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logout_16.png"))); // NOI18N
+        jMenuItemLogout.setText("Đăng xuất");
+        jMenuItemLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLogoutActionPerformed(evt);
+            }
+        });
+        jMenuSetting.add(jMenuItemLogout);
+
+        jMenuBar1.add(jMenuSetting);
+
+        jMenuHelp.setText("Help");
+
+        jMenuItemReconnect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/reconnect.png"))); // NOI18N
+        jMenuItemReconnect.setText("Kết nối lại");
+        jMenuItemReconnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemReconnectActionPerformed(evt);
+            }
+        });
+        jMenuHelp.add(jMenuItemReconnect);
+        jMenuHelp.add(jSeparator1);
+
+        jMenuItemAboutMe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/about.png"))); // NOI18N
+        jMenuItemAboutMe.setText("About me");
+        jMenuItemAboutMe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAboutMeActionPerformed(evt);
+            }
+        });
+        jMenuHelp.add(jMenuItemAboutMe);
+
+        jMenuBar1.add(jMenuHelp);
+
+        setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -863,6 +917,34 @@ public class JFTrangChu extends JFrameBase {
             sendMessage();
         }
     }//GEN-LAST:event_areaNhapTinNhanKeyPressed
+
+    private void jMenuItemChangePwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemChangePwActionPerformed
+        showChangePwDialog();
+    }//GEN-LAST:event_jMenuItemChangePwActionPerformed
+
+    private void jMenuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogoutActionPerformed
+        logOut();
+    }//GEN-LAST:event_jMenuItemLogoutActionPerformed
+
+    private void jMenuItemAboutMeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutMeActionPerformed
+        try {
+            WebPage.openWebpage(new URL("https://github.com/thuythuyntt/DATN"));
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_jMenuItemAboutMeActionPerformed
+
+    private void jMenuItemReconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReconnectActionPerformed
+        SocketClient.getInstance().connect(socketListener);
+    }//GEN-LAST:event_jMenuItemReconnectActionPerformed
+
+    private void panelAvatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAvatarMouseClicked
+        showPersonInformation();
+    }//GEN-LAST:event_panelAvatarMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void sendMessage() {
         String from = FirebaseHelper.getInstance().getAuthUser().getId();
@@ -892,13 +974,23 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuHelp;
+    private javax.swing.JMenuItem jMenuItemAboutMe;
+    private javax.swing.JMenuItem jMenuItemChangePw;
+    private javax.swing.JMenuItem jMenuItemLogout;
+    private javax.swing.JMenuItem jMenuItemReconnect;
+    private javax.swing.JMenu jMenuSetting;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextArea jTextArea1;
