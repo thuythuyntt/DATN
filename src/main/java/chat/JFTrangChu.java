@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JTable;
 import model.ClientInfo;
@@ -937,7 +938,7 @@ public class JFTrangChu extends JFrameBase {
     }//GEN-LAST:event_jMenuItemAboutMeActionPerformed
 
     private void jMenuItemReconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReconnectActionPerformed
-        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server");
+        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE);
         sk.setHost(ipAddress);
         sk.connect(socketListener);
     }//GEN-LAST:event_jMenuItemReconnectActionPerformed
