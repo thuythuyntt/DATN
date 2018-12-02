@@ -35,6 +35,7 @@ public class SocketClient {
 
     
     private String host = "";
+    private int port = 8081;
     
     public static SocketClient getInstance() {
         if (instance == null) {
@@ -60,7 +61,6 @@ public class SocketClient {
 //            final String host = "192.168.6.57"; // .6.57 máy mac trên công ty; .4.36 máy tính cá nhân
 //            final String host = "192.168.6.111";
 //            final String host = "localhost";
-            final int port = 8080;
 
             handler = new SocketChannelHandler(listener);
 
