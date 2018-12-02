@@ -116,7 +116,7 @@ public class JFTrangChu extends JFrameBase {
     public JFTrangChu() {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
-        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server");
+        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE);
         sk.setHost(ipAddress);
         sk.connect(socketListener);
 
