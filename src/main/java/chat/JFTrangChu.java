@@ -115,7 +115,9 @@ public class JFTrangChu extends JFrameBase {
     public JFTrangChu() {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
-        SocketClient.getInstance().connect(socketListener);
+        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server");
+        sk.setHost(ipAddress);
+        sk.connect(socketListener);
 
     }
 
@@ -935,7 +937,9 @@ public class JFTrangChu extends JFrameBase {
     }//GEN-LAST:event_jMenuItemAboutMeActionPerformed
 
     private void jMenuItemReconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReconnectActionPerformed
-        SocketClient.getInstance().connect(socketListener);
+        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server");
+        sk.setHost(ipAddress);
+        sk.connect(socketListener);
     }//GEN-LAST:event_jMenuItemReconnectActionPerformed
 
     private void panelAvatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelAvatarMouseClicked

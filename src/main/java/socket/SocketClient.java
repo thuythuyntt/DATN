@@ -33,6 +33,9 @@ public class SocketClient {
 
     private static SocketClient instance = null;
 
+    
+    private String host = "";
+    
     public static SocketClient getInstance() {
         if (instance == null) {
             instance = new SocketClient();
@@ -43,6 +46,10 @@ public class SocketClient {
     public void sendMessage(SocketMessage sm) {
         handler.sendSocketMessage(sm);
     }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
     
     public void disconnect() {
         handler.disconnect();
@@ -50,7 +57,7 @@ public class SocketClient {
 
     public void connect(Listener listener) {
         try {
-            final String host = "192.168.6.57"; // .6.57 máy mac trên công ty; .4.36 máy tính cá nhân
+//            final String host = "192.168.6.57"; // .6.57 máy mac trên công ty; .4.36 máy tính cá nhân
 //            final String host = "192.168.6.111";
 //            final String host = "localhost";
             final int port = 8080;
