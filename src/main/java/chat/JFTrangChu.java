@@ -8,10 +8,16 @@ package chat;
 import customview.MyPCControllerPopup;
 import dangnhap.JFDangNhap;
 import firebasedb.FirebaseHelper;
+import java.awt.AWTException;
 import java.awt.Adjustable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
@@ -32,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import javax.swing.JTable;
@@ -96,6 +103,27 @@ public class JFTrangChu extends JFrameBase {
                 default:
                     break;
             }
+        }
+
+        @Override
+        public void sendScreenshot() {
+            try {
+                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                BufferedImage capture = new Robot().createScreenCapture(screenRect);
+                sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, capture));
+            } catch (AWTException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        @Override
+        public void receiveScreenshot(BufferedImage capture) {
+            JFrame frame = new JFrame("VIEWER");
+            frame.setVisible(true);
+            frame.setSize(900, 600);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLocationRelativeTo(null);
+            frame.add(new JPSharingScreen(capture));
         }
     };
 
@@ -273,7 +301,7 @@ public class JFTrangChu extends JFrameBase {
 
                         @Override
                         public void clickViewer() {
-                                
+                            sk.sendMessage(new SocketMessage(SocketMessage.GET_VIEWER, c));
                         }
                     }).show(e.getComponent(), e.getX(), e.getY());
                 }

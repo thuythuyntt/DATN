@@ -50,6 +50,10 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
             socketClientListener.updateOnlineList(list);
         } else if (sm.getId().startsWith("CTL_")) {
             socketClientListener.doControlAction(sm.getId(), sm.getClientInfo().getPcName());
+        } else if (SocketMessage.GET_VIEWER.equals(sm.getId())){
+            socketClientListener.sendScreenshot();
+        } else if (SocketMessage.SET_VIEWER.equals(sm.getId())){
+            socketClientListener.receiveScreenshot(sm.getImgScreenshot());
         }
     }
 
