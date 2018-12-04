@@ -129,7 +129,7 @@ public class JFDangNhap extends JFrameBase {
             JFTrangChu tc = new JFTrangChu();
 //            tc.setServerIPAddress(tfIPAddress.getText().toString());
             JFDangNhap.this.showScreen(tc);
-            FirebaseHelper.getInstance().updateOnlineStatus(true);
+//            FirebaseHelper.getInstance().updateOnlineStatus(true);
         } else {
             JOptionPane.showMessageDialog(this, "Tài khoản không đúng!", "ERROR", JOptionPane.ERROR_MESSAGE);
         }

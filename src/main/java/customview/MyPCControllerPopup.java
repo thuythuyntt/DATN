@@ -15,6 +15,7 @@ import javax.swing.JPopupMenu;
  * @author thuy
  */
 public class MyPCControllerPopup extends JPopupMenu{
+    JMenuItem anItem0;
     JMenuItem anItem1;
     JMenuItem anItem2;
     JMenuItem anItem3;
@@ -24,6 +25,7 @@ public class MyPCControllerPopup extends JPopupMenu{
     public MyPCControllerPopup(OnClick listener) {
         this.listener = listener;
 
+        anItem0 = new JMenuItem("VIEWER");
         anItem1 = new JMenuItem("LOCK SCREEN");
         anItem2 = new JMenuItem("SHUT DOWN");
         anItem3 = new JMenuItem("RESTART");
@@ -53,6 +55,7 @@ public class MyPCControllerPopup extends JPopupMenu{
     }
 
     public interface OnClick {
+        void clickViewer();
         void clickLockScreen();
         void clickShutdown();
         void clickRestart();

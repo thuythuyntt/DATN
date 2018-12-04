@@ -31,11 +31,8 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JTable;
 import model.ClientInfo;
@@ -60,6 +57,7 @@ public class JFTrangChu extends JFrameBase {
     private final SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
+            FirebaseHelper.getInstance().updateOnlineStatus(true);
             jMenuItemReconnect.setEnabled(false);
             firstConnect();
             showProgressBar();
@@ -86,10 +84,12 @@ public class JFTrangChu extends JFrameBase {
                     OSCommand.lockScreen();
                     break;
                 case SocketMessage.CTL_RESTART:
+                    FirebaseHelper.getInstance().updateOnlineStatus(false);
                     sk.disconnect();
                     OSCommand.restart();
                     break;
                 case SocketMessage.CTL_SHUTDOWN:
+                    FirebaseHelper.getInstance().updateOnlineStatus(false);
                     sk.disconnect();
                     OSCommand.shutdown();
                     break;
@@ -134,6 +134,7 @@ public class JFTrangChu extends JFrameBase {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                FirebaseHelper.getInstance().updateOnlineStatus(false);
                 sk.disconnect();
             }
 
@@ -269,6 +270,11 @@ public class JFTrangChu extends JFrameBase {
                                 sk.sendMessage(new SocketMessage(SocketMessage.CTL_RESTART, c));
                             }
                         }
+
+                        @Override
+                        public void clickViewer() {
+                                
+                        }
                     }).show(e.getComponent(), e.getX(), e.getY());
                 }
             }
@@ -277,7 +283,6 @@ public class JFTrangChu extends JFrameBase {
 
     private void setupInfo() {
         fromUserId = user.getId();
-
         lbTenGV.setText(user.getFullname());
         lbTenCuocTroChuyen.setText("Cả lớp");
     }
