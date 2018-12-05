@@ -119,8 +119,6 @@ public class JFTrangChu extends JFrameBase {
                 Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
                 BufferedImage capture = new Robot().createScreenCapture(screenRect);
 
-//                WritableRaster raster = capture.getRaster();
-//                DataBufferInt data = (DataBufferInt) raster.getDataBuffer();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 try {
                     ImageIO.write(capture, "jpg", baos);
@@ -129,13 +127,17 @@ public class JFTrangChu extends JFrameBase {
                     byte[] imageInByte = baos.toByteArray();
                     baos.close();
                     
+                    //Thử convert sang string
+                    String s = imageInByte.toString();
+                    
                     JFrame frame = new JFrame("VIEWER");
                     frame.setSize(900,600);
 //                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 //                frame.setUndecorated(true);
                 frame.setVisible(true);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.add(new JPSharingScreen(imageInByte));
+//                frame.add(new JPSharingScreen(imageInByte));
+frame.add(new JPSharingScreen(s.getBytes()));
 
                 } catch (IOException ex) {
                     Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);

@@ -28,7 +28,6 @@ import javax.swing.JPanel;
  */
 public class JPSharingScreen extends JPanel {
 
-//    private int[] img;'
     private byte[] img;
 
     public JPSharingScreen(byte[] capture) {
@@ -36,12 +35,7 @@ public class JPSharingScreen extends JPanel {
     }
 
     private BufferedImage createRGBImage() {
-//        DataBufferByte buffer = new DataBufferByte(bytes, bytes.length);
-//        ColorModel cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8}, false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
-//        return new BufferedImage(cm, Raster.createInterleavedRaster(buffer, width, height, width * 3, 3, new int[]{0, 1, 2}, null), false, null);
-    
         try {
-            System.out.println(img.toString());
             ByteArrayInputStream bais = new ByteArrayInputStream(img);
             return ImageIO.read(bais);
         } catch (IOException ex) {
@@ -55,16 +49,4 @@ public class JPSharingScreen extends JPanel {
         super.paintComponent(g);
         g.drawImage(createRGBImage(), 0, 0, this);
     }
-
-//    private BufferedImage capture;
-//
-//    public JPSharingScreen(BufferedImage capture) {
-//        this.capture = capture;
-//    }
-//
-//    @Override
-//    protected void paintComponent(Graphics g) {
-//        super.paintComponent(g);
-//        g.drawImage(capture, 0, 0, this);
-//    }
 }
