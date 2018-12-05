@@ -31,7 +31,7 @@ public class SocketClient {
         
         void sendScreenshot();
         
-        void receiveScreenshot(int[] capture);
+        void receiveScreenshot(String capture);
     }
 
     private SocketChannelHandler handler;

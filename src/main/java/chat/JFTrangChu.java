@@ -65,12 +65,12 @@ import util.WebPage;
  * @author nguyen.thi.thu.thuy
  */
 public class JFTrangChu extends JFrameBase {
-    
+
     private final User user;
     private String toUserId = "";
     private String fromUserId = "";
     private final SocketClient sk = SocketClient.getInstance();
-    
+
     private final SocketClient.Listener socketListener = new SocketClient.Listener() {
         @Override
         public void connected() {
@@ -81,21 +81,21 @@ public class JFTrangChu extends JFrameBase {
             initCustomComponents();
             setupData();
         }
-        
+
         @Override
         public void disconnected(Throwable e) {
             System.out.println("disconnected");
             jMenuItemReconnect.setEnabled(true);
         }
-        
+
         @Override
         public void updateOnlineList(List<ClientInfo> list) {
             setupDSSinhVien(list);
         }
-        
+
         @Override
         public void doControlAction(String action, String pc) {
-            
+
             switch (action) {
                 case SocketMessage.CTL_LOCK_SCREEN:
                     OSCommand.lockScreen();
@@ -114,55 +114,48 @@ public class JFTrangChu extends JFrameBase {
                     break;
             }
         }
-        
+
         @Override
         public void sendScreenshot() {
             System.out.println("[JFTrangChu] sendScreenshot");
             try {
                 Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
                 BufferedImage capture = new Robot().createScreenCapture(screenRect);
-                
+
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 try {
                     ImageIO.write(capture, "jpg", baos);
-                    
                     baos.flush();
                     byte[] imageInByte = baos.toByteArray();
-                    BASE64Encoder encoder = new BASE64Encoder();
-                    String s = encoder.encode(imageInByte);
+                    String s = new BASE64Encoder().encode(imageInByte);
                     baos.close();
-                    
-                    JFrame frame = new JFrame("VIEWER");
-                    frame.setSize(900, 600);
-//                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//                frame.setUndecorated(true);
-                    frame.setVisible(true);
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.add(new JPSharingScreen(imageInByte));
-                    frame.add(new JPSharingScreen(new BASE64Decoder().decodeBuffer(s)));
-                    
+
+                    sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, s));
                 } catch (IOException ex) {
                     Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-//                sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, data.getData()));
             } catch (AWTException ex) {
                 ex.printStackTrace();
             }
         }
-        
+
         @Override
-        public void receiveScreenshot(int[] capture) {
-            System.out.println("[JFTrangChu] receiveScreenshot");
-            JFrame frame = new JFrame("VIEWER");
-            frame.setVisible(true);
-            frame.setSize(900, 600);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLocationRelativeTo(null);
-//            frame.add(new JPSharingScreen(capture));
+        public void receiveScreenshot(String capture) {
+            try {
+                System.out.println("[JFTrangChu] receiveScreenshot");
+                JFrame frame = new JFrame("VIEWER");
+                frame.setSize(900, 600);
+//                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//                frame.setUndecorated(true);
+                frame.setVisible(true);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.add(new JPSharingScreen(new BASE64Decoder().decodeBuffer(capture)));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     };
-    
+
     private void firstConnect() {
         try {
             ClientInfo clt = new ClientInfo();
@@ -176,24 +169,24 @@ public class JFTrangChu extends JFrameBase {
             e.printStackTrace();
         }
     }
-    
+
     public JFTrangChu() {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
         String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE);
         sk.setHost(ipAddress);
         sk.connect(socketListener);
-        
+
     }
-    
+
     private void showProgressBar() {
         panelLoading.setVisible(true);
     }
-    
+
     private void hideProgressBar() {
         panelLoading.setVisible(false);
     }
-    
+
     private void initCustomComponents() {
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -201,7 +194,7 @@ public class JFTrangChu extends JFrameBase {
                 FirebaseHelper.getInstance().updateOnlineStatus(false);
                 sk.disconnect();
             }
-            
+
         });
 
 //        BufferedImage img;
@@ -214,14 +207,14 @@ public class JFTrangChu extends JFrameBase {
 //            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-    
+
     private void setupData() {
         //tab 1: Trang chu
         setupInfo();
         setupDSBanBe();
         setupPosIndex();
         listenGroupChatEvent();
-        
+
         if (user.getRole().equals(Constants.ROLE_TEACHER)) {
             //tab 2: Quan ly
             SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
@@ -230,14 +223,14 @@ public class JFTrangChu extends JFrameBase {
             jTabbedPane1.remove(panelManagement);
             jTabbedPane1.remove(panelStatistics);
         }
-        
+
     }
-    
+
     private void setupDSSinhVien(List<ClientInfo> list) {
         tblDSSV.removeAll();
         tblDSSV.revalidate();
         tblDSSV.repaint();
-        
+
         List<ClientInfo> onlineList = new ArrayList<>();
         for (ClientInfo ci : list) {
             System.out.println(ci.getFullName());
@@ -245,13 +238,13 @@ public class JFTrangChu extends JFrameBase {
                 onlineList.add(ci);
             }
         }
-        
+
         DefaultTableModel model = (DefaultTableModel) tblDSSV.getModel();
-        
+
         if (model.getRowCount() > 0) {
             model.setRowCount(0);
         }
-        
+
         for (int i = 0; i < onlineList.size(); i++) {
             Object[] row = new Object[5];
             row[0] = i + 1;
@@ -261,7 +254,7 @@ public class JFTrangChu extends JFrameBase {
             row[4] = onlineList.get(i).getDtLogin();
             model.addRow(row);
         }
-        
+
         tblDSSV.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -271,7 +264,7 @@ public class JFTrangChu extends JFrameBase {
                 } else {
                     tblDSSV.clearSelection();
                 }
-                
+
                 int rowindex = tblDSSV.getSelectedRow();
                 if (rowindex < 0) {
                     return;
@@ -282,7 +275,7 @@ public class JFTrangChu extends JFrameBase {
                     new MyPCControllerPopup(new MyPCControllerPopup.OnClick() {
                         @Override
                         public void clickLockScreen() {
-                            
+
                             Object[] options = {"Luôn và ngay",
                                 "Hủy"};
                             int n = JOptionPane.showOptionDialog(
@@ -298,7 +291,7 @@ public class JFTrangChu extends JFrameBase {
                                 sk.sendMessage(new SocketMessage(SocketMessage.CTL_LOCK_SCREEN, c));
                             }
                         }
-                        
+
                         @Override
                         public void clickShutdown() {
                             Object[] options = {"Luôn và ngay",
@@ -316,7 +309,7 @@ public class JFTrangChu extends JFrameBase {
                                 sk.sendMessage(new SocketMessage(SocketMessage.CTL_SHUTDOWN, c));
                             }
                         }
-                        
+
                         @Override
                         public void clickRestart() {
                             Object[] options = {"Luôn và ngay",
@@ -334,7 +327,7 @@ public class JFTrangChu extends JFrameBase {
                                 sk.sendMessage(new SocketMessage(SocketMessage.CTL_RESTART, c));
                             }
                         }
-                        
+
                         @Override
                         public void clickViewer() {
                             sk.sendMessage(new SocketMessage(SocketMessage.GET_VIEWER, c));
@@ -344,16 +337,16 @@ public class JFTrangChu extends JFrameBase {
             }
         });
     }
-    
+
     private void setupInfo() {
         fromUserId = user.getId();
         lbTenGV.setText(user.getFullname());
         lbTenCuocTroChuyen.setText("Cả lớp");
     }
-    
+
     private void setupDSBanBe() {
         List<User> list = new ArrayList<>();
-        
+
         FirebaseHelper.getInstance().getListOnlineUsers(new FirebaseHelper.UserOnlineChangeListener() {
             @Override
             public void onEventOnline(List<User> lst) {
@@ -362,15 +355,15 @@ public class JFTrangChu extends JFrameBase {
                 all.setId("");
                 all.setFullname("Cả lớp");
                 list.add(all);
-                
+
                 list.addAll(lst);
-                
+
                 DefaultTableModel model = (DefaultTableModel) tblDSSVOnline.getModel();
-                
+
                 if (model.getRowCount() > 0) {
                     model.setRowCount(0);
                 }
-                
+
                 Object[] row = new Object[1];
                 for (int i = 0; i < list.size(); i++) {
                     row[0] = list.get(i).getFullname();
@@ -378,7 +371,7 @@ public class JFTrangChu extends JFrameBase {
                 }
             }
         });
-        
+
         tblDSSVOnline.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -398,46 +391,46 @@ public class JFTrangChu extends JFrameBase {
             }
         });
     }
-    
+
     private void setupPosIndex() {
         width = 370;
         posY = 10;
         padding = 8;
         margin = 8;
     }
-    
+
     private void listenGroupChatEvent() {
         FirebaseHelper.getInstance().listenerGroupChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
-                
+
                 if (toUserId.equals(userId)) {
                     setupMessage(list);
                 }
             }
-            
+
             @Override
             public void onEvent(String toUserId, String fromUserId, List<Message> list) {
             }
         });
     }
-    
+
     private void listenSingleChatEvent() {
         FirebaseHelper.getInstance().listenerSingleChatEvent(toUserId, new FirebaseHelper.RoomMessageChangeListener() {
             @Override
             public void onEvent(String userId, List<Message> list) {
             }
-            
+
             @Override
             public void onEvent(String userA, String userB, List<Message> list) {
                 if ((fromUserId.equals(userA) && toUserId.equals(userB)) || (fromUserId.equals(userB) && toUserId.equals(userA))) {
                     setupMessage(list);
                 }
             }
-            
+
         });
     }
-    
+
     private void setupMessage(List<Message> list) {
         for (int i = 0; i < list.size(); i++) {
             Message m = list.get(i);
@@ -445,20 +438,20 @@ public class JFTrangChu extends JFrameBase {
         }
         hideProgressBar();
     }
-    
+
     int width = 0;
     int posY = 0;
     int padding = 0;
     int margin = 0;
-    
+
     private void addMessageToScrollPane(Message m) {
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("Times New Roman", Font.PLAIN, 13));
-        
+
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        
+
         textArea.setOpaque(true);
         textArea.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
         int height = 0;
@@ -480,7 +473,7 @@ public class JFTrangChu extends JFrameBase {
         posY += padding * 2 + height + margin;
         scrollPaneNoiDungCuocTroChuyen.setPreferredSize(new Dimension(750, posY));
         scrollPaneNoiDungCuocTroChuyen.add(textArea);
-        
+
         JScrollBar verticalBar = jScrollPane.getVerticalScrollBar();
         AdjustmentListener downScroller = new AdjustmentListener() {
             @Override
@@ -491,13 +484,13 @@ public class JFTrangChu extends JFrameBase {
             }
         };
         verticalBar.addAdjustmentListener(downScroller);
-        
+
         scrollPaneNoiDungCuocTroChuyen.repaint();
         scrollPaneNoiDungCuocTroChuyen.revalidate();
         jScrollPane.repaint();
         jScrollPane.revalidate();
     }
-    
+
     public void showPersonInformation() {
         if (user.getRole().equals(Constants.ROLE_STUDENT)) {
             this.showScreen(new JFThongTinSV());
@@ -505,11 +498,11 @@ public class JFTrangChu extends JFrameBase {
             this.showScreen(new JFThongTinGV());
         }
     }
-    
+
     public void showChangePwDialog() {
         this.showScreen(new JFDoiMatKhau());
     }
-    
+
     public void logOut() {
         TokenFile.deleteFile(Constants.TMP_FILE_NAME);
         FirebaseHelper.getInstance().updateToken("");
@@ -1022,14 +1015,14 @@ public class JFTrangChu extends JFrameBase {
         String text = areaNhapTinNhan.getText();
         String dateTime = getTimeNow();
         Message m = new Message(from, to, text, dateTime);
-        
+
         if (FirebaseHelper.getInstance().sendMessage(m)) {
         } else {
             JOptionPane.showMessageDialog(this, "Gửi tin nhắn thất bại! :(", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
         areaNhapTinNhan.setText("");
     }
-    
+
     private String getTimeNow() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
