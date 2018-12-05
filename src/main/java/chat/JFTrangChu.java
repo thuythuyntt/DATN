@@ -107,6 +107,7 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void sendScreenshot() {
+            System.out.println("JFTrangChu sendScreenshot");
             try {
                 Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
                 BufferedImage capture = new Robot().createScreenCapture(screenRect);
@@ -118,6 +119,7 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void receiveScreenshot(BufferedImage capture) {
+            System.out.println("JFTrangChu receiveScreenshot");
             JFrame frame = new JFrame("VIEWER");
             frame.setVisible(true);
             frame.setSize(900, 600);
