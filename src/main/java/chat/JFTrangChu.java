@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.WritableRaster;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -116,7 +117,7 @@ public class JFTrangChu extends JFrameBase {
                 
 
                 WritableRaster raster = capture.getRaster();
-                DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
+                DataBufferInt data = (DataBufferInt) raster.getDataBuffer();
                 
                 sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, data.getData()));
 
