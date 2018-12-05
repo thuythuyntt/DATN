@@ -7,6 +7,7 @@ package customview;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Action;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -29,6 +30,13 @@ public class MyPCControllerPopup extends JPopupMenu{
         anItem1 = new JMenuItem("LOCK SCREEN");
         anItem2 = new JMenuItem("SHUT DOWN");
         anItem3 = new JMenuItem("RESTART");
+        
+        anItem0.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listener.clickViewer();
+            }
+        });
 
         anItem1.addActionListener(new ActionListener() {
             @Override
