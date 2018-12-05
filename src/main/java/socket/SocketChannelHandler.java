@@ -66,7 +66,8 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
             sm.getClientInfo().setIpAddress(ctx.channel().localAddress().toString());
         }
         System.out.println("[sendSocketMessage]: " + sm.getId());
-        ctx.writeAndFlush(sm.toJsonString() + System.lineSeparator());
+        System.out.println("[sendSocketMessage]: " + sm.toJsonString());
+        ctx.writeAndFlush(sm.toJsonString());
     }
     
     public void disconnect() {

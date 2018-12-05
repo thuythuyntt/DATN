@@ -131,6 +131,7 @@ public class JFTrangChu extends JFrameBase {
                     baos.close();
 
                     sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, s));
+                    System.out.println("BASE64Encoder: " + s);
                 } catch (IOException ex) {
                     Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
                 }
