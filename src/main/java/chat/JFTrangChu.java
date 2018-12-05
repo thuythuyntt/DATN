@@ -28,6 +28,8 @@ import java.awt.event.WindowEvent;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,6 +42,8 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -114,13 +118,30 @@ public class JFTrangChu extends JFrameBase {
             try {
                 Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
                 BufferedImage capture = new Robot().createScreenCapture(screenRect);
-                
 
-                WritableRaster raster = capture.getRaster();
-                DataBufferInt data = (DataBufferInt) raster.getDataBuffer();
-                
-                sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, data.getData()));
+//                WritableRaster raster = capture.getRaster();
+//                DataBufferInt data = (DataBufferInt) raster.getDataBuffer();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(capture, "jpg", baos);
 
+                    baos.flush();
+                    byte[] imageInByte = baos.toByteArray();
+                    baos.close();
+                    
+                    JFrame frame = new JFrame("VIEWER");
+                    frame.setSize(900,600);
+//                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//                frame.setUndecorated(true);
+                frame.setVisible(true);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.add(new JPSharingScreen(imageInByte));
+
+                } catch (IOException ex) {
+                    Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+//                sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, data.getData()));
             } catch (AWTException ex) {
                 ex.printStackTrace();
             }
@@ -134,7 +155,7 @@ public class JFTrangChu extends JFrameBase {
             frame.setSize(900, 600);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLocationRelativeTo(null);
-            frame.add(new JPSharingScreen(capture));
+//            frame.add(new JPSharingScreen(capture));
         }
     };
 
