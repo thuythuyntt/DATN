@@ -127,7 +127,7 @@ public class JFTrangChu extends JFrameBase {
         }
 
         @Override
-        public void receiveScreenshot(byte[] capture) {
+        public void receiveScreenshot(int[] capture) {
             System.out.println("[JFTrangChu] receiveScreenshot");
             JFrame frame = new JFrame("VIEWER");
             frame.setVisible(true);

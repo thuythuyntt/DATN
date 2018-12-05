@@ -13,6 +13,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import javax.swing.JPanel;
 
@@ -22,14 +23,14 @@ import javax.swing.JPanel;
  */
 public class JPSharingScreen extends JPanel {
 
-    private byte[] img;
+    private int[] img;
 
-    public JPSharingScreen(byte[] capture) {
+    public JPSharingScreen(int[] capture) {
         img = capture;
     }
 
-    private static BufferedImage createRGBImage(byte[] bytes, int width, int height) {
-        DataBufferByte buffer = new DataBufferByte(bytes, bytes.length);
+    private static BufferedImage createRGBImage(int[] bytes, int width, int height) {
+        DataBufferInt buffer = new DataBufferInt(bytes, bytes.length);
         ColorModel cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8}, false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
         return new BufferedImage(cm, Raster.createInterleavedRaster(buffer, width, height, width * 3, 3, new int[]{0, 1, 2}, null), false, null);
     }
