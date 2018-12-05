@@ -49,6 +49,7 @@ public class MyPCControllerPopup extends JPopupMenu{
             }
         });
 
+        add(anItem0);
         add(anItem1);
         add(anItem2);
         add(anItem3);
