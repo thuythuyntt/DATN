@@ -10,11 +10,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.ClientInfo;
+import model.SessionInfo;
 import model.SocketMessage;
 
 public class SocketClient {
@@ -25,13 +24,15 @@ public class SocketClient {
 
         void disconnected(Throwable e);
 
-        void updateOnlineList(List<ClientInfo> list);
+        void updateOnlineList(List<SessionInfo> list);
         
         void doControlAction(String action, String pcName);
         
         void sendScreenshot();
         
         void receiveScreenshot(String capture);
+        
+        void receiveNotification(String noti);
     }
 
     private SocketChannelHandler handler;

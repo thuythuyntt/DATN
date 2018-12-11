@@ -8,7 +8,6 @@ package util;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,7 +19,7 @@ public class OSCommand {
 
     public static void shutdown() {
         try {
-            r.exec("shutdown -s");
+            r.exec("shutdown -s -t 10 -c \"Giáo viên yêu cầu tắt máy của bạn sau 10 giây\"");
         } catch (IOException ex) {
             Logger.getLogger(OSCommand.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -8,7 +8,7 @@ package socket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import java.util.List;
-import model.ClientInfo;
+import model.SessionInfo;
 import model.SocketMessage;
 
 /**
@@ -46,14 +46,16 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
         }
         System.out.println("[channelRead0]: " + sm.getId());
         if (SocketMessage.SET_LIST_ONINE.equals(sm.getId())) {
-            List<ClientInfo> list = sm.getListOnline();
+            List<SessionInfo> list = sm.getListOnline();
             socketClientListener.updateOnlineList(list);
         } else if (sm.getId().startsWith("CTL_")) {
-            socketClientListener.doControlAction(sm.getId(), sm.getClientInfo().getPcName());
+            socketClientListener.doControlAction(sm.getId(), sm.getSessionInfo().getPcName());
         } else if (SocketMessage.GET_VIEWER.equals(sm.getId())){
             socketClientListener.sendScreenshot();
         } else if (SocketMessage.SET_VIEWER.equals(sm.getId())){
             socketClientListener.receiveScreenshot(sm.getImgScreenshot());
+        } else if (SocketMessage.SEND_NOTIFICATION.equals(sm.getId())){
+            socketClientListener.receiveNotification(sm.getImgScreenshot());
         }
     }
 
@@ -62,8 +64,8 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
             System.out.println("[sendSocketMessage] but ctx null");
             return;
         }
-        if (sm.getClientInfo()!= null && sm.getId().equals(SocketMessage.CONNECT)) {
-            sm.getClientInfo().setIpAddress(ctx.channel().localAddress().toString());
+        if (sm.getSessionInfo()!= null && sm.getId().equals(SocketMessage.CONNECT)) {
+            sm.getSessionInfo().setIpAddress(ctx.channel().localAddress().toString());
         }
         System.out.println("[sendSocketMessage]: " + sm.getId());
         System.out.println("[sendSocketMessage]: " + sm.toJsonString());
