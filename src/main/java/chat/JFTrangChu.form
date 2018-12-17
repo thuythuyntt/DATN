@@ -6,7 +6,7 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenuSetting">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Setting"/>
+            <Property name="text" type="java.lang.String" value="C&#xe0;i &#x111;&#x1eb7;t"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemChangePw">
@@ -37,7 +37,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuHelp">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Help"/>
+            <Property name="text" type="java.lang.String" value="Tr&#x1ee3; gi&#xfa;p"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemReconnect">
@@ -538,7 +538,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/notification_send_32.png"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Send notification"/>
+                    <Property name="text" type="java.lang.String" value="G&#x1eed;i th&#xf4;ng b&#xe1;o"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lbSendNotificationMouseClicked"/>

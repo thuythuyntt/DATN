@@ -25,9 +25,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,7 +39,6 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -265,7 +261,7 @@ public class JFTrangChu extends JFrameBase {
             model.addRow(row);
         }
 
-        tblDSSV.addMouseListener(new MouseAdapter() {
+        tblDSSV.addMouseListener(new MouseAdapter() {    
             @Override
             public void mouseReleased(MouseEvent e) {
                 int r = tblDSSV.rowAtPoint(e.getPoint());
@@ -766,7 +762,7 @@ public class JFTrangChu extends JFrameBase {
 
         lbSendNotification.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbSendNotification.setIcon(new javax.swing.ImageIcon(getClass().getResource("/notification_send_32.png"))); // NOI18N
-        lbSendNotification.setText("Send notification");
+        lbSendNotification.setText("Gửi thông báo");
         lbSendNotification.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lbSendNotificationMouseClicked(evt);
@@ -935,7 +931,7 @@ public class JFTrangChu extends JFrameBase {
 
         getContentPane().add(jTabbedPane1);
 
-        jMenuSetting.setText("Setting");
+        jMenuSetting.setText("Cài đặt");
 
         jMenuItemChangePw.setIcon(new javax.swing.ImageIcon(getClass().getResource("/change_password_16.png"))); // NOI18N
         jMenuItemChangePw.setText("Đổi mật khẩu");
@@ -958,7 +954,7 @@ public class JFTrangChu extends JFrameBase {
 
         jMenuBar1.add(jMenuSetting);
 
-        jMenuHelp.setText("Help");
+        jMenuHelp.setText("Trợ giúp");
 
         jMenuItemReconnect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/reconnect.png"))); // NOI18N
         jMenuItemReconnect.setText("Kết nối lại");
