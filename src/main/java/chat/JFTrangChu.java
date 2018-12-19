@@ -164,6 +164,7 @@ public class JFTrangChu extends JFrameBase {
         @Override
         public void receiveListStudent(List<Student> list) {
             System.out.println("LIST STUDENT: " + list.size());
+            setupDataTab3(list);
         }
 
         @Override
@@ -228,7 +229,14 @@ public class JFTrangChu extends JFrameBase {
 //        }
     }
 
+    private boolean isFirstLoadTab2, isFirstLoadTab3 = true;
+
     private void setupData() {
+        setupInfo();
+        setupDSBanBe();
+        setupPosIndex();
+        listenGroupChatEvent();
+
         if (user.getRole().equals(Constants.ROLE_STUDENT)) {
             jTabbedPane1.remove(panelManagement);
             jTabbedPane1.remove(panelStatistics);
@@ -240,24 +248,49 @@ public class JFTrangChu extends JFrameBase {
                 JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
                 int index = sourceTabbedPane.getSelectedIndex();
                 switch (index) {
-                    case 0:
-                        setupInfo();
-                        setupDSBanBe();
-                        setupPosIndex();
-                        listenGroupChatEvent();
-                        break;
                     case 1:
-                        SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
-                        sk.sendMessage(sm);
+                        if (isFirstLoadTab2) {
+                            SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
+                            sk.sendMessage(sm);
+                        }
+                        isFirstLoadTab2 = false;
                         break;
                     case 2:
-                        SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_STUDENT);
-                        sk.sendMessage(sm1);
+                        if (isFirstLoadTab3) {
+                            SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_STUDENT);
+                            sk.sendMessage(sm1);
+                        }
+                        isFirstLoadTab3 = false;
                         break;
                 }
             }
         });
+    }
 
+    private void setupDataTab3(List<Student> list) {
+        DefaultTableModel model = (DefaultTableModel) tblDSSVLSHD.getModel();
+
+        if (model.getRowCount() > 0) {
+            model.setRowCount(0);
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            Object[] row = new Object[5];
+            row[0] = i + 1;
+            row[1] = list.get(i).getUsername();
+            row[2] = list.get(i).getFullname();
+            row[3] = list.get(i).getCode();
+            row[4] = list.get(i).getGroup();
+            model.addRow(row);
+        }
+
+        tblDSSVLSHD.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_SESSION, list.get(tblDSSVLSHD.getSelectedRow()).getId());
+                sk.sendMessage(sm1);
+            }
+        });
     }
 
     private void setupDSSinhVien(List<SessionInfo> list) {
