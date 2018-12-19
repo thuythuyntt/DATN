@@ -45,7 +45,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import model.SessionInfo;
 import model.SocketMessage;
 import model.Student;
@@ -155,7 +158,7 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void receiveNotification(String noti) {
-            JOptionPane.showMessageDialog(JFTrangChu.this ,noti, "THÔNG BÁO TỪ GIÁO VIÊN", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(JFTrangChu.this, noti, "THÔNG BÁO TỪ GIÁO VIÊN", JOptionPane.INFORMATION_MESSAGE);
         }
 
         @Override
@@ -226,24 +229,34 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void setupData() {
-        //tab 1: Trang chu
-        setupInfo();
-        setupDSBanBe();
-        setupPosIndex();
-        listenGroupChatEvent();
-
-        if (user.getRole().equals(Constants.ROLE_TEACHER)) {
-            //tab 2: Quan ly
-            SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
-            sk.sendMessage(sm);
-            
-            //tab 3: Thong ke
-            SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_STUDENT);
-            sk.sendMessage(sm1);
-        } else {
+        if (user.getRole().equals(Constants.ROLE_STUDENT)) {
             jTabbedPane1.remove(panelManagement);
             jTabbedPane1.remove(panelStatistics);
         }
+
+        jTabbedPane1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+                int index = sourceTabbedPane.getSelectedIndex();
+                switch (index) {
+                    case 0:
+                        setupInfo();
+                        setupDSBanBe();
+                        setupPosIndex();
+                        listenGroupChatEvent();
+                        break;
+                    case 1:
+                        SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
+                        sk.sendMessage(sm);
+                        break;
+                    case 2:
+                        SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_STUDENT);
+                        sk.sendMessage(sm1);
+                        break;
+                }
+            }
+        });
 
     }
 
@@ -276,7 +289,7 @@ public class JFTrangChu extends JFrameBase {
             model.addRow(row);
         }
 
-        tblDSSV.addMouseListener(new MouseAdapter() {    
+        tblDSSV.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 int r = tblDSSV.rowAtPoint(e.getPoint());
