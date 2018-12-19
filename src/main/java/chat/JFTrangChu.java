@@ -69,6 +69,7 @@ public class JFTrangChu extends JFrameBase {
     private final User user;
     private String toUserId = "";
     private String fromUserId = "";
+    private String studentId = "";
     private final SocketClient sk = SocketClient.getInstance();
 
     private final SocketClient.Listener socketListener = new SocketClient.Listener() {
@@ -163,13 +164,15 @@ public class JFTrangChu extends JFrameBase {
 
         @Override
         public void receiveListStudent(List<Student> list) {
-            System.out.println("LIST STUDENT: " + list.size());
             setupDataTab3(list);
         }
 
         @Override
         public void receiveListSession(List<SessionInfo> list) {
             System.out.println("LIST SESSION: " + list.size());
+            User sv = FirebaseHelper.getInstance().getUserFromId(studentId);
+            JFLichSuHoatDong jf = new JFLichSuHoatDong(sv, list);
+            JFTrangChu.this.showScreen(jf);
         }
     };
 
@@ -287,12 +290,13 @@ public class JFTrangChu extends JFrameBase {
         tblDSSVLSHD.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_SESSION, list.get(tblDSSVLSHD.getSelectedRow()).getId());
+                studentId = list.get(tblDSSVLSHD.getSelectedRow()).getId();
+                SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_SESSION, studentId);
                 sk.sendMessage(sm1);
             }
         });
     }
-
+    
     private void setupDSSinhVien(List<SessionInfo> list) {
         tblDSSV.removeAll();
         tblDSSV.revalidate();
@@ -658,7 +662,7 @@ public class JFTrangChu extends JFrameBase {
 
         lbTenGV.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         lbTenGV.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTenGV.setText("Nguyễn Trọng Khánh");
+        lbTenGV.setText("      ");
         lbTenGV.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         lbTenGV.setPreferredSize(new java.awt.Dimension(100, 40));
 
@@ -929,13 +933,6 @@ public class JFTrangChu extends JFrameBase {
             }
         });
         jScrollPane3.setViewportView(tblDSSV);
-        if (tblDSSV.getColumnModel().getColumnCount() > 0) {
-            tblDSSV.getColumnModel().getColumn(0).setResizable(false);
-            tblDSSV.getColumnModel().getColumn(1).setResizable(false);
-            tblDSSV.getColumnModel().getColumn(2).setResizable(false);
-            tblDSSV.getColumnModel().getColumn(3).setResizable(false);
-            tblDSSV.getColumnModel().getColumn(4).setResizable(false);
-        }
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/guideline.png"))); // NOI18N
@@ -1015,13 +1012,6 @@ public class JFTrangChu extends JFrameBase {
             }
         });
         jScrollPane4.setViewportView(tblDSSVLSHD);
-        if (tblDSSVLSHD.getColumnModel().getColumnCount() > 0) {
-            tblDSSVLSHD.getColumnModel().getColumn(0).setResizable(false);
-            tblDSSVLSHD.getColumnModel().getColumn(1).setResizable(false);
-            tblDSSVLSHD.getColumnModel().getColumn(2).setResizable(false);
-            tblDSSVLSHD.getColumnModel().getColumn(3).setResizable(false);
-            tblDSSVLSHD.getColumnModel().getColumn(4).setResizable(false);
-        }
 
         javax.swing.GroupLayout panelStatisticsLayout = new javax.swing.GroupLayout(panelStatistics);
         panelStatistics.setLayout(panelStatisticsLayout);
