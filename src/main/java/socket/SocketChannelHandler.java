@@ -56,6 +56,10 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
             socketClientListener.receiveScreenshot(sm.getImgScreenshot());
         } else if (SocketMessage.SEND_NOTIFICATION.equals(sm.getId())){
             socketClientListener.receiveNotification(sm.getImgScreenshot());
+        } else if (SocketMessage.SET_LIST_STUDENT.equals(sm.getId())){
+            socketClientListener.receiveListStudent(sm.getListStudent());
+        } else if (SocketMessage.SET_LIST_SESSION.equals(sm.getId())){
+            socketClientListener.receiveListSession(sm.getListOnline());
         }
     }
 

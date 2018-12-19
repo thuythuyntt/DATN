@@ -48,6 +48,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JTable;
 import model.SessionInfo;
 import model.SocketMessage;
+import model.Student;
 import socket.SocketClient;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -156,6 +157,16 @@ public class JFTrangChu extends JFrameBase {
         public void receiveNotification(String noti) {
             JOptionPane.showMessageDialog(JFTrangChu.this ,noti, "THÔNG BÁO TỪ GIÁO VIÊN", JOptionPane.INFORMATION_MESSAGE);
         }
+
+        @Override
+        public void receiveListStudent(List<Student> list) {
+            System.out.println("LIST STUDENT: " + list.size());
+        }
+
+        @Override
+        public void receiveListSession(List<SessionInfo> list) {
+            System.out.println("LIST SESSION: " + list.size());
+        }
     };
 
     private void firstConnect() {
@@ -225,6 +236,10 @@ public class JFTrangChu extends JFrameBase {
             //tab 2: Quan ly
             SocketMessage sm = new SocketMessage(SocketMessage.GET_LIST_ONINE);
             sk.sendMessage(sm);
+            
+            //tab 3: Thong ke
+            SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_STUDENT);
+            sk.sendMessage(sm1);
         } else {
             jTabbedPane1.remove(panelManagement);
             jTabbedPane1.remove(panelStatistics);
@@ -552,6 +567,11 @@ public class JFTrangChu extends JFrameBase {
         tblDSSV = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         panelStatistics = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        btnSearchLSHD = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblDSSVLSHD = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuSetting = new javax.swing.JMenu();
         jMenuItemChangePw = new javax.swing.JMenuItem();
@@ -908,26 +928,88 @@ public class JFTrangChu extends JFrameBase {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
         );
 
         jTabbedPane1.addTab("Quản lý", panelManagement);
 
         panelStatistics.setPreferredSize(new java.awt.Dimension(1000, 600));
 
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("DANH SÁCH SINH VIÊN");
+
+        jTextField2.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+
+        btnSearchLSHD.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        btnSearchLSHD.setText("Tìm kiếm");
+
+        tblDSSVLSHD.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Tên đăng nhập", "Họ tên", "Mã sinh viên", "Lớp"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(tblDSSVLSHD);
+        if (tblDSSVLSHD.getColumnModel().getColumnCount() > 0) {
+            tblDSSVLSHD.getColumnModel().getColumn(0).setResizable(false);
+            tblDSSVLSHD.getColumnModel().getColumn(1).setResizable(false);
+            tblDSSVLSHD.getColumnModel().getColumn(2).setResizable(false);
+            tblDSSVLSHD.getColumnModel().getColumn(3).setResizable(false);
+            tblDSSVLSHD.getColumnModel().getColumn(4).setResizable(false);
+        }
+
         javax.swing.GroupLayout panelStatisticsLayout = new javax.swing.GroupLayout(panelStatistics);
         panelStatistics.setLayout(panelStatisticsLayout);
         panelStatisticsLayout.setHorizontalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelStatisticsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnSearchLSHD)
+                .addGap(330, 330, 330))
+            .addGroup(panelStatisticsLayout.createSequentialGroup()
+                .addGap(70, 70, 70)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 872, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(53, Short.MAX_VALUE))
+            .addGroup(panelStatisticsLayout.createSequentialGroup()
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 674, Short.MAX_VALUE)
+            .addGroup(panelStatisticsLayout.createSequentialGroup()
+                .addGap(107, 107, 107)
+                .addComponent(jLabel4)
+                .addGap(47, 47, 47)
+                .addGroup(panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSearchLSHD)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(108, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Thống kê và tổng hợp", panelStatistics);
+        jTabbedPane1.addTab("Lịch sử hoạt động", panelStatistics);
 
         getContentPane().add(jTabbedPane1);
 
@@ -1046,11 +1128,13 @@ public class JFTrangChu extends JFrameBase {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaNhapTinNhan;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSearchLSHD;
     private javax.swing.JLabel btnSendFile;
     private javax.swing.JLabel btnSendImage;
     private javax.swing.JLabel btnSendMessage;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuHelp;
@@ -1065,12 +1149,14 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lbSendNotification;
     private javax.swing.JLabel lbTenCuocTroChuyen;
     private javax.swing.JLabel lbTenGV;
@@ -1083,6 +1169,7 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JPanel scrollPaneNoiDungCuocTroChuyen;
     private javax.swing.JScrollPane scrollPaneOnline;
     private javax.swing.JTable tblDSSV;
+    private javax.swing.JTable tblDSSVLSHD;
     private javax.swing.JTable tblDSSVOnline;
     // End of variables declaration//GEN-END:variables
 }

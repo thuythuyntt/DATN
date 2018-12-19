@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.SessionInfo;
 import model.SocketMessage;
+import model.Student;
 
 public class SocketClient {
 
@@ -33,6 +34,10 @@ public class SocketClient {
         void receiveScreenshot(String capture);
         
         void receiveNotification(String noti);
+        
+        void receiveListStudent(List<Student> list);
+        
+        void receiveListSession(List<SessionInfo> list);
     }
 
     private SocketChannelHandler handler;
