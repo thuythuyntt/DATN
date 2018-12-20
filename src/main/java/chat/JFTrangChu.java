@@ -66,8 +66,8 @@ import util.WebPage;
  */
 public class JFTrangChu extends JFrameBase {
 
-    public static final String STRING_ACTIVELY_DISCONNECT = "T\\u1EF1 t\\u1EAFt m\\u00E1y";
-    public static final String STRING_PASSIVELY_DISCONNECT = "Bị giáo viên tắt máy";
+    public static final String STRING_ACTIVELY_DISCONNECT = "Tu tat may";
+    public static final String STRING_PASSIVELY_DISCONNECT = "Bi giao vien tat may";
 
     private final User user;
     private String toUserId = "";
