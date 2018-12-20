@@ -18,28 +18,47 @@ public class OSCommand {
     public static Runtime r = Runtime.getRuntime();
 
     public static void shutdown() {
-        System.out.println(System.getProperty("os.name"));
         try {
-            r.exec("shutdown -s -t 10 -c \"Giáo viên yêu cầu tắt máy của bạn sau 10 giây\"");
+            String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                r.exec("shutdown -s -t 10 -c \"Giáo viên yêu cầu tắt máy của bạn sau 10 giây\"");
+            } else if (os.contains("Mac OS")) {
+                r.exec("shutdown -h +10");
+            } else if (os.contains("Linux")) {
+                r.exec("shutdown -h +10 \"Giáo viên yêu cầu tắt máy của bạn sau 10 giây\"");
+            }
         } catch (IOException ex) {
-            Logger.getLogger(OSCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
     public static void restart() {
         try {
-            r.exec("shutdown -r");
+            String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                r.exec("shutdown -r");
+            } else if (os.contains("Mac OS")) {
+                r.exec("shutdown -r now");
+            } else if (os.contains("Linux")) {
+                r.exec("shutdown -r now");
+            }
         } catch (IOException ex) {
-            Logger.getLogger(OSCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
     public static void lockScreen() {
-
         try {
-            r.exec("C:\\Windows\\System32\\rundll32.exe user32.dll,LockWorkStation");
+            String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                r.exec("C:\\Windows\\System32\\rundll32.exe user32.dll,LockWorkStation");
+            } else if (os.contains("Mac OS")) {
+                r.exec("pmset displaysleepnow");
+            } else if (os.contains("Linux")) {
+                r.exec("gnome-screensaver-command -l");
+            }
         } catch (IOException ex) {
-            Logger.getLogger(OSCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 }
