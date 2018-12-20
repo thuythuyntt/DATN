@@ -613,6 +613,7 @@ public class JFTrangChu extends JFrameBase {
         s.setDtLogout(getTimeNow());
         s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
         sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
+        System.out.println("ReasonLogout: " + s.getReasonLogout());
 
         sk.disconnect();
     }
