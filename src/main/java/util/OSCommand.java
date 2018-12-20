@@ -18,6 +18,7 @@ public class OSCommand {
     public static Runtime r = Runtime.getRuntime();
 
     public static void shutdown() {
+        System.out.println(System.getProperty("os.name"));
         try {
             r.exec("shutdown -s -t 10 -c \"Giáo viên yêu cầu tắt máy của bạn sau 10 giây\"");
         } catch (IOException ex) {
