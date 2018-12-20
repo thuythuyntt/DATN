@@ -4,9 +4,11 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
+//import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
+//import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.oio.OioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
@@ -75,11 +77,11 @@ public class SocketClient {
 
             handler = new SocketChannelHandler(listener);
 
-            EventLoopGroup group = new NioEventLoopGroup();
+            EventLoopGroup group = new OioEventLoopGroup();
             try {
                 Bootstrap bootstrap = new Bootstrap();
                 bootstrap.group(group)
-                        .channel(NioSocketChannel.class)
+                        .channel(OioSocketChannel.class)
                         .handler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             public void initChannel(SocketChannel ch) throws Exception {
@@ -89,6 +91,7 @@ public class SocketClient {
                                         handler);
                             }
                         });
+                //bootstrap.set
 
                 System.out.println("conntect to " + host + ":" + port);
                 ChannelFuture channelFuture = bootstrap.connect(host, port);//.sync();
