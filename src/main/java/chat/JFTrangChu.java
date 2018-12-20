@@ -66,6 +66,9 @@ import util.WebPage;
  */
 public class JFTrangChu extends JFrameBase {
 
+    public static final String STRING_ACTIVELY_DISCONNECT = "Tự tắt máy";
+    public static final String STRING_PASSIVELY_DISCONNECT = "Bị giáo viên tắt máy";
+
     private final User user;
     private String toUserId = "";
     private String fromUserId = "";
@@ -102,12 +105,27 @@ public class JFTrangChu extends JFrameBase {
                     OSCommand.lockScreen();
                     break;
                 case SocketMessage.CTL_RESTART:
+
                     FirebaseHelper.getInstance().updateOnlineStatus(false);
+                    SessionInfo s1 = new SessionInfo();
+                    s1.setUserId(user.getId());
+                    s1.setDtLogout(getTimeNow());
+                    s1.setReasonLogout(STRING_PASSIVELY_DISCONNECT);
+                    sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s1));
+
                     sk.disconnect();
                     OSCommand.restart();
                     break;
                 case SocketMessage.CTL_SHUTDOWN:
                     FirebaseHelper.getInstance().updateOnlineStatus(false);
+
+                    FirebaseHelper.getInstance().updateOnlineStatus(false);
+                    SessionInfo s2 = new SessionInfo();
+                    s2.setUserId(user.getId());
+                    s2.setDtLogout(getTimeNow());
+                    s2.setReasonLogout(STRING_PASSIVELY_DISCONNECT);
+                    sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s2));
+
                     sk.disconnect();
                     OSCommand.shutdown();
                     break;
@@ -178,13 +196,15 @@ public class JFTrangChu extends JFrameBase {
 
     private void firstConnect() {
         try {
-            SessionInfo clt = new SessionInfo();
-            clt.setFullName(user.getFullname());
-            clt.setUserName(user.getUsername());
-            clt.setPcName(InetAddress.getLocalHost().getHostName());
-            clt.setDtLogin(getTimeNow());
-            clt.setRole(user.getRole());
-            SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, clt);
+            SessionInfo s = new SessionInfo();
+            s.setUserId(user.getId());
+            s.setFullName(user.getFullname());
+            s.setUserName(user.getUsername());
+            s.setPcName(InetAddress.getLocalHost().getHostName());
+            s.setIpAddress(InetAddress.getLocalHost().getHostAddress());
+            s.setDtLogin(getTimeNow());
+            s.setRole(user.getRole());
+            SocketMessage sm = new SocketMessage(SocketMessage.CONNECT, s);
             sk.sendMessage(sm);
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -216,6 +236,13 @@ public class JFTrangChu extends JFrameBase {
             @Override
             public void windowClosing(WindowEvent e) {
                 FirebaseHelper.getInstance().updateOnlineStatus(false);
+
+                SessionInfo s = new SessionInfo();
+                s.setUserId(user.getId());
+                s.setDtLogout(getTimeNow());
+                s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
+                sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
+
                 sk.disconnect();
             }
 
@@ -296,7 +323,7 @@ public class JFTrangChu extends JFrameBase {
             }
         });
     }
-    
+
     private void setupDSSinhVien(List<SessionInfo> list) {
         tblDSSV.removeAll();
         tblDSSV.revalidate();
@@ -580,6 +607,13 @@ public class JFTrangChu extends JFrameBase {
         this.dispose();
         this.showScreen(new JFDangNhap());
         FirebaseHelper.getInstance().updateOnlineStatus(false);
+
+        SessionInfo s = new SessionInfo();
+        s.setUserId(user.getId());
+        s.setDtLogout(getTimeNow());
+        s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
+        sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
+
         sk.disconnect();
     }
 

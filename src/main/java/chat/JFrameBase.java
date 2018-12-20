@@ -15,7 +15,7 @@ public class JFrameBase extends JFrame {
 
     public void showScreen(JFrame frame) {
         frame.setVisible(true);
-        frame.setResizable(false);
+        frame.setResizable(true);
         frame.setLocationRelativeTo(null);
     }
 
