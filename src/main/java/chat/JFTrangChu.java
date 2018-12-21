@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -229,25 +231,86 @@ public class JFTrangChu extends JFrameBase {
     }
 
     private void initCustomComponents() {
-        if (user.getRole().equals(Constants.ROLE_STUDENT)) {
-            jPanel2.remove(lbSendNotification);
-        }
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                FirebaseHelper.getInstance().updateOnlineStatus(false);
-
-                SessionInfo s = new SessionInfo();
-                s.setUserId(user.getId());
-                s.setDtLogout(getTimeNow());
-                s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
-                sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
-
-                sk.disconnect();
+        try {
+            if (user.getRole().equals(Constants.ROLE_STUDENT)) {
+                jPanel2.remove(lbSendNotification);
             }
-
-        });
-
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    FirebaseHelper.getInstance().updateOnlineStatus(false);
+                    
+                    SessionInfo s = new SessionInfo();
+                    s.setUserId(user.getId());
+                    s.setDtLogout(getTimeNow());
+                    s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
+                    sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
+                    
+                    sk.disconnect();
+                }
+                
+            });
+            
+            String base64Ava = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYI"
+                    + "ChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oM"
+                    + "CUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKC"
+                    + "goKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCABkAGQDASIAAhEBAxE"
+                    + "B/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIE"
+                    + "AwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2Jyg"
+                    + "gkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3"
+                    + "R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMX"
+                    + "Gx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEB"
+                    + "AQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECA"
+                    + "xEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJy"
+                    + "gpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYa"
+                    + "HiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX"
+                    + "2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD6oooooAKKKKACi"
+                    + "kyKzdc1ux0Wye61CdYo1GQOrN7AdzRtqNJt2Rpk460A+hrwjXvitfahO0emwm"
+                    + "0tc4BYZdvc9h9BWh8O/HNxNrUVjfzmRZTtDM3QmsPrEb2On6pNR5mez5ozQOl"
+                    + "FbnKFGaM0UALmikooAKKSjNAC0UmaRnCqWYgADJJ7UAeNfF/xL440/WWtPC8c"
+                    + "BgEQYRlf3kg/vKT+WPavJo/FGuXEzt4p0e+RwcGUISQc+h+or33xNrNvqF9Gs"
+                    + "KRtHATtkIyxJ6kegrMkaOf/AFiq/plRxXnVZJya3PWopxitLHjs3kXcfmWcu4"
+                    + "Zwc9R7EdqZ4dSeDxNp5JO7z0A56810/iTwTHczS3GiXT2l4TuyeVZvQ1X8I6F"
+                    + "4kmv0ju7Cwlu7Zg6K0/ltJtOcqSMH6Z/KlGPNoaymkrn05SVT0q6lvLKOa4tZ"
+                    + "bWYj54pQMqe/Tgj3q5XpI8TYKWkpaYBRRRSASorm4itojLPIkca9WdgAPxNS1"
+                    + "4r+0prQPhWfRrV281wskuw9BngH8ifyqak1CNzSlTdSXKewJf2kkLzRXMLxJ9"
+                    + "5lcEL9cVwHi/xQbwPZ2JIh/iPd/wD61eNfCbU3l8KAPI28Hy3yeDzwa7QqDE7"
+                    + "nk4GK4q1ebTjsehRw0Ivmvcht9RihmZHGCORnvWuus2qQtIw5UZGO/wCFcpPY"
+                    + "yzR5GQw5U5qnLLNHGpVT5i9V9RXFztna4Jkup/EqxtVnle1kVYCV3tjrjtjqT"
+                    + "R4L+IN5qV1HdTWMdlasyfZ2mnAeTcSAyqR8wyMEjoa898bWlpPYXHkLs3uHIw"
+                    + "euK53wva3M93aWzyXbJDINgkbKxLnJCjoMn869GjCEocz3PPqynGfKtj7q0TU"
+                    + "xe2yMw2yY+Ye9ateZeFdRbyVZX3FCAfcEV6RbSeZEreoropT54nJWp8kiWiii"
+                    + "tDEKKKKQHNePfFVp4T0Ka+uGVpiCsEWeZHxwPp618w3+p3PiC3v7m/k8ye5Uy"
+                    + "MfU8/pXWfHC8uNS8TzW7Mwhtl8uMHp15Nee6c7QyvDx8q9PXjn9K5Kr53bsel"
+                    + "h4Kmr9WO+G1+bWJ7SX5WYHAPA4Nd3e6yLHR7i4mKhIuCc4yewry2xjnhvnniV"
+                    + "tiSswPt3FX/iDqF1JottFaRCQTOT0zz649ccVi4c815m/PyQb7Ha6T4ys7y1J"
+                    + "jUCVOcZ6/TNabXcF8vmwkHHf1r5x0+6v7Jmx5kSO5UBjn8K9Q8G3zxwfvJQxP"
+                    + "OAO9KthfZ6rYKGJ9putTtrrTLS/XzJYv3nQ7TjIqHRdKjtLthKmYz/FjkflVy"
+                    + "zmWePKFVcfw+taFnbzTvmFGIBxkLxUKE7aGrlC+p1GgRQWk6qkxKSYyCO/Y16"
+                    + "jooZbGMP94AA4rzDRLG7cqJIN6qcfKCCp9v8ACvStLJgWOCUENt4J7124eMle"
+                    + "6POxTT2Zq0UlLXScQUUmaKAOL8beA7LxJG8iMILs878ZDH3rxTUvhD4r07U1u"
+                    + "rOGG9iU/Msc65Ze+A2Dmvp7NIQCOah04t3NY1pRVjyL4T+CNGn0C5m1HT0mvf"
+                    + "tU0Upmydu1sYA7VynxC+GkWnT5+d9LckxN/wA8yex9x2NfQFnZ29n532aJY/O"
+                    + "kM0mP4nOMn9KbqdnDf2UttcIHjkGCDQ6aasio12pXezPh/VfB4tL/AM2WaaQD"
+                    + "lfMPB/GtC1tDDYLLGOFbmvUfGvh6bRrp0mieW17PjIx7+lYVrpkWo2zpYKA4I"
+                    + "yjfL+XauSpzy0lud1LkWsRnhR5bmeN0UkAgscdBV7xD4uGiFZItrTk4aPHGfp"
+                    + "XT+C/Dr6dY3b3Meyffge47H6V85+L9UuLfV7wXuUlWV1+b+Hk124eHJDU48TN"
+                    + "SnoezeGfi7cJcL/af2eKIsM/KRx7EV71omqx6jawyocq44P8AWvgYI1/LAz3L"
+                    + "qsYLYX+IV9JfCHxLeSnStLwzytEu4ckL9fwxW9rnOfQ0JJXB6ipKhgIx1zmpC"
+                    + "ayYhSM0UZopANPFJTiKQLTQCUtLtpDxRcDnPF2n/abTeo+YDqOteaSRzJMA20"
+                    + "BT6V7NfKJLZgfSvNtXiVGdjwykggCriUmOs7wS2yxygKwGOOhryj4r+D7HWpH"
+                    + "nMOyZckuhwT9fWu9R8kY69AKlufKYLHPGkvGPnGaodj51sPDscKqNsszIcJGF"
+                    + "GZD/AHRive/gv4bvNKjOqatGkU7KVihXpGD3Pqa6DTLKy2qRaQxMPRQK6KKQC"
+                    + "IKAMUNisdBZT5QAn8a0FORmuZtrgKQuea6C3fegI71DQmT5opM0VIiWiiipAK"
+                    + "Y/CmiimgMLVbiRUIB4riNQcmQscEkUUVoi0YAlYzHpk1PPz8/faDRRVDNXTmJ"
+                    + "SPtkc4rZgclB0oopAx3mMCx9K6fR3Z7ZSxoopSIZo0UUVAj//2Q==";
+            
+            System.out.println("BASE64 size: " + base64Ava.length());
+            byte[] btDataFile = new BASE64Decoder().decodeBuffer(base64Ava);
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(btDataFile));
+            ImageIcon icon = new ImageIcon(image);
+            jLabel1.setIcon(icon);
+            
 //        BufferedImage img;
 //        try {
 //            img = ImageIO.read(new URL("http://www.java2s.com/style/download.png"));
@@ -257,6 +320,9 @@ public class JFTrangChu extends JFrameBase {
 //        } catch (IOException ex) {
 //            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
 //        }
+        } catch (IOException ex) {
+            Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private boolean isFirstLoadTab2, isFirstLoadTab3 = true;
@@ -628,6 +694,7 @@ public class JFTrangChu extends JFrameBase {
         jPanel1 = new javax.swing.JPanel();
         lbTenGV = new javax.swing.JLabel();
         panelAvatar = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         scrollPaneOnline = new javax.swing.JScrollPane();
         tblDSSVOnline = new javax.swing.JTable();
@@ -709,15 +776,23 @@ public class JFTrangChu extends JFrameBase {
             }
         });
 
+        jLabel1.setText("jLabel1");
+
         javax.swing.GroupLayout panelAvatarLayout = new javax.swing.GroupLayout(panelAvatar);
         panelAvatar.setLayout(panelAvatarLayout);
         panelAvatarLayout.setHorizontalGroup(
             panelAvatarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 140, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAvatarLayout.createSequentialGroup()
+                .addContainerGap(57, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(49, 49, 49))
         );
         panelAvatarLayout.setVerticalGroup(
             panelAvatarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 140, Short.MAX_VALUE)
+            .addGroup(panelAvatarLayout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addComponent(jLabel1)
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         jTabbedPane2.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -1203,6 +1278,7 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JLabel btnSendFile;
     private javax.swing.JLabel btnSendImage;
     private javax.swing.JLabel btnSendMessage;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
