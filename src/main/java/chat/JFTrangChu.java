@@ -1112,6 +1112,9 @@ public class JFTrangChu extends JFrameBase {
             }
         });
         jScrollPane4.setViewportView(tblDSSVLSHD);
+        if (tblDSSVLSHD.getColumnModel().getColumnCount() > 0) {
+            tblDSSVLSHD.getColumnModel().getColumn(4).setPreferredWidth(32);
+        }
 
         javax.swing.GroupLayout panelStatisticsLayout = new javax.swing.GroupLayout(panelStatistics);
         panelStatistics.setLayout(panelStatisticsLayout);
@@ -1242,13 +1245,13 @@ public class JFTrangChu extends JFrameBase {
     }//GEN-LAST:event_lbSendNotificationMouseClicked
 
     private void btnSearchLSHDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchLSHDMouseClicked
-        String search = tfSearchLSHD.getText().trim();
+        String search = tfSearchLSHD.getText().toLowerCase().trim();
         filterList.clear();
         if (search == "") {
             filterList.addAll(list);
         } else {
             for (Student s : list) {
-                if (s.getFullname().contains(search)) {
+                if (s.getFullname().toLowerCase().contains(search)) {
                     filterList.add(s);
                 }
             }
