@@ -242,27 +242,28 @@ public class JFTrangChu extends JFrameBase {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.out.println("windowClosing");
-                
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        FirebaseHelper.getInstance().updateOnlineStatus(false);
-                        SessionInfo s = new SessionInfo();
-                        s.setDtLogout(getTimeNow());
-                        s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
-                        System.out.println("sk.sendMessage DISCONNECT");
-                        sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                System.out.println("sk.disconnect");
-                                sk.disconnect();
-                            }
-                        }, 5000);
-                    }
-                });
-                t.start();
+                SocketClient.windowClose();
+//                
+//                Thread t = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        FirebaseHelper.getInstance().updateOnlineStatus(false);
+//                        SessionInfo s = new SessionInfo();
+//                        s.setDtLogout(getTimeNow());
+//                        s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
+//                        System.out.println("sk.sendMessage DISCONNECT");
+//                        sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
+//                        Timer timer = new Timer();
+//                        timer.schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                System.out.println("sk.disconnect");
+//                                sk.disconnect();
+//                            }
+//                        }, 5000);
+//                    }
+//                });
+//                t.start();
             }
         });
 
