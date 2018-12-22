@@ -686,7 +686,6 @@ public class JFTrangChu extends JFrameBase {
         s.setDtLogout(getTimeNow());
         s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
         sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
-        System.out.println("ReasonLogout: " + s.getReasonLogout());
 
         sk.disconnect();
     }
@@ -1015,14 +1014,14 @@ public class JFTrangChu extends JFrameBase {
 
             },
             new String [] {
-                "STT", "Họ tên", "Địa chỉ IP", "Máy tính", "Thời gian"
+                "STT", "Họ tên", "Địa chỉ IP", "Máy tính", "Thời gian", "Chọn"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1034,6 +1033,14 @@ public class JFTrangChu extends JFrameBase {
             }
         });
         jScrollPane3.setViewportView(tblDSSV);
+        if (tblDSSV.getColumnModel().getColumnCount() > 0) {
+            tblDSSV.getColumnModel().getColumn(0).setPreferredWidth(16);
+            tblDSSV.getColumnModel().getColumn(1).setPreferredWidth(64);
+            tblDSSV.getColumnModel().getColumn(2).setPreferredWidth(48);
+            tblDSSV.getColumnModel().getColumn(3).setPreferredWidth(32);
+            tblDSSV.getColumnModel().getColumn(4).setPreferredWidth(48);
+            tblDSSV.getColumnModel().getColumn(5).setPreferredWidth(16);
+        }
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/guideline.png"))); // NOI18N
@@ -1109,6 +1116,10 @@ public class JFTrangChu extends JFrameBase {
         });
         jScrollPane4.setViewportView(tblDSSVLSHD);
         if (tblDSSVLSHD.getColumnModel().getColumnCount() > 0) {
+            tblDSSVLSHD.getColumnModel().getColumn(0).setPreferredWidth(16);
+            tblDSSVLSHD.getColumnModel().getColumn(1).setPreferredWidth(48);
+            tblDSSVLSHD.getColumnModel().getColumn(2).setPreferredWidth(64);
+            tblDSSVLSHD.getColumnModel().getColumn(3).setPreferredWidth(32);
             tblDSSVLSHD.getColumnModel().getColumn(4).setPreferredWidth(32);
         }
 

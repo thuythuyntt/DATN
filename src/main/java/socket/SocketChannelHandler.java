@@ -77,7 +77,6 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
         if (sm.getId().equals(SocketMessage.DISCONNECT)){
             sm.getSessionInfo().setId(idSession);
         }
-        System.out.println("[sendSocketMessage]: " + sm.getId());
         System.out.println("[sendSocketMessage]: " + sm.toJsonString());
         ctx.writeAndFlush(sm.toJsonString());
     }
