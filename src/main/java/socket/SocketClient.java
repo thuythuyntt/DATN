@@ -60,30 +60,6 @@ public class SocketClient {
         }
         return instance;
     }
-    
-    public static void windowClose() {
-        
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        FirebaseHelper.getInstance().updateOnlineStatus(false);
-                        SessionInfo s = new SessionInfo();
-                        s.setDtLogout("2018-12-22 01:01:01");
-                        s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
-                        System.out.println("sk.sendMessage DISCONNECT");
-                        getInstance().sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                System.out.println("sk.disconnect");
-                                getInstance().disconnect();
-                            }
-                        }, 5000);
-                    }
-                });
-                t.start();
-    }
 
     public void sendMessage(SocketMessage sm) {
         handler.sendSocketMessage(sm);

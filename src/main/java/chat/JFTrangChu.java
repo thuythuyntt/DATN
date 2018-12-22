@@ -240,9 +240,14 @@ public class JFTrangChu extends JFrameBase {
         }
         this.addWindowListener(new WindowAdapter() {
             @Override
+            public void windowClosed(WindowEvent e) {
+                System.out.println("windowClosed");
+            }
+            
+            
+            @Override
             public void windowClosing(WindowEvent e) {
                 System.out.println("windowClosing");
-                SocketClient.windowClose();
 //                
 //                Thread t = new Thread(new Runnable() {
 //                    @Override
