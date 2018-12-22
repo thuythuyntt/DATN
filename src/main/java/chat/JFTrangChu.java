@@ -183,8 +183,14 @@ public class JFTrangChu extends JFrameBase {
         }
 
         @Override
-        public void receiveListStudent(List<Student> list) {
-            setupDataTab3(list);
+        public void receiveListStudent(List<Student> lst) {
+            list = new ArrayList<>();
+            filterList = new ArrayList<>();
+
+            list.addAll(lst);
+            filterList.addAll(lst);
+
+            setupDataTab3();
         }
 
         @Override
@@ -232,25 +238,25 @@ public class JFTrangChu extends JFrameBase {
 
     private void initCustomComponents() {
 //        try {
-            if (user.getRole().equals(Constants.ROLE_STUDENT)) {
-                jPanel2.remove(lbSendNotification);
+        if (user.getRole().equals(Constants.ROLE_STUDENT)) {
+            jPanel2.remove(lbSendNotification);
+        }
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                FirebaseHelper.getInstance().updateOnlineStatus(false);
+
+                SessionInfo s = new SessionInfo();
+                s.setUserId(user.getId());
+                s.setDtLogout(getTimeNow());
+                s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
+                sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
+
+                sk.disconnect();
             }
-            this.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    FirebaseHelper.getInstance().updateOnlineStatus(false);
-                    
-                    SessionInfo s = new SessionInfo();
-                    s.setUserId(user.getId());
-                    s.setDtLogout(getTimeNow());
-                    s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
-                    sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
-                    
-                    sk.disconnect();
-                }
-                
-            });
-            
+
+        });
+
 //            String base64Ava = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYI"
 //                    + "ChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oM"
 //                    + "CUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKC"
@@ -310,7 +316,6 @@ public class JFTrangChu extends JFrameBase {
 //            BufferedImage image = ImageIO.read(new ByteArrayInputStream(btDataFile));
 //            ImageIcon icon = new ImageIcon(image);
 //            jLabel1.setIcon(icon);
-            
 //        BufferedImage img;
 //        try {
 //            img = ImageIO.read(new URL("http://www.java2s.com/style/download.png"));
@@ -363,27 +368,33 @@ public class JFTrangChu extends JFrameBase {
         });
     }
 
-    private void setupDataTab3(List<Student> list) {
+    private List<Student> list, filterList;
+
+    private void setupDataTab3() {
+        tblDSSVLSHD.removeAll();
+        tblDSSVLSHD.revalidate();
+        tblDSSVLSHD.repaint();
+
         DefaultTableModel model = (DefaultTableModel) tblDSSVLSHD.getModel();
 
         if (model.getRowCount() > 0) {
             model.setRowCount(0);
         }
 
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < filterList.size(); i++) {
             Object[] row = new Object[5];
             row[0] = i + 1;
-            row[1] = list.get(i).getUsername();
-            row[2] = list.get(i).getFullname();
-            row[3] = list.get(i).getCode();
-            row[4] = list.get(i).getGroup();
+            row[1] = filterList.get(i).getUsername();
+            row[2] = filterList.get(i).getFullname();
+            row[3] = filterList.get(i).getCode();
+            row[4] = filterList.get(i).getGroup();
             model.addRow(row);
         }
 
         tblDSSVLSHD.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                studentId = list.get(tblDSSVLSHD.getSelectedRow()).getId();
+                studentId = filterList.get(tblDSSVLSHD.getSelectedRow()).getId();
                 SocketMessage sm1 = new SocketMessage(SocketMessage.GET_LIST_SESSION, studentId);
                 sk.sendMessage(sm1);
             }
@@ -1231,7 +1242,18 @@ public class JFTrangChu extends JFrameBase {
     }//GEN-LAST:event_lbSendNotificationMouseClicked
 
     private void btnSearchLSHDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchLSHDMouseClicked
-        
+        String search = tfSearchLSHD.getText().trim();
+        filterList.clear();
+        if (search == "") {
+            filterList.addAll(list);
+        } else {
+            for (Student s : list) {
+                if (s.getFullname().contains(search)) {
+                    filterList.add(s);
+                }
+            }
+        }
+        setupDataTab3();
     }//GEN-LAST:event_btnSearchLSHDMouseClicked
 
     private void sendMessage() {
