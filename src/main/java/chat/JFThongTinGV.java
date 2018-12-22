@@ -46,7 +46,7 @@ public class JFThongTinGV extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        panelAvatar.setBackground(new java.awt.Color(102, 102, 255));
+        panelAvatar.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout panelAvatarLayout = new javax.swing.GroupLayout(panelAvatar);
         panelAvatar.setLayout(panelAvatarLayout);
@@ -59,49 +59,52 @@ public class JFThongTinGV extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        jLabel1.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel1.setText("Họ tên");
 
-        jLabel2.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel2.setText("Khoa");
 
-        jLabel3.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel3.setText("Mã giáo viên");
 
-        jLabel4.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel4.setText("Ngày sinh");
 
-        jLabel5.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel5.setText("Số điện thoại");
 
-        btnOK.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        btnOK.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         btnOK.setText("OK");
+        btnOK.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnOK.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnOKMouseClicked(evt);
             }
         });
 
-        btnEdit.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        btnEdit.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         btnEdit.setText("EDIT");
+        btnEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnEdit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnEditMouseClicked(evt);
             }
         });
 
-        tfHoTen.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfHoTen.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfHoTen.setEnabled(false);
 
-        tfKhoa.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfKhoa.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfKhoa.setEnabled(false);
 
-        tfMaGV.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfMaGV.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfMaGV.setEnabled(false);
 
         formattedtfNgaySinh.setEnabled(false);
+        formattedtfNgaySinh.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
 
-        tfSoDT.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfSoDT.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfSoDT.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -127,14 +130,14 @@ public class JFThongTinGV extends javax.swing.JFrame {
                             .addComponent(tfHoTen)
                             .addComponent(tfMaGV)
                             .addComponent(formattedtfNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfSoDT, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(66, 66, 66)))
-                .addContainerGap(82, Short.MAX_VALUE))
+                            .addComponent(tfSoDT, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(79, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(145, 145, 145))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,11 +164,11 @@ public class JFThongTinGV extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(tfSoDT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOK)
                     .addComponent(btnEdit))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();

@@ -24,14 +24,16 @@ public class JFThongTinSV extends javax.swing.JFrame {
     }
 
     public void setupData() {
-        mUser = FirebaseHelper.getInstance().getAuthUser();
+        if (mUser == null) {
+            mUser = FirebaseHelper.getInstance().getAuthUser();
+        }
         tfHoTen.setText(mUser.getFullname());
         tfLop.setText(mUser.getGroup());
         tfMaSV.setText(mUser.getCode());
         formattedtfNgaySinh.setText(mUser.getDob());
         tfSoDT.setText(mUser.getPhone());
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -52,7 +54,7 @@ public class JFThongTinSV extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        panelAvatar.setBackground(new java.awt.Color(102, 102, 255));
+        panelAvatar.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout panelAvatarLayout = new javax.swing.GroupLayout(panelAvatar);
         panelAvatar.setLayout(panelAvatarLayout);
@@ -66,28 +68,29 @@ public class JFThongTinSV extends javax.swing.JFrame {
         );
 
         formattedtfNgaySinh.setEnabled(false);
+        formattedtfNgaySinh.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         formattedtfNgaySinh.setSelectionColor(new java.awt.Color(204, 204, 204));
 
-        jLabel1.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel1.setText("Họ tên");
 
-        tfSoDT.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfSoDT.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfSoDT.setEnabled(false);
         tfSoDT.setSelectionColor(new java.awt.Color(204, 204, 204));
 
-        jLabel2.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel2.setText("Lớp");
 
-        jLabel3.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel3.setText("Mã sinh viên");
 
-        jLabel4.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel4.setText("Ngày sinh");
 
-        jLabel5.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel5.setText("Số điện thoại");
 
-        btnOK.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        btnOK.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         btnOK.setText("OK");
         btnOK.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -95,7 +98,7 @@ public class JFThongTinSV extends javax.swing.JFrame {
             }
         });
 
-        btnEdit.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        btnEdit.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         btnEdit.setText("EDIT");
         btnEdit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -103,15 +106,15 @@ public class JFThongTinSV extends javax.swing.JFrame {
             }
         });
 
-        tfHoTen.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfHoTen.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfHoTen.setEnabled(false);
         tfHoTen.setSelectionColor(new java.awt.Color(204, 204, 204));
 
-        tfLop.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfLop.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfLop.setEnabled(false);
         tfLop.setSelectionColor(new java.awt.Color(204, 204, 204));
 
-        tfMaSV.setFont(new java.awt.Font("Cambria Math", 0, 11)); // NOI18N
+        tfMaSV.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tfMaSV.setEnabled(false);
         tfMaSV.setSelectionColor(new java.awt.Color(204, 204, 204));
 
@@ -149,7 +152,7 @@ public class JFThongTinSV extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(formattedtfNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tfSoDT, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

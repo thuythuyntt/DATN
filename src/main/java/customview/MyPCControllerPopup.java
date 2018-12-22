@@ -26,10 +26,10 @@ public class MyPCControllerPopup extends JPopupMenu{
     public MyPCControllerPopup(OnClick listener) {
         this.listener = listener;
 
-        anItem0 = new JMenuItem("VIEWER");
-        anItem1 = new JMenuItem("LOCK SCREEN");
-        anItem2 = new JMenuItem("SHUT DOWN");
-        anItem3 = new JMenuItem("RESTART");
+        anItem0 = new JMenuItem("Giám sát màn hình");
+        anItem1 = new JMenuItem("Khóa máy");
+        anItem2 = new JMenuItem("Tắt máy");
+        anItem3 = new JMenuItem("Khởi động lại");
         
         anItem0.addActionListener(new ActionListener() {
             @Override

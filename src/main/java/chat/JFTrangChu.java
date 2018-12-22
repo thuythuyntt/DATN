@@ -40,10 +40,11 @@ import model.User;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
@@ -55,8 +56,6 @@ import model.SessionInfo;
 import model.SocketMessage;
 import model.Student;
 import socket.SocketClient;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 import util.Constants;
 import util.OSCommand;
 import util.TokenFile;
@@ -138,42 +137,42 @@ public class JFTrangChu extends JFrameBase {
         @Override
         public void sendScreenshot() {
             System.out.println("[JFTrangChu] sendScreenshot");
-            try {
-                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-                BufferedImage capture = new Robot().createScreenCapture(screenRect);
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                try {
-                    ImageIO.write(capture, "jpg", baos);
-                    baos.flush();
-                    byte[] imageInByte = baos.toByteArray();
-                    String s = new BASE64Encoder().encode(imageInByte);
-                    baos.close();
-
-                    sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, s));
-                    System.out.println("BASE64Encoder: " + s);
-                } catch (IOException ex) {
-                    Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } catch (AWTException ex) {
-                ex.printStackTrace();
-            }
+//            try {
+//                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+//                BufferedImage capture = new Robot().createScreenCapture(screenRect);
+//
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                try {
+//                    ImageIO.write(capture, "jpg", baos);
+//                    baos.flush();
+//                    byte[] imageInByte = baos.toByteArray();
+//                    String s = new BASE64Encoder().encode(imageInByte);
+//                    baos.close();
+//
+//                    sk.sendMessage(new SocketMessage(SocketMessage.SET_VIEWER, s));
+//                    System.out.println("BASE64Encoder: " + s);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(JFTrangChu.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            } catch (AWTException ex) {
+//                ex.printStackTrace();
+//            }
         }
 
         @Override
         public void receiveScreenshot(String capture) {
-            try {
-                System.out.println("[JFTrangChu] receiveScreenshot");
-                JFrame frame = new JFrame("VIEWER");
-                frame.setSize(900, 600);
-//                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//                frame.setUndecorated(true);
-                frame.setVisible(true);
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                frame.add(new JPSharingScreen(new BASE64Decoder().decodeBuffer(capture)));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+//            try {
+//                System.out.println("[JFTrangChu] receiveScreenshot");
+//                JFrame frame = new JFrame("VIEWER");
+//                frame.setSize(900, 600);
+////                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+////                frame.setUndecorated(true);
+//                frame.setVisible(true);
+//                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//                frame.add(new JPSharingScreen(new BASE64Decoder().decodeBuffer(capture)));
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
         }
 
         @Override
@@ -221,7 +220,7 @@ public class JFTrangChu extends JFrameBase {
     public JFTrangChu() {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
-        String ipAddress = (String)JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE, null, null, SOCKET_SERVER_IP);
+        String ipAddress = (String) JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE, null, null, SOCKET_SERVER_IP);
         sk.setHost(ipAddress);
         sk.connect(socketListener);
     }
@@ -242,16 +241,25 @@ public class JFTrangChu extends JFrameBase {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                FirebaseHelper.getInstance().updateOnlineStatus(false);
-
-                SessionInfo s = new SessionInfo();
-                s.setDtLogout(getTimeNow());
-                s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
-                sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
-
-                sk.disconnect();
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FirebaseHelper.getInstance().updateOnlineStatus(false);
+                        SessionInfo s = new SessionInfo();
+                        s.setDtLogout(getTimeNow());
+                        s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
+                        sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                sk.disconnect();
+                            }
+                        }, 1000);
+                    }
+                });
+                t.start();
             }
-
         });
 
 //            String base64Ava = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYI"
@@ -721,6 +729,7 @@ public class JFTrangChu extends JFrameBase {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblDSSV = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
+        cbSelectAll = new javax.swing.JCheckBox();
         panelStatistics = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         tfSearchLSHD = new javax.swing.JTextField();
@@ -848,6 +857,11 @@ public class JFTrangChu extends JFrameBase {
         lbTenCuocTroChuyen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ic_group_32.png"))); // NOI18N
         lbTenCuocTroChuyen.setText("Tên cuộc trò chuyện");
         lbTenCuocTroChuyen.setPreferredSize(new java.awt.Dimension(700, 40));
+        lbTenCuocTroChuyen.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbTenCuocTroChuyenMouseClicked(evt);
+            }
+        });
 
         jScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -866,7 +880,7 @@ public class JFTrangChu extends JFrameBase {
         );
         scrollPaneNoiDungCuocTroChuyenLayout.setVerticalGroup(
             scrollPaneNoiDungCuocTroChuyenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGap(0, 451, Short.MAX_VALUE)
         );
 
         jScrollPane.setViewportView(scrollPaneNoiDungCuocTroChuyen);
@@ -935,6 +949,7 @@ public class JFTrangChu extends JFrameBase {
                 .addContainerGap())
         );
 
+        lbSendNotification.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         lbSendNotification.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbSendNotification.setIcon(new javax.swing.ImageIcon(getClass().getResource("/notification_send_32.png"))); // NOI18N
         lbSendNotification.setText("Gửi thông báo");
@@ -967,7 +982,7 @@ public class JFTrangChu extends JFrameBase {
                     .addComponent(lbTenCuocTroChuyen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbSendNotification, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(panelChatInput, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -986,8 +1001,8 @@ public class JFTrangChu extends JFrameBase {
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHomeLayout.createSequentialGroup()
                 .addGroup(panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1005,10 +1020,11 @@ public class JFTrangChu extends JFrameBase {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("» Chọn một hàng trong bảng\n» Click chuột phải\n» Chọn hành động thích hợp:\n \t- Viewer\n \t- Lock\n \t- Shut down");
+        jTextArea1.setText("\t\n\t» Chọn một hàng trong bảng\n\t» Click chuột phải\n\t» Chọn hành động thích hợp:\n \t\t- Giám sát màn hình\n \t\t- Khóa máy\n \t\t- Tắt máy\n\t\t- Khởi động lại");
         jTextArea1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
         jScrollPane1.setViewportView(jTextArea1);
 
+        tblDSSV.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
         tblDSSV.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -1046,6 +1062,15 @@ public class JFTrangChu extends JFrameBase {
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/guideline.png"))); // NOI18N
         jLabel3.setText("Hướng dẫn:");
 
+        cbSelectAll.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        cbSelectAll.setText("Chọn tất cả");
+        cbSelectAll.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        cbSelectAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbSelectAllActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelManagementLayout = new javax.swing.GroupLayout(panelManagement);
         panelManagement.setLayout(panelManagementLayout);
         panelManagementLayout.setHorizontalGroup(
@@ -1058,19 +1083,25 @@ public class JFTrangChu extends JFrameBase {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 889, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(46, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelManagementLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cbSelectAll)
+                .addGap(96, 96, 96))
         );
         panelManagementLayout.setVerticalGroup(
             panelManagementLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelManagementLayout.createSequentialGroup()
                 .addGap(42, 42, 42)
                 .addComponent(jLabel2)
-                .addGap(51, 51, 51)
+                .addGap(18, 18, 18)
+                .addComponent(cbSelectAll)
+                .addGap(11, 11, 11)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
+                .addGap(33, 33, 33)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Quản lý", panelManagement);
@@ -1152,15 +1183,19 @@ public class JFTrangChu extends JFrameBase {
                     .addComponent(tfSearchLSHD, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Lịch sử hoạt động", panelStatistics);
 
         getContentPane().add(jTabbedPane1);
 
-        jMenuSetting.setText("Cài đặt");
+        jMenuBar1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
 
+        jMenuSetting.setText("Cài đặt");
+        jMenuSetting.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+
+        jMenuItemChangePw.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jMenuItemChangePw.setIcon(new javax.swing.ImageIcon(getClass().getResource("/change_password_16.png"))); // NOI18N
         jMenuItemChangePw.setText("Đổi mật khẩu");
         jMenuItemChangePw.addActionListener(new java.awt.event.ActionListener() {
@@ -1171,6 +1206,7 @@ public class JFTrangChu extends JFrameBase {
         jMenuSetting.add(jMenuItemChangePw);
         jMenuSetting.add(jSeparator2);
 
+        jMenuItemLogout.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jMenuItemLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logout_16.png"))); // NOI18N
         jMenuItemLogout.setText("Đăng xuất");
         jMenuItemLogout.addActionListener(new java.awt.event.ActionListener() {
@@ -1183,6 +1219,7 @@ public class JFTrangChu extends JFrameBase {
         jMenuBar1.add(jMenuSetting);
 
         jMenuHelp.setText("Trợ giúp");
+        jMenuHelp.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
 
         jMenuItemReconnect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/reconnect.png"))); // NOI18N
         jMenuItemReconnect.setText("Kết nối lại");
@@ -1194,6 +1231,7 @@ public class JFTrangChu extends JFrameBase {
         jMenuHelp.add(jMenuItemReconnect);
         jMenuHelp.add(jSeparator1);
 
+        jMenuItemAboutMe.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jMenuItemAboutMe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/about.png"))); // NOI18N
         jMenuItemAboutMe.setText("About me");
         jMenuItemAboutMe.addActionListener(new java.awt.event.ActionListener() {
@@ -1237,7 +1275,7 @@ public class JFTrangChu extends JFrameBase {
     }//GEN-LAST:event_jMenuItemAboutMeActionPerformed
 
     private void jMenuItemReconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReconnectActionPerformed
-        String ipAddress = (String)JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE, null, null, SOCKET_SERVER_IP);
+        String ipAddress = (String) JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE, null, null, SOCKET_SERVER_IP);
         sk.setHost(ipAddress);
         sk.connect(socketListener);
     }//GEN-LAST:event_jMenuItemReconnectActionPerformed
@@ -1266,6 +1304,14 @@ public class JFTrangChu extends JFrameBase {
         setupDataTab3();
     }//GEN-LAST:event_btnSearchLSHDMouseClicked
 
+    private void cbSelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSelectAllActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbSelectAllActionPerformed
+
+    private void lbTenCuocTroChuyenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbTenCuocTroChuyenMouseClicked
+
+    }//GEN-LAST:event_lbTenCuocTroChuyenMouseClicked
+
     private void sendMessage() {
         String from = FirebaseHelper.getInstance().getAuthUser().getId();
         String to = toUserId;
@@ -1292,6 +1338,7 @@ public class JFTrangChu extends JFrameBase {
     private javax.swing.JLabel btnSendFile;
     private javax.swing.JLabel btnSendImage;
     private javax.swing.JLabel btnSendMessage;
+    private javax.swing.JCheckBox cbSelectAll;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
