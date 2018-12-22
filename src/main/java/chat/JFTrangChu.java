@@ -70,6 +70,7 @@ public class JFTrangChu extends JFrameBase {
 
     public static final String STRING_ACTIVELY_DISCONNECT = "Tu tat may";
     public static final String STRING_PASSIVELY_DISCONNECT = "Bi giao vien tat may";
+    public String SOCKET_SERVER_IP = "192.168.4.61";
 
     private final User user;
     private String toUserId = "";
@@ -222,10 +223,9 @@ public class JFTrangChu extends JFrameBase {
     public JFTrangChu() {
         initComponents();
         user = FirebaseHelper.getInstance().getAuthUser();
-        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE);
+        String ipAddress = (String)JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE, null, null, SOCKET_SERVER_IP);
         sk.setHost(ipAddress);
         sk.connect(socketListener);
-
     }
 
     private void showProgressBar() {
@@ -1230,7 +1230,7 @@ public class JFTrangChu extends JFrameBase {
     }//GEN-LAST:event_jMenuItemAboutMeActionPerformed
 
     private void jMenuItemReconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReconnectActionPerformed
-        String ipAddress = JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE);
+        String ipAddress = (String)JOptionPane.showInputDialog(this, "Địa chỉ IP: ", "Kết nối Server", JOptionPane.QUESTION_MESSAGE, null, null, SOCKET_SERVER_IP);
         sk.setHost(ipAddress);
         sk.connect(socketListener);
     }//GEN-LAST:event_jMenuItemReconnectActionPerformed
