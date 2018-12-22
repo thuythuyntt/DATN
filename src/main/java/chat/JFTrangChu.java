@@ -111,7 +111,6 @@ public class JFTrangChu extends JFrameBase {
 
                     FirebaseHelper.getInstance().updateOnlineStatus(false);
                     SessionInfo s1 = new SessionInfo();
-                    s1.setUserId(user.getId());
                     s1.setDtLogout(getTimeNow());
                     s1.setReasonLogout(STRING_PASSIVELY_DISCONNECT);
                     sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s1));
@@ -124,7 +123,6 @@ public class JFTrangChu extends JFrameBase {
 
                     FirebaseHelper.getInstance().updateOnlineStatus(false);
                     SessionInfo s2 = new SessionInfo();
-                    s2.setUserId(user.getId());
                     s2.setDtLogout(getTimeNow());
                     s2.setReasonLogout(STRING_PASSIVELY_DISCONNECT);
                     sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s2));
@@ -247,7 +245,6 @@ public class JFTrangChu extends JFrameBase {
                 FirebaseHelper.getInstance().updateOnlineStatus(false);
 
                 SessionInfo s = new SessionInfo();
-                s.setUserId(user.getId());
                 s.setDtLogout(getTimeNow());
                 s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
                 sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
@@ -686,7 +683,6 @@ public class JFTrangChu extends JFrameBase {
         FirebaseHelper.getInstance().updateOnlineStatus(false);
 
         SessionInfo s = new SessionInfo();
-        s.setUserId(user.getId());
         s.setDtLogout(getTimeNow());
         s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
         sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));

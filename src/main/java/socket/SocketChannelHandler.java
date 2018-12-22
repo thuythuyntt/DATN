@@ -19,6 +19,7 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
 
     private ChannelHandlerContext ctx;
     private SocketClient.Listener socketClientListener;
+    private String idSession = "";
 
     public SocketChannelHandler(SocketClient.Listener listener) {
         socketClientListener = listener;
@@ -53,13 +54,15 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
         } else if (SocketMessage.GET_VIEWER.equals(sm.getId())){
             socketClientListener.sendScreenshot();
         } else if (SocketMessage.SET_VIEWER.equals(sm.getId())){
-            socketClientListener.receiveScreenshot(sm.getImgScreenshot());
+            socketClientListener.receiveScreenshot(sm.getCapture());
         } else if (SocketMessage.SEND_NOTIFICATION.equals(sm.getId())){
-            socketClientListener.receiveNotification(sm.getImgScreenshot());
+            socketClientListener.receiveNotification(sm.getCapture());
         } else if (SocketMessage.SET_LIST_STUDENT.equals(sm.getId())){
             socketClientListener.receiveListStudent(sm.getListStudent());
         } else if (SocketMessage.SET_LIST_SESSION.equals(sm.getId())){
             socketClientListener.receiveListSession(sm.getListOnline());
+        } else if (SocketMessage.CONNECT.equals(sm.getId())){
+            idSession = sm.getCapture();
         }
     }
 
@@ -70,6 +73,9 @@ public class SocketChannelHandler extends SimpleChannelInboundHandler<String> {
         }
         if (sm.getSessionInfo()!= null && sm.getId().equals(SocketMessage.CONNECT)) {
             sm.getSessionInfo().setIpAddress(ctx.channel().localAddress().toString());
+        }
+        if (sm.getId().equals(SocketMessage.DISCONNECT)){
+            sm.getSessionInfo().setId(idSession);
         }
         System.out.println("[sendSocketMessage]: " + sm.getId());
         System.out.println("[sendSocketMessage]: " + sm.toJsonString());
