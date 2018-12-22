@@ -248,14 +248,16 @@ public class JFTrangChu extends JFrameBase {
                         SessionInfo s = new SessionInfo();
                         s.setDtLogout(getTimeNow());
                         s.setReasonLogout(STRING_ACTIVELY_DISCONNECT);
+                        System.out.println("sk.sendMessage DISCONNECT");
                         sk.sendMessage(new SocketMessage(SocketMessage.DISCONNECT, s));
                         Timer timer = new Timer();
                         timer.schedule(new TimerTask() {
                             @Override
                             public void run() {
+                                System.out.println("sk.disconnect");
                                 sk.disconnect();
                             }
-                        }, 1000);
+                        }, 5000);
                     }
                 });
                 t.start();
