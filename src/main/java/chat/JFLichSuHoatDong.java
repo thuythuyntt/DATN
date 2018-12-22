@@ -85,7 +85,7 @@ public class JFLichSuHoatDong extends JFrameBase {
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("LỊCH SỬ HOẠTĐỘNG");
+        jLabel1.setText("LỊCH SỬ HOẠT ĐỘNG");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         jLabel2.setText("Họ tên:");
@@ -126,10 +126,10 @@ public class JFLichSuHoatDong extends JFrameBase {
         });
         jScrollPane1.setViewportView(tblLSHD);
         if (tblLSHD.getColumnModel().getColumnCount() > 0) {
-            tblLSHD.getColumnModel().getColumn(0).setPreferredWidth(16);
+            tblLSHD.getColumnModel().getColumn(0).setPreferredWidth(8);
             tblLSHD.getColumnModel().getColumn(1).setPreferredWidth(48);
-            tblLSHD.getColumnModel().getColumn(2).setPreferredWidth(64);
-            tblLSHD.getColumnModel().getColumn(3).setPreferredWidth(64);
+            tblLSHD.getColumnModel().getColumn(2).setPreferredWidth(72);
+            tblLSHD.getColumnModel().getColumn(3).setPreferredWidth(72);
             tblLSHD.getColumnModel().getColumn(4).setPreferredWidth(48);
         }
 
