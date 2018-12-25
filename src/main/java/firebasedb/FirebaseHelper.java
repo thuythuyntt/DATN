@@ -23,6 +23,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.database.annotations.Nullable;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,9 +76,12 @@ public final class FirebaseHelper {
     }
 
     private void initFirebase() {
-        FileInputStream serviceAccount = null;
+        //FileInputStream serviceAccount = null;
+        InputStream serviceAccount = null;
         try {
-            serviceAccount = new FileInputStream("service-account.json");
+            ClassLoader classLoader = getClass().getClassLoader();
+            serviceAccount = classLoader.getResourceAsStream("service-account.json");
+            //serviceAccount = new FileInputStream("service-account.json");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setStorageBucket("graduation-thesis-64adc.appspot.com")
